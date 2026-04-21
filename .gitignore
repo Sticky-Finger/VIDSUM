@@ -1,0 +1,13 @@
+# OS  
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+
+# Environment variables
+.env
+
+# node.js
+node_modules/
