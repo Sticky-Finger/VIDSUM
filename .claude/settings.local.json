@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:v2.tauri.app)",
+      "Bash(cargo check:*)",
+      "Bash(cargo clean:*)",
+      "Bash(cargo install:*)",
+      "Bash(pnpm install)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm tauri:dev)"
+    ],
+    "deny": [],
+    "ask": [
+      "Skill(superpowers:subagent-driven-development)"
+    ]
+  }
+}
