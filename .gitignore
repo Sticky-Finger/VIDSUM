@@ -15,6 +15,9 @@ node_modules/
 # Git worktrees
 .worktrees/
 
+# Build output
+dist/
+
 # Rust
 src-tauri/target/
 src-tauri/gen/
