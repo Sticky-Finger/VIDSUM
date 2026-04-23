@@ -42,7 +42,9 @@
 
 ---
 
-### Task 2: UI 组件和输入模式选择
+### Task 2: UI 组件和输入模式选择 ✅
+
+**状态**: 已完成 (2026-04-23)
 
 **创建文件**:
 - `src/lib/utils.ts` - cn 工具函数
@@ -52,8 +54,9 @@
 
 **修改文件**:
 - `src/App.tsx` - 使用 InputModeSelect 组件
+- `vite.config.ts` - 添加路径别名 `@` 配置
 
-**测试**: `pnpm tauri dev` 启动后看到居中的卡片和两个按钮
+**测试**: `pnpm tauri dev` 启动后看到居中的卡片和两个按钮 ✅ 已验证
 
 ---
 
