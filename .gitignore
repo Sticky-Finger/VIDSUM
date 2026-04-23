@@ -14,3 +14,7 @@ node_modules/
 
 # Git worktrees
 .worktrees/
+
+# Rust
+src-tauri/target/
+src-tauri/gen/

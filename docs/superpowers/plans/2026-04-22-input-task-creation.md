@@ -15,7 +15,9 @@
 
 ## Tasks
 
-### Task 1: 项目初始化
+### Task 1: 项目初始化 ✅
+
+**状态**: 已完成 (2026-04-23)
 
 创建基础配置文件和 Tauri 后端骨架。
 
@@ -33,8 +35,10 @@
 - `src-tauri/tauri.conf.json` - Tauri 配置，窗口 1200x800
 - `src-tauri/src/main.rs` - Rust 入口
 - `src-tauri/capabilities/default.json` - 权限配置
+- `src-tauri/build.rs` - Tauri 构建脚本 (额外创建)
+- `src-tauri/src/lib.rs` - Rust 库入口 (额外创建)
 
-**测试**: `pnpm tauri dev` 能启动空白窗口
+**测试**: `pnpm tauri dev` 能启动空白窗口 ✅ 已验证
 
 ---
 
