@@ -31,7 +31,9 @@
 
 ---
 
-### Task 2: 实现 Whisper ASR 引擎模块
+### Task 2: 实现 Whisper ASR 引擎模块 ✅
+
+**状态**: 已完成 (2026-04-24)
 
 **创建文件**:
 - `src-tauri/src/asr/mod.rs` - 模块导出
@@ -46,14 +48,18 @@
 - 实现音频加载和转写逻辑
 - 支持进度回调
 
-**测试**: `cargo check` 通过，无编译错误
+**测试**:
+- `cargo check` 通过 ✅
+- `cargo test --lib asr` 通过，4 个单元测试全部通过 ✅
 
 ---
 
 ### Task 3: 实现云端 ASR 模块
 
+**状态**: 已创建占位文件 (2026-04-24)
+
 **创建文件**:
-- `src-tauri/src/asr/cloud_asr.rs` - CloudAsrConfig 配置、CloudAsrClient 客户端
+- `src-tauri/src/asr/cloud_asr.rs` - CloudAsrConfig 配置、CloudAsrClient 客户端（占位实现）
 
 **功能**:
 - 支持配置 API URL、API Key、Model
