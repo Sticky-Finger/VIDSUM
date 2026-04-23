@@ -65,3 +65,11 @@
 
 - 1 为了避免新的worktree目录下的代码要再次重新安装node.js依赖，以及重新编译tuari的rust代码
 - 2 避免：在功能开发完worktree合并回主代码库时，随着代码更新，又要在主代码库再来一次上面的依赖安装和rust代码编译
+
+### 3.2 使用 superpowers:excuting-plan 写代码实现上述plan文档内容里的Task 1、Task 2
+
+对话过程记录: [2026-04-24-0236-caveat-the-messages-below-were-generated-by-the-u.txt](../../chat-logs/2026-04-24-0236-caveat-the-messages-below-were-generated-by-the-u.txt)
+
+- Task 1，AI自动添加所需的 Rust 依赖时，出现了有不少依赖包版本不是最新稳定版的问题
+  - 如何发现：把AI写的rust依赖配置文件内容复制发给网页端AI工具Deepseek，让它去审核是否时最新的稳定版依赖
+  - 解决办法：自己通过网页端AI工具Deepseek查找出最新的稳定版本，然后直接对话告诉AI让它改
