@@ -105,3 +105,12 @@
 
 > **补充**：finishing-a-development-branch 这个技能，并不会自动更新你的计划文档。它是一个Git 分支管理工作流，只处理代码和分支的最终状态，不负责文档状态同步。它被触发的时机，是 AI 认为整个计划（Plan）已全部完成的时候。
 
+### 3.3 使用 superpowers:excuting-plan 写代码实现上述plan文档内容里的 Task 4
+
+> 这次开启会话前，使用了新的模型：默认deepseek-v4-flash，sonnet为GLM 5.1，opus为deepseek-v4-pro
+
+对话过程记录: [2026-04-25-0103-caveat-the-messages-below-were-generated-by-the-u.txt](../../chat-logs/2026-04-25-0103-caveat-the-messages-below-were-generated-by-the-u.txt)
+
+**要点内容**：
+
+- **claude code在实现我的指令途中，突然切换了模型为sonnet代表的GLM 5.1**，cc切换模型是隐式的没有提示的
