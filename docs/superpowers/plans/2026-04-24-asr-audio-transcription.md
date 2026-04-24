@@ -77,21 +77,29 @@
 
 ---
 
-### Task 4: 创建 ASR 命令接口
+### Task 4: 创建 ASR 命令接口 ✅
+
+**状态**: 已完成 (2026-04-25)
 
 **创建文件**:
 - `src-tauri/src/commands/asr.rs` - init_whisper_engine、start_transcription、transcribe_with_cloud 命令
 
 **修改文件**:
 - `src-tauri/src/commands/mod.rs` - 导出 asr 命令
-- `src-tauri/Capabilities/default.json` - 添加必要权限
+- `src-tauri/src/main.rs` - 注册 ASR 命令到 invoke_handler，管理 AppState（Arc<Mutex<Option<WhisperEngine>>>）
+- `src-tauri/src/asr/whisper_engine.rs` - 为 WhisperEngine 添加 #[derive(Clone)]
+- `src-tauri/Capabilities/default.json` - 添加 fs:allow-exists 权限
 
 **功能**:
 - 初始化 Whisper 引擎命令
 - 开始转写命令（后台线程执行）
+- 云端 ASR 转写命令
 - 通过 Tauri event 发送进度和结果
+- 使用 Arc<Mutex<Option<WhisperEngine>>> 管理引擎状态，实现跨线程安全共享
 
-**测试**: `cargo check` 通过
+**测试**:
+- `cargo check` 通过 ✅
+- `cargo test --lib asr` 通过，8 个单元测试全部通过 ✅
 
 ---
 

@@ -3,12 +3,22 @@
 
 mod commands;
 
+use crate::commands::asr::AppState;
+
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
-        .invoke_handler(tauri::generate_handler![commands::file::select_file])
+        .manage(AppState {
+            whisper_engine: std::sync::Arc::new(std::sync::Mutex::new(None)),
+        })
+        .invoke_handler(tauri::generate_handler![
+            commands::file::select_file,
+            commands::asr::init_whisper_engine,
+            commands::asr::start_transcription,
+            commands::asr::transcribe_with_cloud,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

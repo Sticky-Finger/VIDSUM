@@ -86,6 +86,7 @@ pub enum WhisperError {
 }
 
 /// Whisper ASR 引擎
+#[derive(Clone)]
 pub struct WhisperEngine {
     /// 模型上下文
     ctx: Arc<WhisperContext>,
