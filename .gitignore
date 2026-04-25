@@ -21,3 +21,9 @@ dist/
 # Rust
 src-tauri/target/
 src-tauri/gen/
+
+# AI 模型文件（由用户自行下载，不纳入版本管理）
+src-tauri/models/
+
+# 转写生成的字幕文件
+src-tauri/samples/*.srt

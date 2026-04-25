@@ -103,7 +103,43 @@
 
 ---
 
-### Task 5: 实现前端组件
+### Task 5: 下载测试模型并验证 ✅
+
+**状态**: 已完成 (2026-04-26)
+
+**执行**:
+- 创建 `src-tauri/models/` 目录
+- 从 `huggingface.co/ggerganov/whisper.cpp` 下载 ggml-tiny.bin (77MB) 和 ggml-base.bin (147MB)
+- 添加 `src-tauri/models/` 到 `.gitignore`，不上传大模型文件
+- 在 `tauri.conf.json` 中配置 `bundle.resources` 打包模型文件
+- 用 `symphonia` 替换 `hound`，扩展音频解码支持 MP3 / AAC(MP4) / WAV + 自动重采样到 16kHz
+- 扩展 `WhisperModel` 枚举支持 Small/Medium/Large（原来只有 Tiny/Base）
+- 在 `WhisperEngine::new` 和 `init_whisper_engine` 中增加 `language` 参数（zh/en/ja/auto）
+- 新增 `test_transcribe_sample` 端到端测试，输出 SRT 字幕文件
+
+**修改文件**:
+- `src-tauri/src/asr/whisper_engine.rs` - 新增集成测试；重写 `load_audio`；扩展 WhisperModel + language 参数
+- `src-tauri/src/commands/asr.rs` - ModelName 扩展 + init_whisper_engine 增加 language
+- `.gitignore` - 忽略 models 目录
+- `src-tauri/tauri.conf.json` - 配置 bundle.resources
+- `src-tauri/Cargo.toml` - 添加 `symphonia` (v0.5)，移除 `hound`
+
+**验证清单**:
+- [x] Tiny 模型 (77MB) 加载成功 (`cargo test --ignored` 通过)
+- [x] Base 模型 (147MB) 下载并加载成功
+- [x] 支持 MP3 / MP4 / WAV 音频输入 + 自动重采样到 16kHz 单声道
+- [x] `cargo check` 编译通过
+- [x] 全部 8 个单元测试通过
+- [x] **端到端中文转写验证**：在 Claude Code 中通过 Bash 工具运行以下命令测试成功
+  ```bash
+  cd src-tauri && AUDIO_FILE=samples/scene1.mp3 AUDIO_MODEL=base AUDIO_LANG=zh \
+    cargo test --lib asr -- test_transcribe_sample --ignored --nocapture
+  ```
+  输出 3 段中文转写 + SRT 字幕文件，结果准确（原文"我做了一个本地AI搜索工具，今天正式开源了..."）
+
+---
+
+### Task 6: 实现前端组件
 
 **创建文件**:
 - `src/components/ModelSelect.tsx` - Tiny/Base 模型选择按钮
@@ -119,20 +155,6 @@
 - 处理完成和错误事件
 
 **测试**: `pnpm tauri dev` 启动后 UI 正常渲染
-
----
-
-### Task 6: 下载测试模型并验证
-
-**执行**:
-- 创建 `src-tauri/models/` 目录
-- 下载 ggml-tiny.bin 模型文件
-
-**测试清单** (`pnpm tauri dev`):
-- [ ] 选择音频文件后显示模型选择
-- [ ] 选择模型后开始转写
-- [ ] 进度条实时更新
-- [ ] 转写完成后显示带时间戳的文本
 
 ---
 

@@ -20,6 +20,9 @@ use vidsum_lib::asr::whisper_engine::TranscriptionResult;
 pub enum ModelName {
     Tiny,
     Base,
+    Small,
+    Medium,
+    Large,
 }
 
 impl From<ModelName> for WhisperModel {
@@ -27,6 +30,9 @@ impl From<ModelName> for WhisperModel {
         match name {
             ModelName::Tiny => WhisperModel::Tiny,
             ModelName::Base => WhisperModel::Base,
+            ModelName::Small => WhisperModel::Small,
+            ModelName::Medium => WhisperModel::Medium,
+            ModelName::Large => WhisperModel::Large,
         }
     }
 }
@@ -119,7 +125,8 @@ pub struct AppState {
 /// 前端选择模型后调用此命令，加载对应的模型文件
 ///
 /// # 参数
-/// - `model_name`: 模型名称 (tiny 或 base)
+/// - `model_name`: 模型名称 (tiny / base / small / medium / large)
+/// - `language`: 转写语言代码 ("zh" / "en" / "ja" / "auto")，默认由模型决定
 ///
 /// # 事件
 /// 成功时发送 `asr:engine-initialized` 事件
@@ -129,6 +136,7 @@ pub async fn init_whisper_engine(
     app: tauri::AppHandle,
     state: tauri::State<'_, AppState>,
     model_name: ModelName,
+    language: Option<String>,
 ) -> Result<String, String> {
     let model: WhisperModel = model_name.into();
 
@@ -140,7 +148,7 @@ pub async fn init_whisper_engine(
         .join("models");
 
     // 初始化引擎
-    let engine = WhisperEngine::new(model, model_dir)
+    let engine = WhisperEngine::new(model, model_dir, language)
         .map_err(|e| {
             let msg = format!("初始化 Whisper 引擎失败：{}", e);
             app.emit("asr:error", ErrorPayload { message: msg.clone() })
@@ -153,7 +161,7 @@ pub async fn init_whisper_engine(
         .map_err(|e| format!("获取状态锁失败：{}", e))?;
     *engine_state = Some(engine);
 
-    let result_msg = format!("Whisper {} 模型已初始化", model.filename());
+    let result_msg = format!("Whisper {} 模型已初始化（语言：{}）", model.filename(), model.default_language());
     app.emit("asr:engine-initialized", ErrorPayload { message: result_msg.clone() })
         .ok();
 
