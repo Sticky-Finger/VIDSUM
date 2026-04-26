@@ -139,22 +139,49 @@
 
 ---
 
-### Task 6: 实现前端组件
+### Task 6: 实现前端组件 ✅
+
+**状态**: 已完成 (2026-04-26)
 
 **创建文件**:
-- `src/components/ModelSelect.tsx` - Tiny/Base 模型选择按钮
-- `src/components/AsrProgress.tsx` - 进度条和实时文本显示
+- `src/components/ModelSelect.tsx` - 模型选择组件（支持 Tiny/Base/Small/Medium/Large，含语言选择下拉框）
+- `src/components/AsrProgress.tsx` - 转写进度条和实时文本显示组件
 
 **修改文件**:
-- `src/App.tsx` - 集成模型选择和转写流程
+- `src/App.tsx` - 集成模型选择和转写流程，新增 `model_select` 和 `transcribing` 两种模式
 
 **功能**:
 - 模型选择并初始化后端引擎
-- 监听转写进度事件
+- 监听转写进度事件 (`asr:progress`)
 - 显示进度条和当前转写文本
-- 处理完成和错误事件
+- 处理完成 (`asr:transcription-completed`) 和错误 (`asr:error`) 事件
+- 支持复制全文和重新开始
 
-**测试**: `pnpm tauri dev` 启动后 UI 正常渲染
+**修复的问题**:
+
+1. **Tauri invoke 错误消息被吞掉** (`ModelSelect.tsx`、`AsrProgress.tsx`)
+   - Tauri v2 的 `invoke` 在 Rust 返回 `Err(String)` 时，前端抛出的是字符串而非 `Error` 对象
+   - `err instanceof Error` 永远为 `false`，用户始终看到泛化的"初始化失败，请重试"
+   - 修复：改为 `typeof err === 'string' ? err : ...` 兼容处理
+
+2. **开发模式下模型目录路径错误** (`src-tauri/src/commands/asr.rs`)
+   - `init_whisper_engine` 使用 `app.path().resource_dir().join("models")` 查找模型文件
+   - `pnpm tauri dev` 开发模式下，`resource_dir()` 返回 `target/debug/`，模型文件却在 `src-tauri/models/`
+   - 修复：新增 `resolve_model_dir()` 函数，优先检查 Tauri 资源目录，不存在则降级到 `CARGO_MANIFEST_DIR/models/`（源码目录）
+
+3. **⚠️ Rust 代码修改后未重新编译**（重要经验）
+   - 修改 Rust 代码后，直接 `cargo check` 只做类型检查不产生新二进制
+   - 运行 `pnpm tauri dev` 如果检测到已有二进制可能不会触发重新编译
+   - **解决方法**：先执行 `cargo clean` 清除缓存，再 `cargo build` 强制重新编译，最后启动 `pnpm tauri dev`
+   - 或直接停掉 `pnpm tauri dev` 重新启动（Ctrl+C → `pnpm tauri dev`），tauri 构建脚本会检查 Rust 文件变更
+
+**测试**: `pnpm tauri dev` 启动后 UI 正常渲染 ✅
+- TypeScript 编译通过 ✅
+- Vite 生产构建通过（42 modules） ✅
+- Rust 编译通过 ✅
+- 手动测试：Tiny/Base 模型选择并成功转写 ✅
+
+**调试输出**: `src-tauri/src/commands/asr.rs` 中的 `eprintln!` 调试日志保留在代码中，运行 `pnpm tauri dev` 时终端可见。如需关闭可搜索 `[resolve_model_dir]` 和 `[init_whisper_engine]` 所在行删除。
 
 ---
 

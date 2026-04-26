@@ -120,6 +120,49 @@ pub struct AppState {
     pub whisper_engine: Arc<Mutex<Option<WhisperEngine>>>,
 }
 
+/// 解析模型目录路径
+///
+/// 优先使用 Tauri 标准资源路径，开发模式下降级到源码目录
+fn resolve_model_dir(app: &tauri::AppHandle) -> Result<PathBuf, String> {
+    // 尝试 Tauri 标准资源路径
+    if let Ok(resource_dir) = app.path().resource_dir() {
+        let model_dir = resource_dir.join("models");
+        eprintln!("[resolve_model_dir] 尝试 Tauri 资源目录: {}", model_dir.display());
+        if model_dir.exists() {
+            eprintln!("[resolve_model_dir] ✓ 使用 Tauri 资源目录: {}", model_dir.display());
+            return Ok(model_dir);
+        } else {
+            eprintln!("[resolve_model_dir] ✗ 目录不存在");
+        }
+    } else {
+        eprintln!("[resolve_model_dir] ✗ resource_dir() 获取失败");
+    }
+
+    // 开发模式降级：使用 CARGO_MANIFEST_DIR/models/
+    let cargo_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("models");
+    eprintln!("[resolve_model_dir] 尝试源码目录: {}", cargo_dir.display());
+    if cargo_dir.exists() {
+        eprintln!("[resolve_model_dir] ✓ 使用源码目录: {}", cargo_dir.display());
+        return Ok(cargo_dir);
+    } else {
+        eprintln!("[resolve_model_dir] ✗ 源码目录也不存在");
+    }
+
+    // 都找不到时，给出详细的提示信息
+    let expected = app
+        .path()
+        .resource_dir()
+        .map(|d| d.join("models"))
+        .unwrap_or_else(|_| PathBuf::from("models"));
+    Err(format!(
+        "模型目录不存在。请将模型文件放置在以下目录之一：\n\
+         1. {}（Tauri 资源目录）\n\
+         2. {}（源码目录）",
+        expected.display(),
+        cargo_dir.display(),
+    ))
+}
+
 /// 初始化 Whisper 引擎
 ///
 /// 前端选择模型后调用此命令，加载对应的模型文件
@@ -139,16 +182,18 @@ pub async fn init_whisper_engine(
     language: Option<String>,
 ) -> Result<String, String> {
     let model: WhisperModel = model_name.into();
+    eprintln!(
+        "[init_whisper_engine] 请求模型: {:?}, 文件名: {}",
+        model,
+        model.filename(),
+    );
 
-    // 模型目录：相对于应用资源目录
-    let model_dir = app
-        .path()
-        .resource_dir()
-        .map_err(|e| format!("获取资源目录失败：{}", e))?
-        .join("models");
+    // 解析模型目录（优先资源目录，降级到源码目录）
+    let model_dir = resolve_model_dir(&app)?;
+    eprintln!("[init_whisper_engine] 最终模型目录: {}", model_dir.display());
 
     // 初始化引擎
-    let engine = WhisperEngine::new(model, model_dir, language)
+    let engine = WhisperEngine::new(model, model_dir, language.clone())
         .map_err(|e| {
             let msg = format!("初始化 Whisper 引擎失败：{}", e);
             app.emit("asr:error", ErrorPayload { message: msg.clone() })
@@ -161,7 +206,12 @@ pub async fn init_whisper_engine(
         .map_err(|e| format!("获取状态锁失败：{}", e))?;
     *engine_state = Some(engine);
 
-    let result_msg = format!("Whisper {} 模型已初始化（语言：{}）", model.filename(), model.default_language());
+    let lang_display = language.as_deref().unwrap_or("auto");
+    let result_msg = format!(
+        "Whisper {} 模型已初始化（语言：{}）",
+        model.filename(),
+        lang_display,
+    );
     app.emit("asr:engine-initialized", ErrorPayload { message: result_msg.clone() })
         .ok();
 
