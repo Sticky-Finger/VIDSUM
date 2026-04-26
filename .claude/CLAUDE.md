@@ -1,4 +1,4 @@
-`chat-logs/` 和 `docs/tutorial/` 是教程素材，不是项目源码，日常开发时请忽略这些目录。
+`chat-logs/`、`chat-logs-sanitized/` 和 `docs/tutorial/` 是教程素材，不是项目源码，日常开发时请忽略这些目录。
 
 # VidSum 项目上下文 (MVP 阶段)
 
