@@ -107,7 +107,7 @@
 
 ### 3.4 使用 superpowers:excuting-plan 写代码实现上述plan文档内容里的 Task 4
 
-> 这次开启会话前，使用了新的模型：默认deepseek-v4-flash，sonnet为GLM 5.1，opus为deepseek-v4-pro
+> 这次开启会话前，使用了新的模型：默认deepseek-v4-flash，sonnet为GLM 5.1，opus为deepseek-v4-pro 【之前的会话用的全是qwen3.5-plus】
 
 对话过程记录: [2026-04-25-0103-caveat-the-messages-below-were-generated-by-the-u.txt](../../chat-logs/2026-04-25-0103-caveat-the-messages-below-were-generated-by-the-u.txt)
 
@@ -137,3 +137,16 @@
 - 遇到要输入图片时，切换为多模态模型去理解：
   - 运行测试软件GUI时，出现报错，于是给软件报错界面截图，使用`/model qwen3.5-plus`切换成这个多模态模型，把截图发给它然后问：`[Image #1]这上面有什么？在报什么错误？ `。
   - 接下来再`/model default`Set model to Default (deepseek-v4-flash)
+
+### 合并plan分支feature/asr-audio-transcription到版本分支1.0-mvp/task-start-entry
+
+> 此次任务使用的模型：开始时使用的 qwen3.5-plus，结果执行第一个指令，就选错了superpowers技能；于是后面就切换并全程时使用 deepseek-v4-flash
+
+对话过程记录: [2026-04-26-1804-caveat-the-messages-below-were-generated-by-the-u.txt](../../chat-logs/2026-04-26-1804-caveat-the-messages-below-were-generated-by-the-u.txt)
+
+**要点内容**：
+
+- **新会话cc意识不到superpowers工作流已改**，还在基于git worktree行动
+  - 解决办法：
+    - 当前会话中直接提示cc用的superpowers工作流已改：`你已经把我当前的feature分支合并到那个1.0-mvp分支了吗？我这边其实改了工作流，没有使用worktree去跑，是直接在当前主代码库开一个分支去实现superpowers下面的plan, 具体你可以参考这里的个人记录 @docs/tutorial/Tutorial.md 的52行这个段落 `
+    - 固定为项目记忆，使得下次新的会话默认使用改了的superpowers流程——让cc给项目级CLAUDE.md添加更改流程的说明内容，提示词为：`好的，你现在先帮我看一下上面那个对superpowers不使用worktree而换成branch实现的那个流程，应该怎样写到我的claude.md或者其他的全局记忆文件里面。我不想每次开一个新会话，然后用superpowers时都会让你们以为要去合并worktree或者是新建worktree之类的操作。对了，我的全局文件里面好像也没说要安装superpowers，这个要怎么标注？ `
