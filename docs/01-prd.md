@@ -21,9 +21,10 @@ VidSum 是一款将本地音视频文件智能转写并总结为带时间戳 Mar
     - [x] 选择本地音视频文件（支持 mp4, mkv, mov, mp3, wav, m4a 等主流格式）。
     - [x] 直接选择本地字幕文件（.srt / .vtt）作为起点。
 - **音频转文字 (ASR)**：
-    - [ ] 本地 Whisper 引擎，支持 Tiny、Base 两种规格模型切换。
-    - [ ] 云端 ASR 预留 OpenAI 兼容接口配置（API URL + Key + Model）。
-    - [ ] 转写过程显示实时进度条。
+    - [x] 本地 Whisper 引擎（Tiny/Base/Small/Medium/Large 五种模型，支持 zh/en/ja/auto 语言选择，支持 MP3/MP4/WAV 输入自动重采样到 16kHz）。
+    - [x] 云端 ASR 预留 OpenAI 兼容接口（可配置 API URL + Key + Model）。
+    - [x] 转写过程实时进度条和当前转写文本显示。
+    - [x] 输出 SRT 字幕文件和带时间戳的转写文本。
 - **字幕确认与预览**：
     - [ ] 转写完成后展示字幕预览区域（时间轴 + 文本）。
     - [ ] 用户需手动点击“确认并进入总结”，才将当前字幕作为总结输入源。
