@@ -14,21 +14,25 @@
 
 ---
 
-### Task 1: 创建导出工具函数
+### Task 1: 创建导出工具函数 ✅
 
 **Files**:
 - Create: `src/lib/subtitle-export.ts`
 
 **内容**: 导出 `SubtitleEntry` 接口、`generateSrt()`、`generateVtt()`、`downloadFile()` 四个导出项。
 
+- [x] 创建 `src/lib/subtitle-export.ts`，包含 `SubtitleEntry` 接口、`generateSrt()`、`generateVtt()`、`downloadFile()`
+
 ---
 
-### Task 2: 创建 SubtitlePreview 组件
+### Task 2: 创建 SubtitlePreview 组件 ✅
 
 **Files**:
 - Create: `src/components/SubtitlePreview.tsx`
 
 **内容**: 左右分栏布局——左侧时间轴列表（点击选中高亮），右侧段落详情（点击文本进入 textarea 编辑模式 + 保存/取消）。顶部工具栏（导出 SRT/VTT + 复制全文），底部"确认字幕并进入总结"按钮（暂 alert 占位）。
+
+- [x] 创建 `src/components/SubtitlePreview.tsx`，包含左右分栏、编辑功能、导出工具集成、确认按钮
 
 ---
 
