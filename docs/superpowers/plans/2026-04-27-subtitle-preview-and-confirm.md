@@ -71,10 +71,15 @@
 
 ---
 
-## 已知问题 / Bug 追踪
+## 已知问题 / 修复记录
 
-### Bug 1: 左侧时间轴点击后右侧文字对不上
+### Bug 1: 左侧时间轴点击后右侧文字对不上 ✅ 已修复
 
 - **描述**: 在 SubtitlePreview 中，点击左侧时间轴列表中的段落，右侧显示的详情段落与左侧选中的段落不匹配
-- **原因**: 待排查
-- **状态**: ⚠️ 未修复
+- **原因**: 有两个叠加问题：
+  1. 选中条目用 `editableEntries[selectedIndex]` 数组下标查找，但 `selectedIndex` 存的是 `entry.index`（从 1 开始），与数组下标（从 0 开始）不一致，导致查错条目
+  2. `handleSelect` 的 `useCallback` 只依赖 `[editingIndex]`，但内部调用 `handleSaveEdit()`（依赖 `[editingIndex, editText]`），编辑时 `editText` 变化导致 `handleSaveEdit` 重建但 `handleSelect` 不重建，产生 **stale closure**
+- **修复**:
+  1. 改用 `editableEntries.find((e) => e.index === selectedIndex)` 按 `entry.index` 精确查找
+  2. `handleSelect` 内联保存逻辑，依赖改为 `[editingIndex, editText]`，避免过期闭包
+- **状态**: ✅ 已修复

@@ -38,21 +38,29 @@ export function SubtitlePreview({
   onBack,
 }: SubtitlePreviewProps) {
   const [editableEntries, setEditableEntries] = useState<SubtitleEntry[]>(entries);
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const [selectedIndex, setSelectedIndex] = useState<number>(entries[0]?.index ?? 0);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editText, setEditText] = useState<string>('');
 
   // 当前选中的条目
-  const selectedEntry = editableEntries[selectedIndex];
+  const selectedEntry = editableEntries.find((e) => e.index === selectedIndex);
 
   // 选择条目
   const handleSelect = useCallback((index: number) => {
     if (editingIndex !== null) {
-      // 如果正在编辑，先保存
-      handleSaveEdit();
+      // 如果正在编辑，先保存（直接内联避免 stale closure）
+      setEditableEntries((prev) =>
+        prev.map((entry) =>
+          entry.index === editingIndex
+            ? { ...entry, text: editText }
+            : entry
+        )
+      );
+      setEditingIndex(null);
+      setEditText('');
     }
     setSelectedIndex(index);
-  }, [editingIndex]);
+  }, [editingIndex, editText]);
 
   // 进入编辑模式
   const handleStartEdit = useCallback(() => {
