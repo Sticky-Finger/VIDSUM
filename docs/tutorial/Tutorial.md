@@ -150,3 +150,15 @@
   - 解决办法：
     - 当前会话中直接提示cc用的superpowers工作流已改：`你已经把我当前的feature分支合并到那个1.0-mvp分支了吗？我这边其实改了工作流，没有使用worktree去跑，是直接在当前主代码库开一个分支去实现superpowers下面的plan, 具体你可以参考这里的个人记录 @docs/tutorial/Tutorial.md 的52行这个段落 `
     - 固定为项目记忆，使得下次新的会话默认使用改了的superpowers流程——让cc给项目级CLAUDE.md添加更改流程的说明内容，提示词为：`好的，你现在先帮我看一下上面那个对superpowers不使用worktree而换成branch实现的那个流程，应该怎样写到我的claude.md或者其他的全局记忆文件里面。我不想每次开一个新会话，然后用superpowers时都会让你们以为要去合并worktree或者是新建worktree之类的操作。对了，我的全局文件里面好像也没说要安装superpowers，这个要怎么标注？ `
+
+## 4 实现TODO.md中第三个任务【字幕确认与预览】
+
+### 4.1 生成第三个任务的superpowers的任务的plan文档
+
+> 此次任务使用的模型：deepseek-v4-flash[1m]
+
+对话过程记录: [2026-04-27-1609-caveat-the-messages-below-were-generated-by-the-u.txt](../../chat-logs/2026-04-27-1609-caveat-the-messages-below-were-generated-by-the-u.txt)
+
+**要点内容**：
+
+- 对话开始让cc实现TODO.md里面的第三个任务时，触发了superpowers:brainstorm流程，实际当前项目做过整体详细规划（在README.md、prd.md和TODO.md中），superpowers:brainstorm的项目规划流程完全多余。只需要使用 superpowers:writing-plans 给具体TODO任务写plan文档，以及之后用 superpowers:executing-plans 去实现具体TODO任务的plan文档里的task。
