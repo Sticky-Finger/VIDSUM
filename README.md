@@ -36,6 +36,22 @@
         - 类型：feat/fix/docs/style/refactor/perf/test/chore
         - 示例：`feat(search): 添加多模态搜索功能`
 
+### 敏感信息检测
+
+#### 本地检测
+- 安装 [Gitleaks](https://github.com/gitleaks/gitleaks)：`brew install gitleaks`（macOS）
+- 全盘扫描：`gitleaks detect --source . -v`
+- 配合 pre-commit 自动拦截含敏感信息的提交：
+   ```bash
+   pip install pre-commit
+   # 在项目根目录创建 .pre-commit-config.yaml（示例见仓库）
+   pre-commit install
+   ```
+   此后每次 git commit 会自动扫描暂存区，发现敏感信息则提交失败
+
+#### 仓库层面
+- 通过 GitHub Actions 自动扫描 push 和 PR（配置文件：.github/workflows/gitleaks.yml）
+
 ## 运行与构建
 
 ### 前置要求
