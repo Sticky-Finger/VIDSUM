@@ -36,12 +36,16 @@
 
 ---
 
-### Task 3: 改造 AsrProgress
+### Task 3: 改造 AsrProgress ✅
 
 **Files**:
 - Modify: `src/components/AsrProgress.tsx`
 
 **内容**: 转写完成的结果区域新增"进入字幕预览"按钮，点击后隐藏原结果区，渲染 SubtitlePreview。转写完成时自动将 result.segments 映射为 SubtitleEntry[] 传给预览组件。导出 SRT/VTT 按钮也放在转写完成结果区。
+
+- [x] 新增 onPreview prop、showPreview 状态、subtitleEntries memo
+- [x] 转写完成结果区增加导出 SRT/VTT 和"进入字幕预览"按钮
+- [x] 预览模式渲染 SubtitlePreview，确认回调 onPreview，返回回到结果区
 
 ---
 

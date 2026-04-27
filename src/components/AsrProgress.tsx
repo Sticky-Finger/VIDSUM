@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { listen, type UnlistenFn } from '@tauri-apps/api/event';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { type SubtitleEntry, generateSrt, generateVtt, downloadFile } from '@/lib/subtitle-export';
+import { SubtitlePreview } from './SubtitlePreview';
 
 /// 进度事件 payload
 interface ProgressPayload {
@@ -47,6 +49,7 @@ export interface AsrProgressProps {
   audioName: string;
   onError: (message: string) => void;
   onRestart: () => void;
+  onPreview: (entries: SubtitleEntry[]) => void;
 }
 
 export function AsrProgress({
@@ -54,6 +57,7 @@ export function AsrProgress({
   audioName,
   onError,
   onRestart,
+  onPreview,
 }: AsrProgressProps) {
   const [progress, setProgress] = useState<number>(0); // 0~100
   const [segments, setSegments] = useState<ProgressPayload[]>([]);
@@ -62,8 +66,21 @@ export function AsrProgress({
   const [result, setResult] = useState<TranscriptionResultPayload | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [elapsed, setElapsed] = useState(0);
+  const [showPreview, setShowPreview] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // 转写结果映射为 SubtitleEntry[]
+  const subtitleEntries = useMemo<SubtitleEntry[]>(() => {
+    if (!result) return [];
+    return result.segments.map((seg, i) => ({
+      index: i + 1,
+      text: seg.text,
+      startTime: seg.start_time,
+      endTime: seg.end_time,
+      timestamp: seg.timestamp,
+    }));
+  }, [result]);
 
   // 累计文本
   const accumulatedText = segments
@@ -161,6 +178,11 @@ export function AsrProgress({
   // 格式化用时
   const elapsedText = formatTime(elapsed * 1000);
 
+  // 进入字幕预览
+  const handleToPreview = useCallback(() => {
+    setShowPreview(true);
+  }, []);
+
   // 复制到剪贴板
   const handleCopy = async () => {
     if (result) {
@@ -177,6 +199,39 @@ export function AsrProgress({
       }
     }
   };
+
+  // 导出 SRT
+  const handleExportSrt = useCallback(() => {
+    if (subtitleEntries.length === 0) return;
+    const baseName = audioName.replace(/\.[^/.]+$/, '');
+    const content = generateSrt(subtitleEntries);
+    downloadFile(content, `${baseName}.srt`, 'text/srt');
+  }, [subtitleEntries, audioName]);
+
+  // 导出 VTT
+  const handleExportVtt = useCallback(() => {
+    if (subtitleEntries.length === 0) return;
+    const baseName = audioName.replace(/\.[^/.]+$/, '');
+    const content = generateVtt(subtitleEntries);
+    downloadFile(content, `${baseName}.vtt`, 'text/vtt');
+  }, [subtitleEntries, audioName]);
+
+  // 确认字幕
+  const handleConfirmPreview = useCallback((entries: SubtitleEntry[]) => {
+    onPreview(entries);
+  }, [onPreview]);
+
+  // 如果进入预览模式，渲染 SubtitlePreview
+  if (showPreview && subtitleEntries.length > 0) {
+    return (
+      <SubtitlePreview
+        entries={subtitleEntries}
+        audioName={audioName}
+        onConfirm={handleConfirmPreview}
+        onBack={() => setShowPreview(false)}
+      />
+    );
+  }
 
   return (
     <Card className="w-[500px]">
@@ -260,11 +315,35 @@ export function AsrProgress({
               <Button
                 variant="outline"
                 className="flex-1 h-10 text-sm"
-                onClick={onRestart}
+                onClick={handleExportSrt}
               >
-                🔄 重新开始
+                导出 SRT
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1 h-10 text-sm"
+                onClick={handleExportVtt}
+              >
+                导出 VTT
               </Button>
             </div>
+
+            {/* 进入字幕预览 */}
+            <Button
+              variant="secondary"
+              className="w-full h-10 text-sm"
+              onClick={handleToPreview}
+            >
+              进入字幕预览
+            </Button>
+
+            <Button
+              variant="ghost"
+              className="w-full h-10 text-sm"
+              onClick={onRestart}
+            >
+              🔄 重新开始
+            </Button>
           </div>
         )}
 
