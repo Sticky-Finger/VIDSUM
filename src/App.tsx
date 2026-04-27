@@ -4,9 +4,10 @@ import { FileSelector, SelectedFile } from './components/FileSelector';
 import { ModelSelect } from './components/ModelSelect';
 import { AsrProgress } from './components/AsrProgress';
 import { Button } from '@/components/ui/button';
+import { type SubtitleEntry } from './lib/subtitle-export';
 
 /// 应用状态模式
-type AppMode = 'select' | 'file' | 'confirm' | 'model_select' | 'transcribing';
+type AppMode = 'select' | 'file' | 'confirm' | 'model_select' | 'transcribing' | 'preview';
 
 function App() {
   const [currentMode, setCurrentMode] = useState<AppMode>('select');
@@ -14,6 +15,7 @@ function App() {
   const [selectedFile, setSelectedFile] = useState<SelectedFile | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [errorMode, setErrorMode] = useState<AppMode | null>(null);
+  const [confirmedSubtitle, setConfirmedSubtitle] = useState<SubtitleEntry[] | null>(null);
 
   /// 选择输入模式
   const handleSelectInputMode = (mode: 'media' | 'subtitle') => {
@@ -77,11 +79,19 @@ function App() {
     handleError(message, 'transcribing');
   };
 
+  /// 预览确认字幕，进入总结
+  const handlePreviewConfirm = (entries: SubtitleEntry[]) => {
+    setConfirmedSubtitle(entries);
+    setCurrentMode('preview');
+    alert('字幕已确认！后续将进入大模型总结功能。');
+  };
+
   /// 重新开始
   const handleRestart = () => {
     setCurrentMode('select');
     setSelectedInputMode(null);
     setSelectedFile(null);
+    setConfirmedSubtitle(null);
     setErrorMessage(null);
     setErrorMode(null);
   };
@@ -190,7 +200,27 @@ function App() {
           audioName={selectedFile.name}
           onError={handleTranscriptionError}
           onRestart={handleRestart}
+          onPreview={handlePreviewConfirm}
         />
+      )}
+
+      {/* 预览确认 - 字幕确认后占位 */}
+      {currentMode === 'preview' && confirmedSubtitle && (
+        <div className="w-[400px]">
+          <div className="mb-4 p-4 border rounded-lg">
+            <h3 className="text-lg font-semibold mb-2">字幕已确认</h3>
+            <p className="text-sm text-gray-500">
+              共 {confirmedSubtitle.length} 段字幕已确认，即将进入大模型总结。
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            className="w-full h-10 text-sm"
+            onClick={handleRestart}
+          >
+            ← 返回主页
+          </Button>
+        </div>
       )}
     </div>
   );

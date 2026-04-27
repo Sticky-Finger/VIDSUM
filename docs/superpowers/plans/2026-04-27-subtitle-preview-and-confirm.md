@@ -49,12 +49,16 @@
 
 ---
 
-### Task 4: 改造 App.tsx
+### Task 4: 改造 App.tsx ✅
 
 **Files**:
 - Modify: `src/App.tsx`
 
 **内容**: 新增 `AppMode` 的 `preview` 模式。新增 `confirmedSubtitle` 状态，通过 `onPreviewConfirm` 回调传入 AsrProgress，为后续大模型总结预留数据。导入 `SubtitleEntry` 类型。
+
+- [x] 导入 SubtitleEntry，AppMode 新增 `preview`
+- [x] 新增 confirmedSubtitle 状态、handlePreviewConfirm 回调、preview 模式渲染
+- [x] AsrProgress 传入 onPreview prop
 
 ---
 
@@ -64,3 +68,13 @@
 2. 点击文本进入编辑模式，可修改文字，保存后左侧列表同步更新
 3. 导出 SRT / VTT 格式正确的字幕文件
 4. "确认字幕并进入总结"按钮弹出占位提示
+
+---
+
+## 已知问题 / Bug 追踪
+
+### Bug 1: 左侧时间轴点击后右侧文字对不上
+
+- **描述**: 在 SubtitlePreview 中，点击左侧时间轴列表中的段落，右侧显示的详情段落与左侧选中的段落不匹配
+- **原因**: 待排查
+- **状态**: ⚠️ 未修复
