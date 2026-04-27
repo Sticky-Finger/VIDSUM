@@ -32,3 +32,4 @@ src-tauri/samples/*.srt
 chat-logs/
 # 但不忽略 .gitkeep 文件（取反规则）
 !chat-logs/.gitkeep
+chat-logs/**/.git

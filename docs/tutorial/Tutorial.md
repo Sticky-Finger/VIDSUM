@@ -162,3 +162,25 @@
 **要点内容**：
 
 - 对话开始让cc实现TODO.md里面的第三个任务时，触发了superpowers:brainstorm流程，实际当前项目做过整体详细规划（在README.md、prd.md和TODO.md中），superpowers:brainstorm的项目规划流程完全多余。只需要使用 superpowers:writing-plans 给具体TODO任务写plan文档，以及之后用 superpowers:executing-plans 去实现具体TODO任务的plan文档里的task。
+
+### 3.2 使用 superpowers:excuting-plan 写代码实现上述plan文档内容里的Task 1~4
+
+> 此次任务使用的模型：deepseek-v4-flash[1m]、阿里云的deepseek-v4-flash
+
+对话过程记录: [2026-04-27-1828-superpowersexecuting-plan-docssuperpowers.txt](../../chat-logs/2026-04-27-1828-superpowersexecuting-plan-docssuperpowers.txt)
+
+**要点内容**：
+
+- 再次会话后期，deepseek官方的v4-flash模型出现报错：
+  ```bash
+  > /model 
+    ⎿  Set model to deepseek-v4-flash
+
+  > 继续上面中断的任务 
+    ⎿ API Error: 400 {"error":{"message":"{\"error\":{\"message\":\"The 
+      `content[].thinking` in the thinking mode must be passed back to the 
+      API.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid
+      _request_error\"}}. Received Model Group=deepseek-v4-flash\nAvailable Model
+      Group Fallbacks=None","type":"None","param":"None","code":"400"}}
+  ```
+  弄不好，于是 `/model ali-deepseek-v4-flash` 切到阿里的deepseek-v4-flash大模型服务，能够正常用下去了
