@@ -89,7 +89,11 @@ function App() {
   };
 
   /// LLM 配置完成
-  const handleLlmConfigured = (config: { base_url: string; api_key: string; model: string }) => {
+  const handleLlmConfigured = (
+    _config: { base_url: string; api_key: string; model: string },
+    _systemPrompt: string,
+    _userPromptTemplate: string,
+  ) => {
     setCurrentMode('preview');
     alert('API 配置已保存！大模型总结功能将在下一个任务中实现。');
   };
