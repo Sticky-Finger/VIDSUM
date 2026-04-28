@@ -21,6 +21,8 @@ fn main() {
             commands::llm::load_llm_config,
             commands::llm::save_llm_config,
             commands::llm::test_llm_connection,
+            commands::llm::get_default_prompt,
+            commands::llm::generate_summary,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

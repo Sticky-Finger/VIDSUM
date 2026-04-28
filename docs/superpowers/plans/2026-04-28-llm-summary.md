@@ -40,26 +40,26 @@
 
 ---
 
-### Task 2: 扩展 Tauri 命令支持 Prompt 持久化和生成总结
+### Task 2: 扩展 Tauri 命令支持 Prompt 持久化和生成总结 ✅
 
 **修改文件**:
 - `src-tauri/src/commands/llm.rs`:
-  - `LlmConfigPayload` 新增可选字段：`system_prompt: Option<String>`, `user_prompt_template: Option<String>`
-  - 修改 `load_llm_config`：返回时包含已保存的 prompt（如果没有则为 null）
-  - 修改 `save_llm_config`：保存时包含 prompt 字段
-  - 新增 `SubtitleSegmentPayload` 结构体（接收前端字幕数据）
-  - 新增 `get_default_prompt` Tauri 命令：
+  - `LlmConfigPayload` 新增可选字段：`system_prompt: Option<String>`, `user_prompt_template: Option<String>` ✅（随 Task 1 一起完成）
+  - 修改 `load_llm_config`：返回时包含已保存的 prompt（如果没有则为 null）✅（随 Task 1 一起完成）
+  - 修改 `save_llm_config`：保存时包含 prompt 字段 ✅（随 Task 1 一起完成）
+  - 新增 `SubtitleSegmentPayload` 结构体（接收前端字幕数据）✅
+  - 新增 `get_default_prompt` Tauri 命令 ✅：
     - 参数：无
     - 返回：`Result<serde_json::Value, String>`（包含 `system_prompt` 和 `user_prompt_template`）
     - 逻辑：调用 `prompt::get_default_system_prompt()` 和 `prompt::get_default_user_prompt_template()`
-  - 新增 `generate_summary` Tauri 命令：
+  - 新增 `generate_summary` Tauri 命令 ✅：
     - 参数：`config: LlmConfigPayload`, `segments: Vec<SubtitleSegmentPayload>`, `system_prompt: String`, `user_prompt_template: String`
     - 逻辑：将 segments 格式化为带时间戳的文本，用 user_prompt_template 替换 `{subtitles}` 占位符，构建 ChatMessage 列表（system + user），调用 `LlmClient.chat_completions()`
     - 返回：`Result<String, String>`（总结 Markdown 文本）
 
-- `src-tauri/src/main.rs` - 注册 `get_default_prompt` 和 `generate_summary` 命令到 `invoke_handler`
+- `src-tauri/src/main.rs` - 注册 `get_default_prompt` 和 `generate_summary` 命令到 `invoke_handler` ✅
 
-**测试**: `cargo check` 通过
+**测试**: `cargo check` 通过 ✅
 
 ---
 

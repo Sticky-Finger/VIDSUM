@@ -104,3 +104,87 @@ pub async fn test_llm_connection(
 
     Ok(response.content)
 }
+
+/// 字幕片段数据（接收前端字幕数据）
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SubtitleSegmentPayload {
+    /// 开始时间（秒）
+    pub start: f64,
+    /// 结束时间（秒）
+    pub end: f64,
+    /// 文本内容
+    pub text: String,
+}
+
+/// 格式化字幕片段为带时间戳的文本
+fn format_subtitle_segments(segments: &[SubtitleSegmentPayload]) -> String {
+    segments
+        .iter()
+        .map(|seg| {
+            let start_ts = format_timestamp(seg.start);
+            format!("[{}] {}", start_ts, seg.text)
+        })
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
+/// 将秒数格式化为 [HH:MM:SS]
+fn format_timestamp(seconds: f64) -> String {
+    let total = seconds as u64;
+    let hours = total / 3600;
+    let minutes = (total % 3600) / 60;
+    let secs = total % 60;
+    format!("{:02}:{:02}:{:02}", hours, minutes, secs)
+}
+
+/// 获取默认 Prompt
+///
+/// 返回系统提示和用户提示模板的默认值
+#[tauri::command]
+pub async fn get_default_prompt() -> Result<serde_json::Value, String> {
+    Ok(serde_json::json!({
+        "system_prompt": vidsum_lib::llm::prompt::get_default_system_prompt(),
+        "user_prompt_template": vidsum_lib::llm::prompt::get_default_user_prompt_template()
+    }))
+}
+
+/// 生成总结
+///
+/// 使用配置的 LLM 和自定义/默认 Prompt 对字幕进行总结
+#[tauri::command]
+pub async fn generate_summary(
+    config: LlmConfigPayload,
+    segments: Vec<SubtitleSegmentPayload>,
+    system_prompt: String,
+    user_prompt_template: String,
+) -> Result<String, String> {
+    let llm_config = LlmConfig::from(config);
+    llm_config.validate()?;
+
+    // 格式化字幕文本
+    let subtitles_text = format_subtitle_segments(&segments);
+
+    // 替换占位符
+    let user_content = user_prompt_template.replace("{subtitles}", &subtitles_text);
+
+    // 构建消息列表
+    let messages = vec![
+        ChatMessage {
+            role: "system".to_string(),
+            content: system_prompt,
+        },
+        ChatMessage {
+            role: "user".to_string(),
+            content: user_content,
+        },
+    ];
+
+    let client = LlmClient::new(llm_config);
+
+    let response = client
+        .chat_completions(messages)
+        .await
+        .map_err(|e| format!("生成总结失败：{}", e))?;
+
+    Ok(response.content)
+}
