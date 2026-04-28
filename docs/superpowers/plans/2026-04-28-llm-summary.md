@@ -63,36 +63,45 @@
 
 ---
 
-### Task 3: 修改 LlmConfig 组件增加 Prompt 编辑区域
+### Task 3: 修改 LlmConfig 组件增加 Prompt 编辑区域 ✅
 
 **修改文件**:
 - `src/components/LlmConfig.tsx`:
-  - 新增状态：`systemPrompt: string`, `userPromptTemplate: string`, `showPromptEditor: boolean`
-  - 组件加载时：
+  - 新增状态：`systemPrompt: string`, `userPromptTemplate: string`, `showPromptEditor: boolean` ✅
+  - 组件加载时：✅
     1. 调用 `invoke('load_llm_config')` 加载已保存的配置（含 prompt）
     2. 调用 `invoke('get_default_prompt')` 获取默认 Prompt
     3. 优先使用已保存的 prompt，如果没有则使用默认值
-  - 新增"编辑 Prompt"折叠区域（默认折叠）：
+  - 新增"编辑 Prompt"折叠区域（默认折叠）：✅
     - 系统提示 Textarea（可编辑）
     - 用户提示模板 Textarea（可编辑，显示 `{subtitles}` 占位符说明）
     - "恢复默认"按钮：重置为 `get_default_prompt` 返回的默认值
-  - 修改"保存配置并继续"按钮：将 `systemPrompt` 和 `userPromptTemplate` 一起传递给 `save_llm_config` 和 `onConfigured` 回调
-  - 修改 `onConfigured` 签名：`(config: LlmConfigData, systemPrompt: string, userPromptTemplate: string) => void`
+  - 修改"保存配置并继续"按钮：将 `systemPrompt` 和 `userPromptTemplate` 一起传递给 `save_llm_config` 和 `onConfigured` 回调 ✅
+  - 修改 `onConfigured` 签名：`(config: LlmConfigData, systemPrompt: string, userPromptTemplate: string) => void` ✅
+- `src/components/ui/textarea.tsx` — 新增 shadcn/ui 风格的 Textarea 组件 ✅
+- `src/App.tsx` — `handleLlmConfigured` 适配新回调签名 ✅
+- 卡片宽度从 `w-[480px]` 调整为 `w-[640px]` ✅
 
-**测试**: `pnpm build` 通过
+**测试**: `pnpm build` 通过 ✅
 
 ---
 
-### Task 4: 创建前端 SummaryResult 组件
+### Task 4: 创建前端 SummaryResult 组件 ✅
+
+**安装依赖**:
+- `@tailwindcss/typography` ^0.5.19 — Tailwind prose 排版插件 ✅
+- `marked` ^18.0.2 — 轻量 Markdown → HTML 解析器 ✅
+
+**修改文件**:
+- `tailwind.config.js` — 添加 `@tailwindcss/typography` 插件 ✅
 
 **创建文件**:
-- `src/components/SummaryResult.tsx`:
+- `src/components/SummaryResult.tsx`: ✅
   - Props: `summary: string`, `onBack: () => void`, `onExport: () => void`
-  - 展示区域：使用 `prose` 类渲染 Markdown（支持标题层级、列表、代码块）
-  - 按钮：返回（回到 llm_config）、导出 .md 文件
-  - Markdown 渲染：使用 `dangerouslySetInnerHTML` 或轻量 Markdown 解析库
+  - 展示区域：使用 `prose` 类渲染 Markdown（通过 `marked` 解析 + `dangerouslySetInnerHTML`）
+  - 按钮：导出 .md 文件、返回配置
 
-**测试**: `pnpm build` 通过
+**测试**: `pnpm build` 通过 ✅
 
 ---
 
