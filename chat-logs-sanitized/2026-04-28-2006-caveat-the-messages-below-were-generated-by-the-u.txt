@@ -1,0 +1,102 @@
+
+▗ ▗   ▖ ▖  Claude Code v2.0.36
+           mimo-v2.5-pro · API Usage Billing
+  ▘▘ ▝▝    /Users/a1/Codes/VidSum
+
+> /clear 
+  ⎿  (no content)
+
+> @docs/01-prd.md @docs/TODO.md 这两个文件的功能“用户配置 OpenAI 兼容 
+API（Base URL、API Key、Model ID）”完成了，其plan文档 
+@docs/superpowers/plans/2026-04-28-llm-api-config.md 
+进度已更新，你更新下前面来两个文档的任务进度。还有就是先确认下完成的功能是
+哪些，告诉我和我确认之后，再进行下一步的文档更改。 
+  ⎿  Read docs/01-prd.md (68 lines)
+  ⎿  Read docs/TODO.md (46 lines)
+  ⎿  Read docs/superpowers/plans/2026-04-28-llm-api-config.md (108 lines)
+
+⏺ 根据计划文档 2026-04-28-llm-api-config.md，所有 6 个 Task 都已标记
+  ✅。确认一下完成的功能：
+
+  已完成功能
+
+  "用户配置 OpenAI 兼容 API" 包含以下内容：
+
+  1. Rust 后端：
+    - LlmConfig 结构体（base_url/api_key/model）+ JSON
+  持久化（读取/保存/校验）
+    - LlmClient 封装 reqwest 调用 OpenAI 兼容 /chat/completions 端点
+    - 三个 Tauri
+  命令：load_llm_config、save_llm_config、test_llm_connection
+  2. 前端 UI：
+    - shadcn/ui 基础组件（Input、Label）
+    - LlmConfig 配置表单组件（Base URL、API Key、Model ID 输入框 +
+  保存/测试/返回按钮）
+  3. 流程集成：
+    - 字幕确认后进入 LLM API 配置页面
+    - 配置保存到 {app_data_dir}/llm_config.json
+    - 重新打开应用自动加载已保存配置
+    - "测试连接"按钮验证 API 可用性
+
+  ---
+  请确认以上功能清单是否准确，确认后我将更新 01-prd.md 和 TODO.md
+  中的任务状态。
+
+> 具体是PRD和todo里面的哪个点？ 
+
+⏺ 具体需要更新的点：
+
+  PRD (01-prd.md) 第 32 行：
+  - [ ] 用户配置 OpenAI 兼容 API（Base URL、API Key、Model ID）。
+  → 改为 - [x]
+
+  TODO (TODO.md) 第 27 行：
+  - [ ] 用户配置 OpenAI 兼容 API（Base URL、API Key、Model ID）
+  → 改为 - [x]
+
+  ---
+  其他两个子项（"生成总结"、"输出 Markdown"）尚未完成，保持 - [ ] 不变。
+
+  确认无误后我来更新？
+
+> 好的，就这样改 
+
+⏺ Update(docs/01-prd.md)
+  ⎿  Updated docs/01-prd.md with 1 addition and 1 removal                 
+       29        - [x] 转写完成后展示字幕预览区域（左侧时间轴列表 + 
+            右侧段落详情，支持编辑文字、导出 SRT/VTT）。
+       30        - [x] 用户手动点击"确认并进入总结"，将当前字幕作为总结
+            输入源（当前为 alert 占位，待接入大模型总结）。
+       31    - **大模型总结**：
+       32 -      - [ ] 用户配置 OpenAI 兼容 API（Base URL、API Key、Model 
+     ID）。
+       32 +      - [x] 用户配置 OpenAI 兼容 API（Base URL、API Key、Model 
+     ID）。
+       33        - [ ] 点击“生成总结”后，系统使用内置固定 Prompt 
+            提交字幕全文。
+       34        - [ ] 输出包含 `[HH:MM:SS]` 时间戳锚点的分层 Markdown。
+       35    - **结果展示与导出**：
+
+⏺ Update(docs/TODO.md)
+  ⎿  Updated docs/TODO.md with 1 addition and 1 removal                   
+       24    ### P0 功能（必须有）
+       25    
+       26    - [ ] **大模型总结**
+       27 -      - [ ] 用户配置 OpenAI 兼容 API（Base URL、API Key、Model 
+     ID）
+       27 +      - [x] 用户配置 OpenAI 兼容 API（Base URL、API Key、Model 
+     ID）
+       28        - [ ] 点击"生成总结"后，系统使用内置固定 Prompt 
+            提交字幕全文
+       29        - [ ] 输出包含 `[HH:MM:SS]` 时间戳锚点的分层 Markdown
+       30    
+
+⏺ 已更新完成：
+
+  - docs/01-prd.md:32 - [x] 用户配置 OpenAI 兼容 API
+  - docs/TODO.md:27 - [x] 用户配置 OpenAI 兼容 API
+
+  还有什么需要继续的吗？
+
+
+

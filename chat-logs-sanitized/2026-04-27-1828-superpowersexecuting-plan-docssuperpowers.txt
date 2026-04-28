@@ -1,0 +1,971 @@
+
+▗ ▗   ▖ ▖  Claude Code v2.0.36
+           ali-deepseek-v4-flash · API Usage Billing
+  ▘▘ ▝▝    /Users/a1/Codes/VidSum
+
+> 使用superpowers:executing-plan 实现 
+@docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md 的TASK 1
+ 
+  ⎿ Read docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md (59 
+    lines)
+
+⏺ 我来执行计划中的 Task 1。首先让我了解项目现有的代码结构。
+
+> The "executing-plans" skill is loading 
+
+⏺ I'm using the executing-plans skill to implement this plan.
+
+  先创建 TodoWrite 来追踪任务进度。
+
+⏺ 先快速浏览一下项目已有的代码结构，确认目录和接口风格。
+
+⏺ Bash(ls /Users/a1/Codes/VidSum/src/lib/)
+  ⎿  utils.ts
+
+⏺ Read(src/components/AsrProgress.tsx)
+  ⎿  Read 295 lines
+
+⏺ Read(src/App.tsx)
+  ⎿  Read 200 lines
+
+⏺ 现在我已经了解了现有代码结构。开始执行 Task 1: 创建导出工具函数。
+
+  根据现有代码中的 SegmentPayload 接口（有 timestamp: string
+  字段），我需要在 SubtitleEntry 接口中也保持一致的时间表示方式。
+
+⏺ Write(src/lib/subtitle-export.ts)
+  ⎿  Wrote 62 lines to src/lib/subtitle-export.ts             
+     /// 字幕条目接口
+     export interface SubtitleEntry {
+       index: number;
+       text: string;
+       startTime: number;   // 毫秒
+       endTime: number;     // 毫秒
+       timestamp: string;   // 格式化后的时间戳，如 "00:01:23"
+     }
+     /// 将毫秒转换为 SRT 时间格式 (HH:MM:SS,mmm)
+     … +52 lines (ctrl+o to expand)
+
+⏺ 文件创建完成。检查一下语法是否正确：
+
+⏺ Bash(npx tsc --noEmit src/lib/subtitle-export.ts 2>&1 || true) timeout: 30s
+  ⎿  (No content)
+
+⏺ 编译通过。Task 1 完成，更新 todo 列表。
+
+⏺ Task 1 已完成。 创建了 src/lib/subtitle-export.ts，包含以下导出项：
+
+  | 导出项            | 说明
+    |
+  |----------------|----------------------------------------------------|
+  | SubtitleEntry  | 字幕条目接口（index, text, startTime, endTime,
+  timestamp） |
+  | generateSrt()  | 生成 SRT 格式字幕字符串
+        |
+  | generateVtt()  | 生成 VTT 格式字幕字符串
+        |
+  | downloadFile() | Blob 方式触发文件下载
+       |
+
+  Task 2 是否要继续？我可以开始创建 SubtitlePreview 组件。
+
+> 好的，接着做task 2 
+
+⏺ 开始执行 Task
+  2。先看一下项目现有的组件风格和UI组件库，确保新组件风格一致。
+
+⏺ Bash(ls /Users/a1/Codes/VidSum/src/components/)
+  ⎿  AsrProgress.tsx              
+     FileSelector.tsx
+     InputModeSelect.tsx
+     … +2 lines (ctrl+o to expand)
+
+⏺ Search(pattern: "src/components/ui/*.tsx")
+  ⎿  Found 2 files (ctrl+o to expand)
+
+⏺ Read(src/components/InputModeSelect.tsx)
+  ⎿  Read 42 lines
+
+⏺ Read(src/components/FileSelector.tsx)
+  ⎿  Read 112 lines
+
+⏺ Read(src/components/ModelSelect.tsx)
+  ⎿  Read 178 lines
+
+⏺ 好的，已经了解了项目组件风格。现在开始创建 SubtitlePreview 组件。
+
+⏺ Write(src/components/SubtitlePreview.tsx)
+  ⎿  Wrote 255 lines to src/components/SubtitlePreview.tsx
+     import { useState, useCallback } from 'react';
+     import { Button } from '@/components/ui/button';
+     import {
+       Card,
+       CardContent,
+       CardHeader,
+       CardTitle,
+       CardDescription,
+     } from '@/components/ui/card';
+     import {
+     … +245 lines (ctrl+o to expand)
+
+⏺ 检查一下编译和已有的 utils 工具：
+
+⏺ Bash(npx tsc --noEmit src/components/SubtitlePreview.tsx 2>&1 ||  timeout: 
+      true)                                                         30s
+  ⎿ src/components/SubtitlePreview.tsx(2,24): error TS2307: Cannot find mo
+    dule '@/components/ui/button' or its corresponding type declarations.
+    src/components/SubtitlePreview.tsx(9,8): error TS2307: Cannot find mod
+    … +63 lines (ctrl+o to expand)
+
+
+
+⏺ Read(src/lib/utils.ts)
+  ⎿  Read 7 lines
+
+⏺ 纯 tsc --noEmit 找不到 @/ 路径别名和 JSX 配置，这是正常的 —
+  其他组件也是这样写的。用 Vite 项目的 tsconfig 来检查更准确：
+
+⏺ Bash(npx vue-tsc --noEmit src/components/SubtitlePreview.tsx 2>&1  timeout: 
+      || npx tsc --noEmit --project tsconfig.json 2>&1 | head -40 || 30s
+       true)
+  ⎿  Interrupted · What should Claude do instead?
+
+> 上面那个命令不对吧，为什么会有vue-tsc 呀？这是一个完全没有使用VUE的项目。
+ 
+
+⏺ 你说得对，这是 Tauri + React 项目，不应该出现
+  vue-tsc。让我用正确的命令检查编译：
+
+⏺ Read(tsconfig.json)
+  ⎿  Read 32 lines
+
+⏺ Bash(npx tsc --noEmit --project tsconfig.json 2>&1 | head -40) timeout: 1m 0s
+  ⎿  (No content)
+
+⏺ 编译通过（无输出表示无错误）。Task 2 已完成。
+
+⏺ Task 2 已完成。 创建了 src/components/SubtitlePreview.tsx，包括：
+
+  - 组件 Props：entries（字幕条目）、audioName、onConfirm（确认回调）、onBa
+  ck（返回回调）
+  - 左右分栏布局：
+    - 左侧（240px）：时间轴列表，每条显示短时间戳 + 文本预览，点击选中高亮
+    - 右侧（flex-1）：选中段详情，显示时间范围，点击文本进入 textarea
+  编辑模式，支持保存/取消
+  - 顶部工具栏：导出 SRT、导出 VTT、复制全文
+  - 底部按钮："确认字幕并进入总结" + "返回"
+  - 编辑保存后左侧列表同步更新
+
+  需要继续做 Task 3（改造 AsrProgress）和 Task 4（改造 App.tsx）吗？
+
+> 先在 @docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md  
+更新task 1和2的进度,然后把当前成功提交git 
+  ⎿ Read docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md (59 
+    lines)
+
+⏺ Read(docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md)
+  ⎿  Read 59 lines
+
+⏺ Update(docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md)
+  ⎿  Updated                                                              
+     docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md with
+      3 additions and 1 removal
+       14    
+       15    ---
+       16    
+       17 -  ### Task 1: 创建导出工具函数
+       17 +  ### Task 1: 创建导出工具函数 ✅
+       18    
+       19    **Files**:
+       20    - Create: `src/lib/subtitle-export.ts`
+       21    
+       22    **内容**: 导出 `SubtitleEntry` 
+            接口、`generateSrt()`、`generateVtt()`、`downloadFile()` 
+            四个导出项。
+       23    
+       24 +  - [x] 创建 `src/lib/subtitle-export.ts`，包含 
+          + `SubtitleEntry` 
+          + 接口、`generateSrt()`、`generateVtt()`、`downloadFile()`
+       25 +  
+       26    ---
+       27    
+       28    ### Task 2: 创建 SubtitlePreview 组件
+
+⏺ Update(docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md)
+  ⎿  Updated                                                              
+     docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md with
+      3 additions and 1 removal
+       25    
+       26    ---
+       27    
+       28 -  ### Task 2: 创建 SubtitlePreview 组件
+       28 +  ### Task 2: 创建 SubtitlePreview 组件 ✅
+       29    
+       30    **Files**:
+       31    - Create: `src/components/SubtitlePreview.tsx`
+       32    
+       33    **内容**: 左右分栏布局——左侧时间轴列表（点击选中高亮），右
+            侧段落详情（点击文本进入 textarea 编辑模式 + 
+            保存/取消）。顶部工具栏（导出 SRT/VTT + 
+            复制全文），底部"确认字幕并进入总结"按钮（暂 alert 占位）。
+       34    
+       35 +  - [x] 创建 `src/components/SubtitlePreview.tsx`，包含左右分
+          + 栏、编辑功能、导出工具集成、确认按钮
+       36 +  
+       37    ---
+       38    
+       39    ### Task 3: 改造 AsrProgress
+
+⏺ 计划文件已更新。现在提交 git：
+
+⏺ Bash(git -C /Users/a1/Codes/VidSum status)
+  ⎿  位于分支 feature/subtitle-preview                     
+     要提交的变更：
+       （使用 "git restore --staged <文件>..." 以取消暂存）
+     … +11 lines (ctrl+o to expand)
+
+⏺ Bash(git -C /Users/a1/Codes/VidSum diff --stat)
+  ⎿  docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md | 8
+     ++++++--
+     1 file changed, 6 insertions(+), 2 deletions(-)
+
+
+⏺ Bash(git -C /Users/a1/Codes/VidSum log --oneline -5)
+  ⎿  c7dbebd docs(project): 更新CLAUDE.md中AI协作开发流程文档
+     ca3d089 docs(project): 添加AI协作开发流程文档
+     5677331 docs: README.md中添加 敏感信息检测 的内容
+     … +2 lines (ctrl+o to expand)
+
+⏺ Bash(git -C /Users/a1/Codes/VidSum add src/lib/subtitle-export.ts
+      src/components/SubtitlePreview.tsx
+      docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.m…)
+  ⎿  (No content)
+
+⏺ Bash(git -C /Users/a1/Codes/VidSum commit -m "feat(subtitle):
+      创建字幕导出工具和 SubtitlePreview 组件…)
+  ⎿  Interrupted · What should Claude do instead?
+
+> 在commit信息下面把那个task1和task2给写上。 
+
+⏺ Bash(git -C /Users/a1/Codes/VidSum commit -m "feat(subtitle):
+      创建字幕导出工具和 SubtitlePreview 组件…)
+  ⎿ [feature/subtitle-preview fa00d09] feat(subtitle): 创建字幕导出工具和 
+    SubtitleP
+    review 组件
+     Committer: 1 <a1@1deMacBook-Pro.local>
+    … +15 lines (ctrl+o to expand)
+
+⏺ 提交成功。Task 1 和 Task 2 已提交到 feature/subtitle-preview 分支，commit
+   fa00d09。
+
+> 好的，继续完成task3 
+
+⏺ 好的，执行 Task 3：改造 AsrProgress 组件，添加"进入字幕预览"功能。
+
+⏺ Read(src/components/AsrProgress.tsx)
+  ⎿  Read 295 lines
+
+⏺ 现在改造 AsrProgress 组件。需要：
+  1. 新增 SubtitleEntry 导入，导入 SubtitlePreview 组件
+  2. 新增 showPreview 状态控制预览显示
+  3. 转写完成结果区增加"进入字幕预览"按钮、导出 SRT/VTT 按钮
+  4. 将 result.segments 映射为 SubtitleEntry[] 传给预览组件
+  5. 新增 onPreview 回调 prop
+
+⏺ Update(src/components/AsrProgress.tsx)
+  ⎿  Updated src/components/AsrProgress.tsx with 3 additions and 1 removal
+       1 -  import { useState, useEffect, useRef, useCallback 
+         -  } from 'react';
+       1 +  import { useState, useEffect, useRef, useCallback, useMemo 
+         +  } from 'react';
+       2    import { invoke } from '@tauri-apps/api/core';
+       3    import { listen, type UnlistenFn } from 
+           '@tauri-apps/api/event';
+       4    import { Button } from '@/components/ui/button';
+     ...
+        9      CardHeader,
+       10      CardTitle,
+       11    } from '@/components/ui/card';
+       12 +  import { type SubtitleEntry, generateSrt, generateVtt, 
+          + downloadFile } from '@/lib/subtitle-export';
+       13 +  import { SubtitlePreview } from './SubtitlePreview';
+       14    
+       15    /// 进度事件 payload
+       16    interface ProgressPayload {
+
+⏺ 现在更新 AsrProgressProps 接口和组件函数，加上 onPreview 回调：
+
+⏺ Update(src/components/AsrProgress.tsx)
+  ⎿  Updated src/components/AsrProgress.tsx with 1 addition  
+       49      audioName: string;
+       50      onError: (message: string) => void;
+       51      onRestart: () => void;
+       52 +    onPreview: (entries: SubtitleEntry[]) => void;
+       53    }
+       54    
+       55    export function AsrProgress({
+
+⏺ Now update the function signature to include onPreview:
+
+⏺ Update(src/components/AsrProgress.tsx)
+  ⎿  Updated src/components/AsrProgress.tsx with 1 addition            
+       57      audioName,
+       58      onError,
+       59      onRestart,
+       60 +    onPreview,
+       61    }: AsrProgressProps) {
+       62      const [progress, setProgress] = useState<number>(0); // 
+            0~100
+       63      const [segments, setSegments] = 
+            useState<ProgressPayload[]>([]);
+
+⏺ Now add the showPreview state and subtitleEntries memo after the existing
+   state declarations:
+
+⏺ Update(src/components/AsrProgress.tsx)
+  ⎿  Updated src/components/AsrProgress.tsx with 13 additions           
+       66      const [result, setResult] = 
+            useState<TranscriptionResultPayload | null>(null);
+       67      const [errorMessage, setErrorMessage] = useState<string |
+             null>(null);
+       68      const [elapsed, setElapsed] = useState(0);
+       69 +    const [showPreview, setShowPreview] = useState(false);
+       70      const timerRef = useRef<ReturnType<typeof setInterval> | 
+            null>(null);
+       71      const scrollRef = useRef<HTMLDivElement>(null);
+       72    
+       73 +    // 转写结果映射为 SubtitleEntry[]
+       74 +    const subtitleEntries = useMemo<SubtitleEntry[]>(() => {
+       75 +      if (!result) return [];
+       76 +      return result.segments.map((seg, i) => ({
+       77 +        index: i + 1,
+       78 +        text: seg.text,
+       79 +        startTime: seg.start_time,
+       80 +        endTime: seg.end_time,
+       81 +        timestamp: seg.timestamp,
+       82 +      }));
+       83 +    }, [result]);
+       84 +  
+       85      // 累计文本
+       86      const accumulatedText = segments
+       87        .map((seg) => `[${formatTime(seg.start_time)}] 
+            ${seg.text}`)
+
+⏺ Now add the handlePreview and handleExportSrt/handleExportVtt handlers
+  after the handleCopy function:
+
+⏺ Update(src/components/AsrProgress.tsx)
+  ⎿  Updated src/components/AsrProgress.tsx with 26 additions          
+       178      // 格式化用时
+       179      const elapsedText = formatTime(elapsed * 1000);
+       180    
+       181 +    // 进入字幕预览
+       182 +    const handleToPreview = useCallback(() => {
+       183 +      setShowPreview(true);
+       184 +    }, []);
+       185 +  
+       186      // 复制到剪贴板
+       187      const handleCopy = async () => {
+       188        if (result) {
+     ...
+       195        }
+       196      };
+       197    
+       198 +    // 导出 SRT
+       199 +    const handleExportSrt = useCallback(() => {
+       200 +      if (subtitleEntries.length === 0) return;
+       201 +      const baseName = audioName.replace(/\.[^/.]+$/, '');
+       202 +      const content = generateSrt(subtitleEntries);
+       203 +      downloadFile(content, `${baseName}.srt`, 'text/srt');
+       204 +    }, [subtitleEntries, audioName]);
+       205 +  
+       206 +    // 导出 VTT
+       207 +    const handleExportVtt = useCallback(() => {
+       208 +      if (subtitleEntries.length === 0) return;
+       209 +      const baseName = audioName.replace(/\.[^/.]+$/, '');
+       210 +      const content = generateVtt(subtitleEntries);
+       211 +      downloadFile(content, `${baseName}.vtt`, 'text/vtt');
+       212 +    }, [subtitleEntries, audioName]);
+       213 +  
+       214 +    // 确认字幕
+       215 +    const handleConfirmPreview = useCallback((entries: 
+           + SubtitleEntry[]) => {
+       216 +      onPreview(entries);
+       217 +    }, [onPreview]);
+       218 +  
+       219      return (
+       220        <Card className="w-[500px]">
+       221          <CardHeader>
+
+⏺ Now update the return statement to add the SubtitlePreview rendering and
+  the preview/export buttons in the completed section:
+
+⏺ Update(src/components/AsrProgress.tsx)
+  ⎿  Updated src/components/AsrProgress.tsx with 38 additions and 2       
+     removals
+       221        onPreview(entries);
+       222      }, [onPreview]);
+       223    
+       224 +    // 如果进入预览模式，渲染 SubtitlePreview
+       225 +    if (showPreview && subtitleEntries.length > 0) {
+       226 +      return (
+       227 +        <SubtitlePreview
+       228 +          entries={subtitleEntries}
+       229 +          audioName={audioName}
+       230 +          onConfirm={handleConfirmPreview}
+       231 +          onBack={() => setShowPreview(false)}
+       232 +        />
+       233 +      );
+       234 +    }
+       235 +  
+       236      return (
+       237        <Card className="w-[500px]">
+       238          <CardHeader>
+     ...
+       303                  <Button
+       304                    variant="outline"
+       305                    className="flex-1 h-10 text-sm"
+       306 -                  onClick={onRestart}
+       306 +                  onClick={handleExportSrt}
+       307                  >
+       308 -                  🔄 重新开始
+       308 +                  导出 SRT
+       309                  </Button>
+       310 +                <Button
+       311 +                  variant="outline"
+       312 +                  className="flex-1 h-10 text-sm"
+       313 +                  onClick={handleExportVtt}
+       314 +                >
+       315 +                  导出 VTT
+       316 +                </Button>
+       317                </div>
+       318 +  
+       319 +              {/* 进入字幕预览 */}
+       320 +              <Button
+       321 +                variant="secondary"
+       322 +                className="w-full h-10 text-sm"
+       323 +                onClick={handleToPreview}
+       324 +              >
+       325 +                进入字幕预览
+       326 +              </Button>
+       327 +  
+       328 +              <Button
+       329 +                variant="ghost"
+       330 +                className="w-full h-10 text-sm"
+       331 +                onClick={onRestart}
+       332 +              >
+       333 +                🔄 重新开始
+       334 +              </Button>
+       335              </div>
+       336            )}
+       337    
+
+⏺ 编译验证：
+
+⏺ Bash(npx tsc --noEmit --project tsconfig.json 2>&1 | head -30) timeout: 1m 0s
+  ⎿ src/App.tsx(188,10): error TS2741: Property 'onPreview' is missing in 
+    type '{ audioPath: string; audioName: string; onError: (message: strin
+    g) => void; onRestart: () => void; }' but required in type 'AsrProgres
+    sProps'.
+
+
+
+⏺ AsrProgress 组件自身编译通过，但 App.tsx 因为没传 onPreview 报错了 —
+  这个是 Task 4 要处理的事情，与 Task 3 无关。Task 3 已完成。
+
+⏺ Task 3 已完成。 AsrProgress 组件的改造包括：
+
+  - 新增导入：useMemo、SubtitleEntry、generateSrt、generateVtt、downloadFil
+  e、SubtitlePreview
+  - 新增 Prop：onPreview: (entries: SubtitleEntry[]) => void
+  - 新增状态：showPreview 控制预览显示
+  - 新增 subtitleEntries memo：自动将 result.segments 映射为
+  SubtitleEntry[]
+  - 转写完成结果区新增：
+    - 导出 SRT / 导出 VTT 按钮
+    - "进入字幕预览"按钮（渲染 SubtitlePreview 组件）
+    - 预览组件内"确认字幕"通过 onPreview 回传给父组件
+    - 预览组件内"返回"隐藏预览回到结果区
+
+  当前 App.tsx 缺少 onPreview prop — 需要 Task 4 解决。要接着做 Task 4 吗？
+
+> 好的，那和上面一样在plan文档更新一下task3的进度，然后git提交 
+
+⏺ Read(docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md)
+  ⎿  Read 15 lines
+
+⏺ Update(docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md)
+  ⎿  Updated                                                              
+     docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md with
+      5 additions and 1 removal
+       36    
+       37    ---
+       38    
+       39 -  ### Task 3: 改造 AsrProgress
+       39 +  ### Task 3: 改造 AsrProgress ✅
+       40    
+       41    **Files**:
+       42    - Modify: `src/components/AsrProgress.tsx`
+       43    
+       44    **内容**: 转写完成的结果区域新增"进入字幕预览"按钮，点击后
+            隐藏原结果区，渲染 SubtitlePreview。转写完成时自动将 
+            result.segments 映射为 SubtitleEntry[] 传给预览组件。导出 
+            SRT/VTT 按钮也放在转写完成结果区。
+       45    
+       46 +  - [x] 新增 onPreview prop、showPreview 
+          + 状态、subtitleEntries memo
+       47 +  - [x] 转写完成结果区增加导出 SRT/VTT 和"进入字幕预览"按钮
+       48 +  - [x] 预览模式渲染 SubtitlePreview，确认回调 
+          + onPreview，返回回到结果区
+       49 +  
+       50    ---
+       51    
+       52    ### Task 4: 改造 App.tsx
+
+⏺ Bash(git -C /Users/a1/Codes/VidSum status && git -C /Users/a1/Codes/VidSum
+      diff --stat)
+  ⎿  位于分支 feature/subtitle-preview              
+     尚未暂存以备提交的变更：
+       （使用 "git add <文件>..." 更新要提交的内容）
+     … +10 lines (ctrl+o to expand)
+
+⏺ Bash(git -C /Users/a1/Codes/VidSum add
+      docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md
+      src/components/AsrProgress.tsx && git -C /Users/a1/Codes/Vid…)
+  ⎿  [feature/subtitle-preview bedc06b] feat(subtitle): 改造 AsrProgress 
+     组件，添
+     加字幕预览入口
+      Committer: 1 <a1@1deMacBook-Pro.local>
+     … +13 lines (ctrl+o to expand)
+
+⏺ 提交成功。Task 3 已提交到 feature/subtitle-preview，commit
+  bedc06b。要继续做 Task 4 吗？
+
+> 好 
+
+⏺ 开始执行 Task 4：改造 App.tsx。
+
+  根据计划，需要：
+  1. 新增 AppMode 的 preview 模式
+  2. 新增 confirmedSubtitle 状态
+  3. 通过 onPreview 回调传入 AsrProgress
+  4. 导入 SubtitleEntry 类型
+
+⏺ Read(src/App.tsx)
+  ⎿  Read 200 lines
+
+⏺ 现在改造 App.tsx，需要：
+  1. 导入 SubtitleEntry
+  2. AppMode 新增 preview
+  3. 新增 confirmedSubtitle 状态
+  4. 新增 handlePreviewConfirm 回调
+  5. 新增 preview 模式渲染
+  6. 给 AsrProgress 传 onPreview
+
+⏺ Update(src/App.tsx)
+  ⎿  Updated src/App.tsx with 2 additions and 1 removal                 
+        4    import { ModelSelect } from './components/ModelSelect';
+        5    import { AsrProgress } from './components/AsrProgress';
+        6    import { Button } from '@/components/ui/button';
+        7 +  import { type SubtitleEntry } from './lib/subtitle-export';
+        8    
+        9    /// 应用状态模式
+       10 -  type AppMode = 'select' | 'file' | 'confirm' | 
+          -  'model_select' | 'transcribing';
+       10 +  type AppMode = 'select' | 'file' | 'confirm' | 
+          +  'model_select' | 'transcribing' | 'preview';
+       11    
+       12    function App() {
+       13      const [currentMode, setCurrentMode] = 
+            useState<AppMode>('select');
+
+⏺ Now add confirmedSubtitle state and handlePreviewConfirm:
+
+⏺ Update(src/App.tsx)
+  ⎿  Updated src/App.tsx with 1 addition                                
+       15      const [selectedFile, setSelectedFile] = 
+            useState<SelectedFile | null>(null);
+       16      const [errorMessage, setErrorMessage] = useState<string |
+             null>(null);
+       17      const [errorMode, setErrorMode] = useState<AppMode | 
+            null>(null);
+       18 +    const [confirmedSubtitle, setConfirmedSubtitle] = 
+          + useState<SubtitleEntry[] | null>(null);
+       19    
+       20      /// 选择输入模式
+       21      const handleSelectInputMode = (mode: 'media' | 
+            'subtitle') => {
+
+⏺ 现在在 handleRestart 之前添加 handlePreviewConfirm：
+
+⏺ Update(src/App.tsx)
+  ⎿  Updated src/App.tsx with 8 additions                              
+       79        handleError(message, 'transcribing');
+       80      };
+       81    
+       82 +    /// 预览确认字幕，进入总结
+       83 +    const handlePreviewConfirm = (entries: SubtitleEntry[]) 
+          + => {
+       84 +      setConfirmedSubtitle(entries);
+       85 +      setCurrentMode('preview');
+       86 +      alert('字幕已确认！后续将进入大模型总结功能。');
+       87 +    };
+       88 +  
+       89      /// 重新开始
+       90      const handleRestart = () => {
+       91        setCurrentMode('select');
+       92        setSelectedInputMode(null);
+       93        setSelectedFile(null);
+       94 +      setConfirmedSubtitle(null);
+       95        setErrorMessage(null);
+       96        setErrorMode(null);
+       97      };
+
+⏺ Now add onPreview to AsrProgress and the preview mode rendering:
+
+⏺ Update(src/App.tsx)
+  ⎿  Updated src/App.tsx with 20 additions                              
+       200              audioName={selectedFile.name}
+       201              onError={handleTranscriptionError}
+       202              onRestart={handleRestart}
+       203 +            onPreview={handlePreviewConfirm}
+       204            />
+       205          )}
+       206 +  
+       207 +        {/* 预览确认 - 字幕确认后占位 */}
+       208 +        {currentMode === 'preview' && confirmedSubtitle && (
+       209 +          <div className="w-[400px]">
+       210 +            <div className="mb-4 p-4 border rounded-lg">
+       211 +              <h3 className="text-lg font-semibold 
+           + mb-2">字幕已确认</h3>
+       212 +              <p className="text-sm text-gray-500">
+       213 +                共 {confirmedSubtitle.length} 
+           + 段字幕已确认，即将进入大模型总结。
+       214 +              </p>
+       215 +            </div>
+       216 +            <Button
+       217 +              variant="outline"
+       218 +              className="w-full h-10 text-sm"
+       219 +              onClick={handleRestart}
+       220 +            >
+       221 +              ← 返回主页
+       222 +            </Button>
+       223 +          </div>
+       224 +        )}
+       225        </div>
+       226      );
+       227    }
+
+⏺ 编译验证：
+
+⏺ Bash(npx tsc --noEmit --project tsconfig.json 2>&1) timeout: 1m 0s
+  ⎿  (No content)
+
+⏺ 编译通过（无输出表示无错误）。Task 4 完成。
+
+⏺ Task 4 已完成。 App.tsx 的改造：
+  - 导入 SubtitleEntry 类型
+  - AppMode 新增 'preview' 模式
+  - 新增 confirmedSubtitle 状态
+  - 新增 handlePreviewConfirm 回调 — 保存字幕并弹出占位提示
+  - AsrProgress 传入 onPreview prop
+  - 新增 preview 模式渲染 — 显示字幕已确认的占位页面
+  - handleRestart 重置时清空 confirmedSubtitle
+
+  全部 4 个 Task 已完成，所有文件编译通过。更新计划文档并提交？
+
+> 我发现一个问题啊，我们都完全没有运行测试过这个软件。我现在要手动测试，你
+告诉我怎样操作。 
+
+⏺ 好问题。要手动测试这个功能，流程如下：
+
+  前提条件
+
+  确保所有 Rust 编译产物是最新的：
+
+  pnpm tauri dev
+
+  这会启动 Tauri 开发模式，同时编译 Rust 后端 + 启动前端 Vite dev server。
+
+  测试流程
+
+  | 步骤  | 操作                           | 预期结果                  |
+  |-----|------------------------------|-----------------------|
+  | 1   | 启动后选择 "音视频文件转写"              | 进入文件选择页
+         |
+  | 2   | 选择一个本地音视频文件（mp3/mp4 等）       | 进入文件确认页
+           |
+  | 3   | 点击 "开始转写"                    | 进入模型选择页
+   |
+  | 4   | 选择一个模型（建议选 Tiny，最快）          |
+  模型下载+初始化，自动进入转写       |
+  | 5   | 等待转写完成                       |
+  看到"转写完成"卡片，显示段落数、完整文本 |
+  | 6   | 点击 "导出 SRT" / "导出 VTT"       | 浏览器下载对应字幕文件
+       |
+  | 7   | 点击 "进入字幕预览"                  | 切换到左右分栏预览组件
+         |
+  | 8   | 左侧列表点击不同段落                   | 右侧显示对应段落详情
+          |
+  | 9   | 右侧文本区域点击                     | 进入 textarea 编辑模式
+    |
+  | 10  | 修改文字后点击 "保存"                 | 左侧列表文字同步更新
+         |
+  | 11  | 点击 "导出 SRT" / "导出 VTT" (预览内) | 下载编辑后的字幕文件
+         |
+  | 12  | 点击 "复制全文"                    | 全部文本复制到剪贴板
+      |
+  | 13  | 点击 "确认字幕并进入总结"               | alert
+  弹出提示，返回主页       |
+  | 14  | 预览内点击 "返回"                   | 回到转写完成结果区
+      |
+
+  需要注意的点
+
+  1. 需要本地有 Whisper 模型文件 — 首次选模型时会自动下载（Tiny
+  ~77MB），需要网络
+  2. 转写耗时 — Tiny 模型最快但中文准确度一般，测试用短音频文件即可
+  3. Mac 权限 — Tauri 需要麦克风/文件访问权限，首次运行可能会弹窗
+  4. 控制台看日志 — 如果出问题，Tauri 终端输出的日志最有帮助
+
+  要不我先更新计划文档和提交 Task 4，你再测？
+
+> 
+你先提交一下，但是它是有bug的，然以编辑里面点击左侧时间轴，右侧文字对不上。
+ 
+
+⏺ 先提交，再排查 bug。
+
+⏺ Bash(git -C /Users/a1/Codes/VidSum status && git -C /Users/a1/Codes/VidSum
+      diff --stat)
+  ⎿  位于分支 feature/subtitle-preview              
+     尚未暂存以备提交的变更：
+       （使用 "git add <文件>..." 更新要提交的内容）
+     … +6 lines (ctrl+o to expand)
+
+⏺ Bash(git -C /Users/a1/Codes/VidSum add src/App.tsx && git -C
+      /Users/a1/Codes/VidSum commit -m "feat(subtitle): 改造
+      App.tsx，添加预览模式和字幕确认功能…)
+  ⎿  Interrupted · What should Claude do instead?
+
+> 等一下，你要先更新这个plan文档，要标注我刚刚说的bug，然后再一起提交 
+
+⏺ Read(docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md)
+  ⎿  Read 18 lines
+
+⏺ Update(docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md)
+  ⎿  Updated                                                              
+     docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md with
+      24 additions and 1 removal
+       49    
+       50    ---
+       51    
+       52 -  ### Task 4: 改造 App.tsx
+       52 +  ### Task 4: 改造 App.tsx ✅
+       53    
+       54    **Files**:
+       55    - Modify: `src/App.tsx`
+       56    
+       57    **内容**: 新增 `AppMode` 的 `preview` 模式。新增 
+            `confirmedSubtitle` 状态，通过 `onPreviewConfirm` 回调传入 
+            AsrProgress，为后续大模型总结预留数据。导入 `SubtitleEntry` 
+            类型。
+       58    
+       59 +  - [x] 导入 SubtitleEntry，AppMode 新增 `preview`
+       60 +  - [x] 新增 confirmedSubtitle 状态、handlePreviewConfirm 
+          + 回调、preview 模式渲染
+       61 +  - [x] AsrProgress 传入 onPreview prop
+       62 +  
+       63    ---
+       64    
+       65    ## 验收标准
+     ...
+       64    2. 点击文本进入编辑模式，可修改文字，保存后左侧列表同步更新
+       65    3. 导出 SRT / VTT 格式正确的字幕文件
+       66    4. "确认字幕并进入总结"按钮弹出占位提示
+       67 +  
+       68 +  ---
+       69 +  
+       70 +  ## 已知问题 / Bug 追踪
+       71 +  
+       72 +  ### Bug 1: 左侧时间轴点击后右侧文字对不上
+       73 +  
+       74 +  - **描述**: 在 SubtitlePreview 中，点击左侧时间轴列表中的段
+          + 落，右侧显示的详情段落与左侧选中的段落不匹配
+       75 +  - **原因**: 待排查
+       76 +  - **状态**: ⚠️ 未修复
+       77 +  
+       78 +  ---
+       79 +  
+       80 +  ## 验收标准
+       81 +  
+       82 +  1. 
+          + 转写完成后可以看到字幕时间轴列表（左侧）和选中段详情（右侧）
+       83 +  2. 点击文本进入编辑模式，可修改文字，保存后左侧列表同步更新
+       84 +  3. 导出 SRT / VTT 格式正确的字幕文件
+       85 +  4. "确认字幕并进入总结"按钮弹出占位提示
+  ⎿ API Error: 400 {"error":{"message":"{\"error\":{\"message\":\"The 
+    `content[].thinking` in the thinking mode must be passed back to the 
+    API.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid
+    _request_error\"}}. Received Model Group=deepseek-v4-flash\nAvailable Model
+     Group Fallbacks=None","type":"None","param":"None","code":"400"}}
+
+> /model 
+  ⎿  Set model to deepseek-v4-flash
+
+> 继续上面中断的任务 
+  ⎿ API Error: 400 {"error":{"message":"{\"error\":{\"message\":\"The 
+    `content[].thinking` in the thinking mode must be passed back to the 
+    API.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid
+    _request_error\"}}. Received Model Group=deepseek-v4-flash\nAvailable Model
+     Group Fallbacks=None","type":"None","param":"None","code":"400"}}
+
+> 先更新这个 
+@docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md  
+文档，要标注我刚刚说的bug，然后再一起提交.提交之前要让我手动确认 
+  ⎿ Read docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md (90 
+    lines)
+  ⎿ API Error: 400 {"error":{"message":"{\"error\":{\"message\":\"The 
+    `content[].thinking` in the thinking mode must be passed back to the 
+    API.\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid
+    _request_error\"}}. Received Model Group=deepseek-v4-flash\nAvailable Model
+     Group Fallbacks=None","type":"None","param":"None","code":"400"}}
+
+> /model ali-deepseek-v4-flash 
+  ⎿  Set model to ali-deepseek-v4-flash
+
+> 先更新这个 
+@docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md  
+文档，要标注我刚刚说的bug，然后再一起提交.提交之前要让我手动确认 
+  ⎿ Read docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md (90 
+    lines)
+
+⏺ Read(docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md)
+  ⎿  Read 90 lines
+
+⏺ 已经标注了 Bug 信息，但文件末尾有多余的重复内容，清理一下：
+
+⏺ Update(docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md)
+  ⎿  Updated                                                              
+     docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md with
+      9 removals
+       78    - **描述**: 在 SubtitlePreview 中，点击左侧时间轴列表中的段
+            落，右侧显示的详情段落与左侧选中的段落不匹配
+       79    - **原因**: 待排查
+       80    - **状态**: ⚠️ 未修复
+       81 -  
+       82 -  ---
+       83 -  
+       84 -  ## 验收标准
+       85 -  
+       86 -  1. 
+          - 转写完成后可以看到字幕时间轴列表（左侧）和选中段详情（右侧）
+       87 -  2. 点击文本进入编辑模式，可修改文字，保存后左侧列表同步更新
+       88 -  3. 导出 SRT / VTT 格式正确的字幕文件
+       89 -  4. "确认字幕并进入总结"按钮弹出占位提示
+
+⏺ 文档已更新。现在暂存所有改动，让你手动确认后再提交：
+
+⏺ Bash(git -C /Users/a1/Codes/VidSum add
+      docs/superpowers/plans/2026-04-27-subtitle-preview-and-confirm.md
+      src/App.tsx && git -C /Users/a1/Codes/VidSum diff --cached)
+  ⎿ diff --git a/docs/superpowers/plans/2026-04-27-subtitle-preview-and-co
+    nfirm.md b/docs/superpowers/plans/2026-04-27-subtitle-preview-and-conf
+    irm.md
+    … +118 lines (ctrl+o to expand)
+
+
+
+⏺ 以下是本次待提交的变更摘要：
+
+  src/App.tsx — Task 4 实现：
+  - 导入 SubtitleEntry 类型，AppMode 新增 'preview'
+  - 新增 confirmedSubtitle 状态、handlePreviewConfirm 回调（alert 占位）
+  - AsrProgress 传入 onPreview prop
+  - preview 模式渲染字幕确认占位页
+  - handleRestart 重置时清空 confirmedSubtitle
+
+  docs/.../2026-04-27-subtitle-preview-and-confirm.md — 更新进度 + 记录 Bug
+   1
+
+  确认提交吗？
+
+> 你给我取一个合适的commit信息。交之前让我确认一下 
+
+⏺ 好的，这是拟提交的 commit 信息：
+
+  feat(subtitle): 改造 App.tsx 并记录预览组件 Bug
+
+  - Task 4: 改造 App.tsx，新增 preview 模式、confirmedSubtitle 状态
+  - 新增 handlePreviewConfirm 回调，为后续大模型总结预留占位
+  - AsrProgress 传入 onPreview prop
+  - 更新实现计划进度标记
+  - 记录 Bug：左侧时间轴点击后右侧文字对不上
+
+  🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+  Co-Authored-By: Claude <noreply@anthropic.com>
+
+  确认没问题我执行提交？
+
+> 好 
+
+⏺ Bash(git -C /Users/a1/Codes/VidSum commit -m "feat(subtitle): 改造 App.tsx
+      并记录预览组件 Bug…)
+  ⎿  [feature/subtitle-preview 9780dd5] feat(subtitle): 改造 App.tsx 
+     并记录预览组件
+     Bug
+      Committer: 1 <a1@1deMacBook-Pro.local>
+     … +13 lines (ctrl+o to expand)
+
+⏺ 提交成功，commit 9780dd5。现在来处理 Bug。
+
+⏺ Read(src/components/SubtitlePreview.tsx)
+  ⎿  Read 255 lines
+
+⏺ 找到 bug 了。在第 46 行：
+
+  const selectedEntry = editableEntries[selectedIndex];
+
+  selectedIndex 存的是 entry.index（从 1 开始计数的），但数组索引是从 0
+  开始的。所以点击第一条（index=1），取到的是第二条（数组索引 1）。
+
+  修起来很简单，把数组索引改成按 .index 查找：
+
+⏺ Update(src/components/SubtitlePreview.tsx)
+  ⎿  Updated src/components/SubtitlePreview.tsx with 1 addition and 1     
+     removal
+       43      const [editText, setEditText] = useState<string>('');
+       44    
+       45      // 当前选中的条目
+       46 -    const selectedEntry = editableEntries[selectedIndex];
+       46 +    const selectedEntry = editableEntries
+          +  .find((e) => e.index === selectedIndex);
+       47    
+       48      // 选择条目
+       49      const handleSelect = useCallback((index: number) => {
+
+⏺ 初始值 selectedIndex = 0 也不对 — 第一条的 index 是
+  1，所以初始没有选中项。改成默认选中第一条：
+
+⏺ Update(src/components/SubtitlePreview.tsx)
+  ⎿  Updated src/components/SubtitlePreview.tsx with 1 addition and 1     
+     removal
+       38      onBack,
+       39    }: SubtitlePreviewProps) {
+       40      const [editableEntries, setEditableEntries] = 
+            useState<SubtitleEntry[]>(entries);
+       41 -    const [selectedIndex, setSelectedIndex] = 
+          -  useState<number>(0);
+       41 +    const [selectedIndex, setSelectedIndex] = 
+          +  useState<number>(entries[0]?.index ?? 0);
+       42      const [editingIndex, setEditingIndex] = useState<number |
+             null>(null);
+       43      const [editText, setEditText] = useState<string>('');
+       44    
+
+⏺ Bash(npx tsc --noEmit --project tsconfig.json 2>&1) timeout: 1m 0s
+  ⎿  Interrupted · What should Claude do instead?
+
+
+

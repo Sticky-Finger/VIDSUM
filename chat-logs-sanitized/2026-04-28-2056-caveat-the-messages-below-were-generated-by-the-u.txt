@@ -1,0 +1,611 @@
+
+▗ ▗   ▖ ▖  Claude Code v2.0.36
+           mimo-v2.5-pro · API Usage Billing
+  ▘▘ ▝▝    /Users/a1/Codes/VidSum
+
+> /clear 
+  ⎿  (no content)
+
+> @docs/01-prd.md @docs/TODO.md 这两个文件的功能“用户配置 OpenAI 兼容 
+API（Base URL、API Key、Model ID）”完成了，其plan文档 
+@docs/superpowers/plans/2026-04-28-llm-api-config.md 
+进度已更新，你更新下前面来两个文档的任务进度。还有就是先确认下完成的功能是
+哪些，告诉我和我确认之后，再进行下一步的文档更改。 
+  ⎿  Read docs/01-prd.md (68 lines)
+  ⎿  Read docs/TODO.md (46 lines)
+  ⎿  Read docs/superpowers/plans/2026-04-28-llm-api-config.md (108 lines)
+
+⏺ 根据计划文档 2026-04-28-llm-api-config.md，所有 6 个 Task 都已标记
+  ✅。确认一下完成的功能：
+
+  已完成功能
+
+  "用户配置 OpenAI 兼容 API" 包含以下内容：
+
+  1. Rust 后端：
+    - LlmConfig 结构体（base_url/api_key/model）+ JSON
+  持久化（读取/保存/校验）
+    - LlmClient 封装 reqwest 调用 OpenAI 兼容 /chat/completions 端点
+    - 三个 Tauri
+  命令：load_llm_config、save_llm_config、test_llm_connection
+  2. 前端 UI：
+    - shadcn/ui 基础组件（Input、Label）
+    - LlmConfig 配置表单组件（Base URL、API Key、Model ID 输入框 +
+  保存/测试/返回按钮）
+  3. 流程集成：
+    - 字幕确认后进入 LLM API 配置页面
+    - 配置保存到 {app_data_dir}/llm_config.json
+    - 重新打开应用自动加载已保存配置
+    - "测试连接"按钮验证 API 可用性
+
+  ---
+  请确认以上功能清单是否准确，确认后我将更新 01-prd.md 和 TODO.md
+  中的任务状态。
+
+> 具体是PRD和todo里面的哪个点？ 
+
+⏺ 具体需要更新的点：
+
+  PRD (01-prd.md) 第 32 行：
+  - [ ] 用户配置 OpenAI 兼容 API（Base URL、API Key、Model ID）。
+  → 改为 - [x]
+
+  TODO (TODO.md) 第 27 行：
+  - [ ] 用户配置 OpenAI 兼容 API（Base URL、API Key、Model ID）
+  → 改为 - [x]
+
+  ---
+  其他两个子项（"生成总结"、"输出 Markdown"）尚未完成，保持 - [ ] 不变。
+
+  确认无误后我来更新？
+
+> 好的，就这样改 
+
+⏺ Update(docs/01-prd.md)
+  ⎿  Updated docs/01-prd.md with 1 addition and 1 removal                 
+       29        - [x] 转写完成后展示字幕预览区域（左侧时间轴列表 + 
+            右侧段落详情，支持编辑文字、导出 SRT/VTT）。
+       30        - [x] 用户手动点击"确认并进入总结"，将当前字幕作为总结
+            输入源（当前为 alert 占位，待接入大模型总结）。
+       31    - **大模型总结**：
+       32 -      - [ ] 用户配置 OpenAI 兼容 API（Base URL、API Key、Model 
+     ID）。
+       32 +      - [x] 用户配置 OpenAI 兼容 API（Base URL、API Key、Model 
+     ID）。
+       33        - [ ] 点击“生成总结”后，系统使用内置固定 Prompt 
+            提交字幕全文。
+       34        - [ ] 输出包含 `[HH:MM:SS]` 时间戳锚点的分层 Markdown。
+       35    - **结果展示与导出**：
+
+⏺ Update(docs/TODO.md)
+  ⎿  Updated docs/TODO.md with 1 addition and 1 removal                   
+       24    ### P0 功能（必须有）
+       25    
+       26    - [ ] **大模型总结**
+       27 -      - [ ] 用户配置 OpenAI 兼容 API（Base URL、API Key、Model 
+     ID）
+       27 +      - [x] 用户配置 OpenAI 兼容 API（Base URL、API Key、Model 
+     ID）
+       28        - [ ] 点击"生成总结"后，系统使用内置固定 Prompt 
+            提交字幕全文
+       29        - [ ] 输出包含 `[HH:MM:SS]` 时间戳锚点的分层 Markdown
+       30    
+
+⏺ 已更新完成：
+
+  - docs/01-prd.md:32 - [x] 用户配置 OpenAI 兼容 API
+  - docs/TODO.md:27 - [x] 用户配置 OpenAI 兼容 API
+
+  还有什么需要继续的吗？
+
+> /export 
+  ⎿  Conversation exported to: 
+     2026-04-28-2006-caveat-the-messages-below-were-generated-by-the-u.txt
+
+> @docs/TODO.md 里面的"# 
+进行中"的“大模型总结”这个需求全部做掉，注意他的第一个小点已经完成了 
+  ⎿  Read docs/TODO.md (47 lines)
+
+⏺ 好的，我来为"大模型总结"剩余功能制定实现计划。
+
+> The "writing-plans" skill is loading 
+
+⏺ 我正在使用 writing-plans 技能来创建实现计划。
+
+  首先，我需要了解现有代码结构，以便制定准确的计划。
+
+⏺ Explore(探索 LLM 和字幕相关代码)
+  ⎿  Done (21 tool uses · 43.9k tokens · 58.7s)                           
+
+⏺ Write(docs/superpowers/plans/2026-04-28-llm-summary.md)
+  ⎿  Wrote 92 lines to docs/superpowers/plans/2026-04-28-llm-summary.md   
+     # 大模型总结功能实现计划
+     > **For agentic workers:** REQUIRED SUB-SKILL: Use
+     superpowers:subagent-driven-development (recommended) or
+     superpowers:executing-plans to implement this plan task-by-task.
+     **目标**: 用户点击"生成总结"后，系统使用内置固定 Prompt
+     将字幕全文提交给 LLM，输出包含 `[HH:MM:SS]` 时间戳锚点的分层 Markdown
+     **架构**: Rust 后端新增 `generate_summary` Tauri 命令，调用
+     `LlmClient` 发送请求；前端新增 `SummaryResult` 组件展示 Markdown
+     结果，`App.tsx` 新增 `summarizing` 和 `summary` 模式
+     **核心文件**:
+     - `src-tauri/src/llm/prompt.rs` - 内置固定 Prompt 模板
+     … +82 lines (ctrl+o to expand)
+
+⏺ 计划已保存到 docs/superpowers/plans/2026-04-28-llm-summary.md。
+
+  计划概要：
+
+  | Task | 内容                           | 文件
+            |
+  |------|------------------------------|----------------------------------
+  ------|
+  | 1    | 创建 Rust Prompt 模块            | src-tauri/src/llm/prompt.rs,
+  mod.rs    |
+  | 2    | 创建 generate_summary Tauri 命令 |
+  src-tauri/src/commands/llm.rs, main.rs |
+  | 3    | 创建前端 SummaryResult 组件        |
+  src/components/SummaryResult.tsx       |
+  | 4    | 集成到 App.tsx 流程               | src/App.tsx
+             |
+
+  ---
+  两种执行方式：
+
+  1. Subagent-Driven（推荐） - 每个 Task
+  派发独立子代理执行，任务间有审查环节，迭代快
+  2. Inline Execution - 在当前会话中按顺序执行，批量执行带检查点
+
+  选择哪种方式？
+
+> 我先看一下这个新建的plan文件，我下一步指令 
+
+⏺ 好的，你先看计划文件。有问题或确认后告诉我下一步。
+
+> 修改一下这个plan文件，在提交prompt的步骤附近增加一个可以编辑修改这个总结p
+rompt的功能 
+
+⏺ Read(docs/superpowers/plans/2026-04-28-llm-summary.md)
+  ⎿  Read 92 lines
+
+⏺ Update(docs/superpowers/plans/2026-04-28-llm-summary.md)
+  ⎿  Updated docs/superpowers/plans/2026-04-28-llm-summary.md with 5      
+     additions and 4 removals
+        2    
+        3    > **For agentic workers:** REQUIRED SUB-SKILL: Use 
+            superpowers:subagent-driven-development (recommended) or 
+            superpowers:executing-plans to implement this plan 
+            task-by-task.
+        4    
+        5 -  **目标**: 用户点击"生成总结"后，系统使用内置固定
+          -   Prompt 将字幕全文提交给 LLM，输出包含 `[HH:MM:SS]` 
+          -  时间戳锚点的分层 Markdown
+        5 +  **目标**: 用户点击"生成总结"后，系统使用可编辑的默认
+          +   Prompt 将字幕全文提交给 LLM，输出包含 `[HH:MM:SS]` 
+          +  时间戳锚点的分层 Markdown。用户可在生成前查看和修改 Prompt。
+        6    
+        7 -  **架构**: Rust 后端新增 `generate_summary` Tauri 命令，调用
+          -   `LlmClient` 发送请求；前端
+          -  新增 `SummaryResult` 组件展示 Markdown 结果，`App.tsx` 新增
+          -   `summarizing` 和 `summary` 模式
+        7 +  **架构**: Rust 后端新增 `generate_summary` Tauri 命令，调用
+          +   `LlmClient` 发送请求；前端 `LlmConfig` 组件增加 Prompt 
+     编辑区域，
+          +  新增 `SummaryResult` 组件展示 Markdown 结果，`App.tsx` 新增
+          +   `summarizing` 和 `summary` 模式
+        8    
+        9    **核心文件**:
+       10 -  - `src-tauri/src/llm/prompt.rs` - 内置固定 Prompt 模板
+       10 +  - `src-tauri/src/llm/prompt.rs` - 默认 Prompt 模板
+          +  （系统提示 + 用户提示模板）
+       11    - `src-tauri/src/llm/mod.rs` - 导出 prompt 模块
+       12 -  - `src-tauri/src/commands/llm.rs` - 新增 `generate_summary`
+          -   命令
+       12 +  - `src-tauri/src/commands/llm.rs` - 新增 `generate_summary`
+          +   命令，接收自定义 prompt
+       13    - `src-tauri/src/main.rs` - 注册新命令
+       14 +  - `src/components/LlmConfig.tsx` - 增加 Prompt 编辑区域
+       15    - `src/components/SummaryResult.tsx` - Markdown 
+            总结结果展示组件
+       16    - `src/App.tsx` - 新增 `summarizing` 和 `summary` 模式
+       17    
+
+⏺ Update(docs/superpowers/plans/2026-04-28-llm-summary.md)
+  ⎿  Updated docs/superpowers/plans/2026-04-28-llm-summary.md with 5      
+     additions and 4 removals
+       20    ### Task 1: 创建 Rust Prompt 模块
+       21    
+       22    **创建文件**:
+       23 -  - `src-tauri/src/llm/prompt.rs` - 定义内置固定
+          -   Prompt 模板，包含系统提示和用户提示模板
+       23 +  - `src-tauri/src/llm/prompt.rs` - 定义默认
+          +   Prompt 模板，包含系统提示和用户提示模板
+       24    
+       25    **修改文件**:
+       26 -  - `src-tauri/src/llm/mod.rs` - 新增 `pub mod prompt` 和
+          -   `pub use prompt::SUMMARY_SYSTEM_PROMPT`
+       26 +  - `src-tauri/src/llm/mod.rs` - 新增 `pub mod prompt` 和导出
+       27    
+       28    **Prompt 设计要求**:
+       29 -  - 系统提示：指示 LLM 作为视频内容总结助手，输出分层 
+          -  Markdown，每个段落必须包含 `[HH:MM:SS]` 时间戳锚点
+       30 -  - 用户提示模板：接收字幕全文，要求 LLM 按主题分段总结
+       29 +  - 系统提示（`DEFAULT_SYSTEM_PROMPT`）：指示 LLM 
+     作为视频内容总结助手，输出分层
+          +  Markdown，每个段落必须包含 `[HH:MM:SS]` 时间戳锚点
+       30 +  - 用户提示模板（`DEFAULT_USER_PROMPT_TEMPLATE`）：包含 
+          + `{subtitles}` 占位符，用于插入字幕全文
+       31 +  - 提供 `fn get_default_system_prompt() -> String` 和 `fn 
+          + get_default_user_prompt(subtitles: &str) -> String` 
+          + 供前端获取默认值
+       32    
+       33    **测试**: `cargo check` 通过
+       34    
+
+⏺ Update(docs/superpowers/plans/2026-04-28-llm-summary.md)
+  ⎿  Updated docs/superpowers/plans/2026-04-28-llm-summary.md with 8      
+     additions and 4 removals
+       34    
+       35    ---
+       36    
+       37 -  ### Task 2: 创建 generate_summary Tauri 命令
+       37 +  ### Task 2: 创建 generate_summary 和 get_default_prompt 
+          +  Tauri 命令
+       38    
+       39    **修改文件**:
+       40    - `src-tauri/src/commands/llm.rs`:
+       41      - 新增 `SubtitleSegmentPayload` 
+            结构体（接收前端字幕数据）
+       42 +    - 新增 `get_default_prompt` Tauri 命令：
+       43 +      - 参数：无
+       44 +      - 返回：`Result<serde_json::Value, String>`（包含 
+          + `system_prompt` 和 `user_prompt_template`）
+       45 +      - 逻辑：调用 `prompt::get_default_system_prompt()` 和 
+          + `prompt::get_default_user_prompt_template()`
+       46      - 新增 `generate_summary` Tauri 命令：
+       47 -      - 参数：`config: LlmConfigPayload`, `segments: 
+          -  Vec<SubtitleSegmentPayload>`
+       48 -      - 逻辑：将 segments 格式化为带时间戳的文本，构建 
+     ChatMessage 列表
+          -  ，调用 `LlmClient.chat_completions()`
+       47 +      - 参数：`config: LlmConfigPayload`, `segments: 
+          +  Vec<SubtitleSegmentPayload>`
+          +  , `system_prompt: String`, `user_prompt_template: String`
+       48 +      - 逻辑：将 segments 格式化为带时间戳的文本，
+          +  用 user_prompt_template 替换 `{subtitles}` 占位符，
+          +  构建 ChatMessage 列表（system + user）
+          +  ，调用 `LlmClient.chat_completions()`
+       49        - 返回：`Result<String, String>`（总结 Markdown 文本）
+       50    
+       51 -  - `src-tauri/src/main.rs` - 注册 `
+          -  generate_summary` 命令到 `invoke_handler`
+       51 +  - `src-tauri/src/main.rs` - 注册 `get_default_prompt` 和 `
+          +  generate_summary` 命令到 `invoke_handler`
+       52    
+       53    **测试**: `cargo check` 通过
+       54    
+
+⏺ Update(docs/superpowers/plans/2026-04-28-llm-summary.md)
+  ⎿  Updated docs/superpowers/plans/2026-04-28-llm-summary.md with 11     
+     additions and 7 removals
+       54    
+       55    ---
+       56    
+       57 -  ### Task 3: 创建前端 SummaryResult 组件
+       57 +  ### Task 3: 修改 LlmConfig 组件增加 Prompt 编辑区域
+       58    
+       59 -  **创建文件**:
+       60 -  - `src/components/SummaryResult.tsx`:
+       61 -    - Props: `summary: string`, `onBack: () => void`, 
+          - `onExport: () => void`
+       62 -    - 展示区域：使用 `prose` 类渲染 
+          - Markdown（支持标题层级、列表、代码块）
+       63 -    - 按钮：返回（回到 llm_config）、导出 .md 文件
+       64 -    - Markdown 渲染：使用 `dangerouslySetInnerHTML` 或轻量 
+          - Markdown 解析库
+       59 +  **修改文件**:
+       60 +  - `src/components/LlmConfig.tsx`:
+       61 +    - 新增状态：`systemPrompt: string`, `userPromptTemplate: 
+          + string`, `showPromptEditor: boolean`
+       62 +    - 组件加载时调用 `invoke('get_default_prompt')` 获取默认 
+          + Prompt 并填充状态
+       63 +    - 新增"编辑 Prompt"折叠区域（默认折叠）：
+       64 +      - 系统提示 Textarea（只读或可编辑）
+       65 +      - 用户提示模板 Textarea（可编辑，显示 `{subtitles}` 
+          + 占位符说明）
+       66 +      - "恢复默认"按钮
+       67 +    - 修改"保存配置并继续"按钮：将 `systemPrompt` 和 
+          + `userPromptTemplate` 一起传递给 `onConfigured` 回调
+       68 +    - 修改 `onConfigured` 签名：`(config: LlmConfigData, 
+          + systemPrompt: string, userPromptTemplate: string) => void`
+       69    
+       70    **测试**: `pnpm build` 通过
+       71    
+
+⏺ Update(docs/superpowers/plans/2026-04-28-llm-summary.md)
+  ⎿  Updated docs/superpowers/plans/2026-04-28-llm-summary.md with 18     
+     additions and 4 removals
+        71    
+        72    ---
+        73    
+        74 -  ### Task 4: 集成到 App.tsx 流程
+        74 +  ### Task 4: 创建前端 SummaryResult 组件
+        75    
+        76 +  **创建文件**:
+        77 +  - `src/components/SummaryResult.tsx`:
+        78 +    - Props: `summary: string`, `onBack: () => void`, 
+           + `onExport: () => void`
+        79 +    - 展示区域：使用 `prose` 类渲染 
+           + Markdown（支持标题层级、列表、代码块）
+        80 +    - 按钮：返回（回到 llm_config）、导出 .md 文件
+        81 +    - Markdown 渲染：使用 `dangerouslySetInnerHTML` 或轻量 
+           + Markdown 解析库
+        82 +  
+        83 +  **测试**: `pnpm build` 通过
+        84 +  
+        85 +  ---
+        86 +  
+        87 +  ### Task 5: 集成到 App.tsx 流程
+        88 +  
+        89    **修改文件**:
+        90    - `src/App.tsx`:
+        91      - `AppMode` 新增 `'summarizing'` 和 `'summary'` 模式
+        92      - 导入 `SummaryResult` 组件
+        93 -    - 新增状态：`summaryResult: string | null`
+        94 -    - 修改 `handleLlmConfigured`：
+        93 +    - 新增状态：`summaryResult: string | null`, 
+           + `currentSystemPrompt: string`, `currentUserPromptTemplate: 
+           + string`
+        94 +    - 修改 `handleLlmConfigured` 签名：接收 `(config, 
+           + systemPrompt, userPromptTemplate)`
+        95 +      - 保存 prompt 到状态
+        96        - 设置 `currentMode('summarizing')`
+        97 -      - 调用 `invoke('generate_summary', { config, segments:
+           -   confirmedSubtitle })`
+        97 +      - 调用 `invoke('generate_summary', { config, segments:
+           +   confirmedSubtitle, systemPrompt, userPromptTemplate })`
+        98        - 成功后设置 `summaryResult` 和 
+             `currentMode('summary')`
+        99        - 失败后显示错误提示，返回 `llm_config` 模式
+       100      - 新增 `handleExportSummary`：调用 `downloadFile` 导出 
+             .md 文件
+
+⏺ Update(docs/superpowers/plans/2026-04-28-llm-summary.md)
+  ⎿  Updated docs/superpowers/plans/2026-04-28-llm-summary.md with 10     
+     additions and 6 removals
+       107    
+       108    ## 验收标准
+       109    
+       110 -  1. LLM 配置完成后点击"保存配置并继续"，进入总结生成中状态
+       111 -  2. 系统使用内置 Prompt 将字幕全文提交给 LLM API
+       112 -  3. 总结过程中显示加载状态
+       113 -  4. 总结完成后展示分层 Markdown，每个段落包含 `[HH:MM:SS]` 
+           - 时间戳锚点
+       114 -  5. 支持导出 `.md` 文件保存至本地
+       115 -  6. 错误处理：API 调用失败时显示错误提示，可返回重新配置
+       110 +  1. LLM 配置页面显示可折叠的"编辑 Prompt"区域
+       111 +  2. 点击"编辑 Prompt"可查看和修改系统提示、用户提示模板
+       112 +  3. 用户提示模板包含 `{subtitles}` 
+           + 占位符说明，支持自定义修改
+       113 +  4. "恢复默认"按钮可重置 Prompt 为默认值
+       114 +  5. 点击"保存配置并继续"时，将自定义 Prompt 一起传递给后端
+       115 +  6. 系统使用用户自定义 Prompt（或默认 
+           + Prompt）将字幕全文提交给 LLM API
+       116 +  7. 总结过程中显示加载状态
+       117 +  8. 总结完成后展示分层 Markdown，每个段落包含 `[HH:MM:SS]` 
+           + 时间戳锚点
+       118 +  9. 支持导出 `.md` 文件保存至本地
+       119 +  10. 错误处理：API 调用失败时显示错误提示，可返回重新配置
+
+⏺ 计划已更新。主要改动：
+
+  新增功能：
+  - LlmConfig 组件增加可折叠的"编辑 Prompt"区域
+  - 用户可查看/修改系统提示和用户提示模板
+  - "恢复默认"按钮重置为默认 Prompt
+  - 自定义 Prompt 随配置一起传递给后端
+
+  Task 调整（从 4 个增加到 5 个）：
+
+  | Task | 内容                                                |
+  |------|---------------------------------------------------|
+  | 1    | 创建 Rust Prompt 模块（默认 Prompt + 获取函数）               |
+  | 2    | 创建 get_default_prompt 和 generate_summary Tauri 命令 |
+  | 3    | 修改 LlmConfig 组件增加 Prompt 编辑区域                     |
+  | 4    | 创建 SummaryResult 组件                               |
+  | 5    | 集成到 App.tsx 流程                                    |
+
+  ---
+  两种执行方式：
+
+  1. Subagent-Driven（推荐） - 每个 Task
+  派发独立子代理执行，任务间有审查环节
+  2. Inline Execution - 在当前会话中按顺序执行，批量执行带检查点
+
+  选择哪种方式？
+
+> 还有一点，刚刚那个新加的‘用户自定义Prompt’，要求用户保存后要持久化其内容
+，关闭当前客户端再启动时，显示的prompt要是用户最后一次保存的 
+
+⏺ Update(docs/superpowers/plans/2026-04-28-llm-summary.md)
+  ⎿  Updated docs/superpowers/plans/2026-04-28-llm-summary.md with 2      
+     additions and 1 removal
+        8    
+        9    **核心文件**:
+       10    - `src-tauri/src/llm/prompt.rs` - 默认 Prompt 
+            模板（系统提示 + 用户提示模板）
+       11 +  - `src-tauri/src/llm/config.rs` - 扩展 LlmConfig 
+          + 结构体，增加 prompt 字段
+       12    - `src-tauri/src/llm/mod.rs` - 导出 prompt 模块
+       13 -  - `src-tauri/src/commands/llm.rs` - 新增 `generate_summary` 
+          -  命令，接收自定义 prompt
+       13 +  - `src-tauri/src/commands/llm.rs` - 扩展命令，支持 prompt 
+     持久化和生成总结
+       14    - `src-tauri/src/main.rs` - 注册新命令
+       15    - `src/components/LlmConfig.tsx` - 增加 Prompt 编辑区域
+       16    - `src/components/SummaryResult.tsx` - Markdown 
+            总结结果展示组件
+
+⏺ Update(docs/superpowers/plans/2026-04-28-llm-summary.md)
+  ⎿  Updated docs/superpowers/plans/2026-04-28-llm-summary.md with 7      
+     additions and 2 removals
+       18    
+       19    ---
+       20    
+       21 -  ### Task 1: 创建 Rust Prompt 模块
+       21 +  ### Task 1: 创建 Rust Prompt 模块并扩展 LlmConfig
+       22    
+       23    **创建文件**:
+       24    - `src-tauri/src/llm/prompt.rs` - 定义默认 Prompt 
+            模板，包含系统提示和用户提示模板
+       25    
+       26    **修改文件**:
+       27 +  - `src-tauri/src/llm/config.rs`:
+       28 +    - `LlmConfig` 结构体新增可选字段：`system_prompt: 
+          + Option<String>`, `user_prompt_template: Option<String>`
+       29 +    - `Default` 实现中这两个字段默认为 `None`
+       30 +    - `load_config()` 加载时，如果 JSON 中存在则读取，否则为 
+          + `None`
+       31 +    - `save_config()` 保存时，包含这两个字段
+       32    - `src-tauri/src/llm/mod.rs` - 新增 `pub mod prompt` 和导出
+       33    
+       34    **Prompt 设计要求**:
+       35    - 系统提示（`DEFAULT_SYSTEM_PROMPT`）：指示 LLM 
+            作为视频内容总结助手，输出分层 Markdown，每个段落必须包含 
+            `[HH:MM:SS]` 时间戳锚点
+       36    - 用户提示模板（`DEFAULT_USER_PROMPT_TEMPLATE`）：包含 
+            `{subtitles}` 占位符，用于插入字幕全文
+       37 -  - 提供 `fn get_default_system_prompt() -> String` 和 `fn 
+          -  get_default_user_prompt(subtitles: &str
+          -  ) -> String` 供前端获取默认值
+       37 +  - 提供 `fn get_default_system_prompt() -> String` 和 `fn 
+          +  get_default_user_prompt_template() -> String` 
+     供前端获取默认值
+       38    
+       39    **测试**: `cargo check` 通过
+       40    
+
+⏺ Update(docs/superpowers/plans/2026-04-28-llm-summary.md)
+  ⎿  Updated docs/superpowers/plans/2026-04-28-llm-summary.md with 4      
+     additions and 1 removal
+       40    
+       41    ---
+       42    
+       43 -  ### Task 2: 创建 generate_summary 和 get_default_prompt 
+          - Tauri 命令
+       43 +  ### Task 2: 扩展 Tauri 命令支持 Prompt 持久化和生成总结
+       44    
+       45    **修改文件**:
+       46    - `src-tauri/src/commands/llm.rs`:
+       47 +    - `LlmConfigPayload` 新增可选字段：`system_prompt: 
+          + Option<String>`, `user_prompt_template: Option<String>`
+       48 +    - 修改 `load_llm_config`：返回时包含已保存的 
+          + prompt（如果没有则为 null）
+       49 +    - 修改 `save_llm_config`：保存时包含 prompt 字段
+       50      - 新增 `SubtitleSegmentPayload` 
+            结构体（接收前端字幕数据）
+       51      - 新增 `get_default_prompt` Tauri 命令：
+       52        - 参数：无
+
+⏺ Update(docs/superpowers/plans/2026-04-28-llm-summary.md)
+  ⎿  Updated docs/superpowers/plans/2026-04-28-llm-summary.md with 7      
+     additions and 4 removals
+       68    **修改文件**:
+       69    - `src/components/LlmConfig.tsx`:
+       70      - 新增状态：`systemPrompt: string`, `userPromptTemplate: 
+            string`, `showPromptEditor: boolean`
+       71 -    - 组件加载时调用 `invoke('get_default_prompt')` 获取默认 
+          - Prompt 并填充状态
+       71 +    - 组件加载时：
+       72 +      1. 调用 `invoke('load_llm_config')` 
+          + 加载已保存的配置（含 prompt）
+       73 +      2. 调用 `invoke('get_default_prompt')` 获取默认 Prompt
+       74 +      3. 优先使用已保存的 prompt，如果没有则使用默认值
+       75      - 新增"编辑 Prompt"折叠区域（默认折叠）：
+       76 -      - 系统提示 Textarea（只读或可编辑）
+       76 +      - 系统提示 Textarea（可编辑）
+       77        - 用户提示模板 Textarea（可编辑，显示 `{subtitles}` 
+            占位符说明）
+       78 -      - "恢复默认"按钮
+       79 -    - 修改"保存配置并继续"按钮：将 `systemPrompt` 和 
+          -  `userPromptTemplate` 一起传递给 `onConfigured` 回调
+       78 +      - "恢复默认"按钮：重置为 `get_default_prompt` 
+          + 返回的默认值
+       79 +    - 修改"保存配置并继续"按钮：将 `systemPrompt` 和 
+          +  `userPromptTemplate` 一起传递给 `save_llm_config` 和 `
+          +  onConfigured` 回调
+       80      - 修改 `onConfigured` 签名：`(config: LlmConfigData, 
+            systemPrompt: string, userPromptTemplate: string) => void`
+       81    
+       82    **测试**: `pnpm build` 通过
+
+⏺ Update(docs/superpowers/plans/2026-04-28-llm-summary.md)
+  ⎿  Updated docs/superpowers/plans/2026-04-28-llm-summary.md with 8      
+     additions and 6 removals
+       123    2. 点击"编辑 Prompt"可查看和修改系统提示、用户提示模板
+       124    3. 用户提示模板包含 `{subtitles}` 
+             占位符说明，支持自定义修改
+       125    4. "恢复默认"按钮可重置 Prompt 为默认值
+       126 -  5. 点击"保存配置并继续"时，将自定义 Prompt 一起传递给后端
+       127 -  6. 系统使用用户自定义 Prompt（或默认 
+           - Prompt）将字幕全文提交给 LLM API
+       128 -  7. 总结过程中显示加载状态
+       129 -  8. 总结完成后展示分层 Markdown，每个段落包含 `[HH:MM:SS]` 
+           - 时间戳锚点
+       130 -  9. 支持导出 `.md` 文件保存至本地
+       131 -  10. 错误处理：API 调用失败时显示错误提示，可返回重新配置
+       126 +  5. 点击"保存配置并继续"时，将自定义 Prompt 一起持久化到 
+     `llm_config.json`
+       127 +  6. 关闭应用后重新打开，Prompt 
+           + 编辑区域显示用户最后一次保存的内容
+       128 +  7. 首次使用（无已保存配置）时，显示默认 Prompt
+       129 +  8. 系统使用用户自定义 Prompt（或默认 
+           + Prompt）将字幕全文提交给 LLM API
+       130 +  9. 总结过程中显示加载状态
+       131 +  10. 总结完成后展示分层 Markdown，每个段落包含 `[HH:MM:SS]`
+           +  时间戳锚点
+       132 +  11. 支持导出 `.md` 文件保存至本地
+       133 +  12. 错误处理：API 调用失败时显示错误提示，可返回重新配置
+
+⏺ 计划已更新，主要改动：
+
+  Prompt 持久化方案：
+  - LlmConfig 结构体新增 system_prompt 和 user_prompt_template 可选字段
+  - 保存配置时一起写入 llm_config.json
+  - 加载配置时优先使用已保存值，否则使用默认 Prompt
+
+  验收标准新增：
+  - 第 5 点：保存时持久化到 llm_config.json
+  - 第 6 点：重新打开应用显示最后一次保存的内容
+  - 第 7 点：首次使用显示默认 Prompt
+
+  ---
+  两种执行方式：
+
+  1. Subagent-Driven（推荐） - 每个 Task
+  派发独立子代理执行，任务间有审查环节
+  2. Inline Execution - 在当前会话中按顺序执行，批量执行带检查点
+
+  选择哪种方式？
+
+> 我要手动git提交这个新建的文档。结合历史提交记录，你给我一个合适的commit信
+息。 
+
+⏺ Bash(git -C /Users/a1/Codes/VidSum log --oneline -10)
+  ⎿ d976f24 chore: 任务                                                   
+    2026-04-28-llm-api-config.md完成进度更新到到TODO和prd文档 的AI对话
+    日志
+    a85d64e docs: TODO总的功能"大模型总结 > 用户配置 OpenAI 兼容 API（Base
+     URL、API Key、Mod
+    … +13 lines (ctrl+o to expand)
+
+⏺ 根据历史提交记录，建议的 commit 信息：
+
+  docs(llm): 添加大模型总结功能实现计划
+
+  如果想更详细一点：
+
+  docs(llm): 添加 2026-04-28-llm-summary.md 计划文档
+
+
+

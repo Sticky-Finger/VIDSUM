@@ -1,0 +1,1828 @@
+
+▗ ▗   ▖ ▖  Claude Code v2.0.36
+           qwen3.5-plus · API Usage Billing
+  ▘▘ ▝▝    /Users/a1/Codes/VidSum
+
+> /clear 
+  ⎿  (no content)
+
+> 编码实现 @docs/TODO.md 中的第一个功能“输入与任务创建” 
+  ⎿  Read docs/TODO.md (44 lines)
+
+⏺ 我将使用 superpowers:writing-plans 技能来规划这个任务的实现步骤。
+
+> The "writing-plans" skill is loading 
+
+⏺ 我将使用 superpowers:writing-plans 技能来创建实现"输入与任务创建"功能的详
+  细计划。首先让我了解一下当前项目结构。
+
+⏺ Search(pattern: "**/*.{tsx,ts,rs,toml,json}", path: "~/Codes/VidSum")
+  ⎿  Found 0 files 
+
+⏺ Read(docs/TODO.md)
+  ⎿  Read 44 lines
+
+⏺ Bash(find /Users/a1/Codes/VidSum -type f \( -name "*.tsx" -o -name "*.ts" -o
+      -name "*.rs" -o -name "*.toml" -o -name "*.json" \) 2>/dev/null | head
+      -50)
+  ⎿ /Users/a1/Codes/VidSum/node_modules/.pnpm/browserslist@4.28.2/node_mod
+    ules/browserslist/error.d.ts
+    /Users/a1/Codes/VidSum/node_modules/.pnpm/browserslist@4.28.2/node_mod
+    … +98 lines (ctrl+o to expand)
+
+
+
+⏺ Bash(find /Users/a1/Codes/VidSum -type f \( -name "*.tsx" -o -name "*.ts" -o
+      -name "*.rs" -o -name "*.toml" -o -name "*.json" \) -not -path
+      "*/node_modules/*" 2>/dev…)
+  ⎿  /Users/a1/Codes/VidSum/.claude/settings.local.json
+
+⏺ Bash(ls -la /Users/a1/Codes/VidSum/)
+  ⎿  total 32                                      
+     drwxr-xr-x   9 a1  staff   288 Apr 22 17:26 .
+     drwxr-xr-x  26 a1  staff   832 Apr 18 19:41 ..
+     … +7 lines (ctrl+o to expand)
+
+⏺ Bash(ls -la /Users/a1/Codes/VidSum/src-tauri/ 2>/dev/null || echo "src-tauri
+      not found")
+  ⎿  src-tauri not found
+
+⏺ Bash(ls -la /Users/a1/Codes/VidSum/src/ 2>/dev/null || echo "src not found")
+  ⎿  src not found
+
+⏺ 项目目前似乎只是一个空壳，还没有创建 src 和 src-tauri 目录。让我查看一下
+  package.json 和任何现有的配置文件：
+
+⏺ Read(package.json)
+  ⎿  Error reading file
+
+⏺ Read(docs/01-prd.md)
+  ⎿  Read 65 lines
+
+⏺ 现在我理解了项目现状：这是一个新项目，需要从空白开始创建 Tauri + React
+  应用。让我创建详细的实现计划。
+
+⏺ Write(docs/superpowers/plans/2026-04-22-input-task-creation.md)
+  ⎿  Wrote 1243 lines to                                                  
+     docs/superpowers/plans/2026-04-22-input-task-creation.md
+     # 输入与任务创建功能实现计划
+     > **For agentic workers:** REQUIRED SUB-SKILL: Use
+     superpowers:subagent-driven-development (recommended) or
+     superpowers:executing-plans to implement this plan task-by-task. Steps
+      use checkbox (`- [ ]`) syntax for tracking.
+     **Goal:** 实现 VidSum MVP
+     的"输入与任务创建"功能，允许用户选择本地音视频文件或字幕文件
+     **Architecture:**
+     - 使用 Tauri 2.0 框架构建桌面应用
+     - React 19 前端提供文件选择 UI
+     - Rust 后端通过 Tauri Commands 处理文件系统操作
+     … +1233 lines (ctrl+o to expand)
+
+⏺ 计划已创建完成。现在我使用 superpowers:subagent-driven-development
+  技能来执行这个计划。
+  ⎿  Interrupted · What should Claude do instead?
+
+> 我要修改 @docs/superpowers/plans/2026-04-22-input-task-creation.md 
+这个计划。首先我想要的是每次执行完一个task，都进行一次测试，尤其是要跑起来
+让我手动测试 
+  ⎿  Read docs/superpowers/plans/2026-04-22-input-task-creation.md (1243 lines)
+
+⏺ 我理解你的需求。让我修改计划，在每个 Task 完成后添加构建和手动测试步骤：
+
+⏺ Read(docs/superpowers/plans/2026-04-22-input-task-creation.md)
+  ⎿  Read 1243 lines
+
+⏺ 现在我来修改计划，在每个 Task 完成后添加构建和手动测试步骤：
+
+⏺ Update(docs/superpowers/plans/2026-04-22-input-task-creation.md)
+  ⎿  Updated docs/superpowers/plans/2026-04-22-input-task-creation.md with
+     8 additions and 1 removal
+       363    )
+       364    ```
+       365    
+       366 -  - [ ] **Step 11: Commit**
+       366 +  - [ ] **Step 11: 运行前端开发服务器测试**
+       367    
+       368    ```bash
+       369 +  pnpm dev
+       370 +  ```
+       371 +  Expected: Vite 启动成功，访问 http://localhost:1420 
+           + 看到空白页面（因为 App 还未实现）
+       372 +  
+       373 +  - [ ] **Step 12: Commit**
+       374 +  
+       375 +  ```bash
+       376    git add .
+       377    git commit -m "feat: 初始化项目基础结构"
+       378    ```
+
+⏺ Update(docs/superpowers/plans/2026-04-22-input-task-creation.md)
+  ⎿  Updated docs/superpowers/plans/2026-04-22-input-task-creation.md with
+     7 additions
+       717    git commit -m "feat: 初始化 Tauri 后端基础结构"
+       718    ```
+       719    
+       720 +  - [ ] **Step 12: 运行 Tauri 开发服务器测试**
+       721 +  
+       722 +  ```bash
+       723 +  pnpm tauri dev
+       724 +  ```
+       725 +  Expected: Tauri 窗口启动成功，显示应用标题 "VidSum - 
+           + 音视频转写总结工具"
+       726 +  
+       727    ---
+       728    
+       729    ### Task 3: 创建 shadcn/ui 基础组件
+
+⏺ Update(docs/superpowers/plans/2026-04-22-input-task-creation.md)
+  ⎿  Updated docs/superpowers/plans/2026-04-22-input-task-creation.md with
+     7 additions
+       924    git commit -m "feat: 创建 shadcn/ui 基础组件"
+       925    ```
+       926    
+       927 +  - [ ] **Step 7: 运行开发服务器测试 UI 组件**
+       928 +  
+       929 +  ```bash
+       930 +  pnpm tauri dev
+       931 +  ```
+       932 +  Expected: Tauri 
+           + 窗口启动成功，可以后续验证按钮、卡片等组件样式正确
+       933 +  
+       934    ---
+       935    
+       936    ### Task 4: 实现输入模式选择组件
+
+⏺ Update(docs/superpowers/plans/2026-04-22-input-task-creation.md)
+  ⎿  Updated docs/superpowers/plans/2026-04-22-input-task-creation.md with
+     11 additions
+       1032    git commit -m "feat: 实现输入模式选择组件"
+       1033    ```
+       1034    
+       1035 +  - [ ] **Step 4: 运行开发服务器手动测试**
+       1036 +  
+       1037 +  ```bash
+       1038 +  pnpm tauri dev
+       1039 +  ```
+       1040 +  
+       1041 +  **手动测试清单:**
+       1042 +  - [ ] 应用启动后显示"选择输入方式"界面
+       1043 +  - [ ] 看到两个按钮："音视频文件转写"和"已有字幕文件"
+       1044 +  - [ ] 按钮样式正确，显示标题和描述文本
+       1045 +  
+       1046    ---
+       1047    
+       1048    ### Task 5: 实现文件选择器组件
+
+⏺ Update(docs/superpowers/plans/2026-04-22-input-task-creation.md)
+  ⎿  Updated docs/superpowers/plans/2026-04-22-input-task-creation.md with
+     15 additions
+       1249    git commit -m "feat: 实现文件选择器组件"
+       1250    ```
+       1251    
+       1252 +  - [ ] **Step 4: 运行开发服务器完整手动测试**
+       1253 +  
+       1254 +  ```bash
+       1255 +  pnpm tauri dev
+       1256 +  ```
+       1257 +  
+       1258 +  **手动测试清单:**
+       1259 +  - [ ] 应用启动后显示"选择输入方式"界面
+       1260 +  - [ ] 点击"音视频文件转写"进入文件选择界面
+       1261 +  - [ ] 点击"已有字幕文件"进入文件选择界面
+       1262 +  - [ ] 文件选择对话框正确过滤文件类型
+       1263 +  - [ ] 选择文件后显示文件信息（名称、类型、大小、路径）
+       1264 +  - [ ] 可以重新选择文件
+       1265 +  - [ ] 返回按钮正常工作
+       1266 +  
+       1267    ---
+       1268    
+       1269    ## 测试计划
+
+⏺ 计划已更新完成！现在每个 Task
+  都包含了运行测试的步骤。让我开始执行第一个任务：
+
+> The "subagent-driven-development" skill is loading 
+
+⏺ 计划已更新完成，现在每个 Task
+  都包含了运行和手动测试的步骤。我开始执行第一个任务：
+
+⏺ Bash(pkill -f "tauri:dev" 2>/dev/null; pkill -f "cargo tauri" 2>/dev/null;
+      echo "已停止后台 Tauri 进程")
+  ⎿  Interrupted · What should Claude do instead?
+
+> /export 
+  ⎿  Conversation exported to: 
+     2026-04-23-caveat-the-messages-below-were-generated-by-the-u.txt
+
+> 你做了什么？ 
+
+⏺ 我刚才修改了计划文档
+  docs/superpowers/plans/2026-04-22-input-task-creation.md，在每个 Task
+  完成后添加了运行开发服务器并进行手动测试的步骤：
+
+  修改内容总结
+
+  Task 1 (初始化项目基础结构):
+  - 添加 Step 11: 运行 pnpm dev 测试前端服务器
+
+  Task 2 (初始化 Tauri 后端):
+  - 添加 Step 12: 运行 pnpm tauri dev 测试 Tauri 窗口启动
+
+  Task 3 (创建 shadcn/ui 基础组件):
+  - 添加 Step 7: 运行 pnpm tauri dev 测试 UI 组件样式
+
+  Task 4 (实现输入模式选择组件):
+  - 添加 Step 4: 运行 pnpm tauri dev 并进行手动测试清单验证
+
+  Task 5 (实现文件选择器组件):
+  - 添加 Step 4: 运行 pnpm tauri dev 并进行完整的手动测试清单验证
+
+  现在每个 Task 执行完后都会停下来运行开发服务器，让你可以进行手动测试确认
+  功能正常后再继续下一个任务。
+
+  接下来我可以开始执行 Task 1，或者你可以告诉我你想如何 Proceed。
+
+> 目前为止，都做了什么？ 
+
+⏺ 让我查看一下当前项目状态和计划文件：
+
+⏺ Read(docs/superpowers/plans/2026-04-22-input-task-creation.md)
+  ⎿  Read 1290 lines
+
+⏺ 到目前为止完成的工作总结
+
+  1. 创建了实现计划文档
+
+  创建了 docs/superpowers/plans/2026-04-22-input-task-creation.md，包含：
+
+  5 个任务分解：
+  - Task 1: 初始化项目基础结构（package.json, tsconfig, vite, tailwind
+  等配置）
+  - Task 2: 初始化 Tauri 后端（Cargo.toml, main.rs, commands 等）
+  - Task 3: 创建 shadcn/ui 基础组件（button, card, label, radio-group）
+  - Task 4: 实现输入模式选择组件（InputModeSelect）
+  - Task 5: 实现文件选择器组件（FileSelector）
+
+  2. 根据你的要求修改了计划
+
+  在每个 Task 完成后添加了运行测试步骤：
+  - Task 1: 添加 pnpm dev 测试前端服务器
+  - Task 2: 添加 pnpm tauri dev 测试 Tauri 窗口启动
+  - Task 3: 添加 pnpm tauri dev 测试 UI 组件样式
+  - Task 4: 添加 pnpm tauri dev 和手动测试清单
+  - Task 5: 添加 pnpm tauri dev 和完整手动测试清单
+
+  3. 尚未开始实际编码
+
+  目前项目还是空状态，等待你确认后开始执行 Task 1。
+
+  ---
+  接下来你想让我开始执行 Task 1（初始化项目基础结构）吗？ 我会：
+  1. 创建 package.json 等配置文件
+  2. 安装依赖
+  3. 创建基础源代码文件
+  4. 运行 pnpm dev 让你手动测试
+
+> /superpowers:write-plan is running… 
+  ⎿  Interrupted · What should Claude do instead?
+
+> 你看下你用'/superpowers:write-plan'写出来的 
+@docs/superpowers/plans/2026-04-22-input-task-creation.md 
+，有什么问题？我觉得这个plan文档也太长了 
+  ⎿  Read docs/superpowers/plans/2026-04-22-input-task-creation.md (1290 lines)
+
+⏺ 你说得对，这个计划文档确实太长了。主要问题：
+
+  问题分析
+
+  1. 重复内容太多 - 每个步骤都把完整的代码放进去，导致文档膨胀到 1290 行
+  2. 过度详细 - 像 package.json
+  这种完整内容不应该放在计划里，执行时再写就行
+  3. 测试步骤重复 - 每个 Task 都要运行 pnpm tauri dev，其实可以合并
+  4. Step 拆分过细 - 创建配置文件这种，一个文件一个 step 没必要
+
+  简化建议
+
+  一个更简洁的计划应该是这样的结构：
+
+  # 输入与任务创建功能实现计划
+
+  **目标**: 实现文件选择入口，支持音视频文件和字幕文件两种输入方式
+
+  **核心文件**:
+  - 前端：`src/components/InputModeSelect.tsx`,
+  `src/components/FileSelector.tsx`
+  - 后端：`src-tauri/src/commands/file.rs`
+
+  ---
+
+  ## Tasks
+
+  ### Task 1: 项目初始化
+  创建基础配置文件 (package.json, tsconfig.json, vite.config.ts,
+  tailwind.config.js 等) 和 Tauri 后端结构
+
+  **测试点**: `pnpm tauri dev` 能启动窗口
+
+  ### Task 2: UI 组件实现
+  创建 shadcn/ui 基础组件 (Button, Card, Label) 和输入模式选择界面
+
+  **测试点**: 看到两个选择按钮
+
+  ### Task 3: 文件选择功能
+  实现 Tauri 文件选择命令和 FileSelector 组件
+
+  **测试点**: 能选择文件并显示文件信息
+
+  ---
+
+  ## 验收标准
+  1. 两个输入选项：音视频文件转写 / 已有字幕文件
+  2. 文件对话框正确过滤文件类型
+  3. 显示文件详细信息，支持重新选择和返回
+
+  这样大概 100 行左右就够了，对吗？要我重新写一个简化版的计划吗？
+
+> 好的 
+
+> The "writing-plans" skill is loading 
+
+⏺ 我理解了问题。让我创建一个简化版的计划文档，删除冗余的完整代码内容：
+
+⏺ Write(docs/superpowers/plans/2026-04-22-input-task-creation.md)
+  ⎿  Updated docs/superpowers/plans/2026-04-22-input-task-creation.md with
+     52 additions and 1259 removals
+         1    # 输入与任务创建功能实现计划
+         2    
+         3 -  > **For agentic workers:** REQUIRED SUB-SKILL: Use 
+           -  superpowers:subagent-driven-development (recommended) or 
+           -  superpowers:executing-plans to implement this plan 
+           -  task-by-task.
+           -   Steps use checkbox (`- [ ]`) syntax for tracking.
+         3 +  > **For agentic workers:** REQUIRED SUB-SKILL: Use 
+           +  superpowers:subagent-driven-development (recommended) or 
+           +  superpowers:executing-plans to implement this plan 
+           +  task-by-task.
+         4    
+         5 -  **Goal:** 实现 VidSum MVP 
+     的"输入与任务创建"功能，允许用户选择本地
+           -  音视频文件或字幕文件
+         5 +  **目标**: 实现 VidSum MVP 
+     的"输入与任务创建"功能，允许用户选择本地
+           +  音视频文件或字幕文件
+         6    
+         7 -  **Architecture:**
+         8 -  - 使用 Tauri 2.0 框架构建桌面应用
+         9 -  - React 19 前端提供文件选择 UI
+        10 -  - Rust 后端通过 Tauri Commands 处理文件系统操作
+        11 -  - 使用 shadcn/ui 组件库构建现代化界面
+         7 +  **架构**: Tauri 2.0 + React 19，前端提供 UI，Rust 
+           + 后端处理文件对话框
+         8    
+         9 -  **Tech Stack:**
+        10 -  - Tauri 2.0 (Rust 桌面框架)
+        11 -  - React 19 + TypeScript (前端 UI)
+        12 -  - Vite (构建工具)
+        13 -  - Tailwind CSS + shadcn/ui (样式组件)
+        14 -  - Tokyo (Rust 异步运行时)
+         9 +  **核心文件**:
+        10 +  - `src/components/InputModeSelect.tsx` - 输入模式选择界面
+        11 +  - `src/components/FileSelector.tsx` - 文件选择器组件
+        12 +  - `src-tauri/src/commands/file.rs` - Rust 文件选择命令
+        13    
+        14    ---
+        15    
+        16 -  ## 文件结构概览
+        16 +  ## Tasks
+        17    
+        18 -  ### 创建的文件
+        19 -  ```
+        20 -  src/                          # React 前端源码
+        21 -    components/
+        22 -      ui/                       # shadcn/ui 基础组件
+        23 -        button.tsx
+        24 -        card.tsx
+        25 -        label.tsx
+        26 -        radio-group.tsx
+        27 -      FileSelector.tsx          # 文件选择器组件
+        28 -      InputModeSelect.tsx       # 输入模式选择组件
+        29 -    lib/
+        30 -      utils.ts                  # 工具函数 (cn)
+        31 -    App.tsx                     # 主应用组件
+        32 -    main.tsx                    # 应用入口
+        33 -    index.css                   # 全局样式
+        34 -  index.html                    # HTML 模板
+        35 -  vite.config.ts                # Vite 配置
+        36 -  tailwind.config.js            # Tailwind 配置
+        37 -  postcss.config.js             # PostCSS 配置
+        38 -  tsconfig.json                 # TypeScript 配置
+        18 +  ### Task 1: 项目初始化
+        19    
+        20 -  src-tauri/                    # Rust 后端源码
+        21 -    src/
+        22 -      main.rs                   # Rust 入口
+        23 -      commands/
+        24 -        mod.rs                  # 命令模块导出
+        25 -        file.rs                 # 文件操作命令
+        26 -    Cargo.toml                  # Rust 依赖
+        27 -    tauri.conf.json             # Tauri 配置
+        28 -    capabilities/
+        29 -      default.json              # 权限配置
+        20 +  创建基础配置文件和 Tauri 后端骨架。
+        21    
+        22 -  package.json                  # Node 依赖
+        23 -  ```
+        22 +  **创建文件**:
+        23 +  - `package.json` - React 19, Tauri 2.0, Tailwind 依赖
+        24 +  - `tsconfig.json`, `tsconfig.node.json` - TypeScript 配置
+        25 +  - `vite.config.ts` - Vite 配置，端口 1420
+        26 +  - `tailwind.config.js` - Tailwind 配置，shadcn 主题变量
+        27 +  - `postcss.config.js` - PostCSS 配置
+        28 +  - `index.html` - HTML 入口
+        29 +  - `src/index.css` - 全局样式，CSS 变量定义
+        30 +  - `src/main.tsx` - React 入口
+        31 +  - `src/App.tsx` - 根组件（暂时返回空）
+        32 +  - `src-tauri/Cargo.toml` - Rust 依赖 (tauri 2, 
+           + tauri-plugin-shell, tauri-plugin-dialog)
+        33 +  - `src-tauri/tauri.conf.json` - Tauri 配置，窗口 1200x800
+        34 +  - `src-tauri/src/main.rs` - Rust 入口
+        35 +  - `src-tauri/capabilities/default.json` - 权限配置
+        36    
+        37 -  ---
+        37 +  **测试**: `pnpm tauri dev` 能启动空白窗口
+        38    
+        39 -  ## 任务分解
+        40 -  
+        41 -  ### Task 1: 初始化项目基础结构
+        42 -  
+        43 -  **Files:**
+        44 -  - Create: `package.json`
+        45 -  - Create: `tsconfig.json`
+        46 -  - Create: `vite.config.ts`
+        47 -  - Create: `tailwind.config.js`
+        48 -  - Create: `postcss.config.js`
+        49 -  - Create: `index.html`
+        50 -  - Create: `src/index.css`
+        51 -  - Create: `src/main.tsx`
+        52 -  
+        53 -  - [ ] **Step 1: 创建 package.json**
+        54 -  
+        55 -  ```json
+        56 -  {
+        57 -    "name": "vidsum",
+        58 -    "private": true,
+        59 -    "version": "0.1.0",
+        60 -    "type": "module",
+        61 -    "scripts": {
+        62 -      "dev": "vite",
+        63 -      "build": "tsc && vite build",
+        64 -      "preview": "vite preview",
+        65 -      "tauri": "tauri"
+        66 -    },
+        67 -    "dependencies": {
+        68 -      "react": "^19.0.0",
+        69 -      "react-dom": "^19.0.0",
+        70 -      "@tauri-apps/api": "^2.0.0",
+        71 -      "clsx": "^2.1.0",
+        72 -      "tailwind-merge": "^2.2.0"
+        73 -    },
+        74 -    "devDependencies": {
+        75 -      "@tauri-apps/cli": "^2.0.0",
+        76 -      "@types/react": "^19.0.0",
+        77 -      "@types/react-dom": "^19.0.0",
+        78 -      "@vitejs/plugin-react": "^4.0.0",
+        79 -      "autoprefixer": "^10.4.0",
+        80 -      "postcss": "^8.4.0",
+        81 -      "tailwindcss": "^3.4.0",
+        82 -      "typescript": "^5.0.0",
+        83 -      "vite": "^6.0.0"
+        84 -    }
+        85 -  }
+        86 -  ```
+        87 -  
+        88 -  - [ ] **Step 2: 安装依赖**
+        89 -  
+        90 -  ```bash
+        91 -  pnpm install
+        92 -  ```
+        93 -  Expected: 所有依赖安装成功
+        94 -  
+        95 -  - [ ] **Step 3: 创建 tsconfig.json**
+        96 -  
+        97 -  ```json
+        98 -  {
+        99 -    "compilerOptions": {
+       100 -      "target": "ES2020",
+       101 -      "useDefineForClassFields": true,
+       102 -      "lib": ["ES2020", "DOM", "DOM.Iterable"],
+       103 -      "module": "ESNext",
+       104 -      "skipLibCheck": true,
+       105 -      "moduleResolution": "bundler",
+       106 -      "allowImportingTsExtensions": true,
+       107 -      "resolveJsonModule": true,
+       108 -      "isolatedModules": true,
+       109 -      "noEmit": true,
+       110 -      "jsx": "react-jsx",
+       111 -      "strict": true,
+       112 -      "noUnusedLocals": true,
+       113 -      "noUnusedParameters": true,
+       114 -      "noFallthroughCasesInSwitch": true,
+       115 -      "baseUrl": ".",
+       116 -      "paths": {
+       117 -        "@/*": ["./src/*"]
+       118 -      }
+       119 -    },
+       120 -    "include": ["src"],
+       121 -    "references": [{ "path": "./tsconfig.node.json" }]
+       122 -  }
+       123 -  ```
+       124 -  
+       125 -  - [ ] **Step 4: 创建 tsconfig.node.json**
+       126 -  
+       127 -  ```json
+       128 -  {
+       129 -    "compilerOptions": {
+       130 -      "composite": true,
+       131 -      "skipLibCheck": true,
+       132 -      "module": "ESNext",
+       133 -      "moduleResolution": "bundler",
+       134 -      "allowSyntheticDefaultImports": true
+       135 -    },
+       136 -    "include": ["vite.config.ts", "tailwind.config.js", 
+           - "postcss.config.js"]
+       137 -  }
+       138 -  ```
+       139 -  
+       140 -  - [ ] **Step 5: 创建 vite.config.ts**
+       141 -  
+       142 -  ```typescript
+       143 -  import { defineConfig } from 'vite'
+       144 -  import react from '@vitejs/plugin-react'
+       145 -  import path from 'path'
+       146 -  
+       147 -  export default defineConfig(async () => ({
+       148 -    plugins: [react()],
+       149 -    resolve: {
+       150 -      alias: {
+       151 -        '@': path.resolve(__dirname, './src')
+       152 -      }
+       153 -    },
+       154 -    clearScreen: false,
+       155 -    server: {
+       156 -      port: 1420,
+       157 -      strictPort: true
+       158 -    },
+       159 -    build: {
+       160 -      target: ['es2021', 'chrome88', 'safari14'],
+       161 -      minify: !process.env.TAURI_DEBUG ? 'esbuild' : false,
+       162 -      sourcemap: !!process.env.TAURI_DEBUG
+       163 -    }
+       164 -  }))
+       165 -  ```
+       166 -  
+       167 -  - [ ] **Step 6: 创建 tailwind.config.js**
+       168 -  
+       169 -  ```javascript
+       170 -  /** @type {import('tailwindcss').Config} */
+       171 -  export default {
+       172 -    darkMode: ["class"],
+       173 -    content: [
+       174 -      './pages/**/*.{ts,tsx}',
+       175 -      './components/**/*.{ts,tsx}',
+       176 -      './app/**/*.{ts,tsx}',
+       177 -      './src/**/*.{ts,tsx}',
+       178 -    ],
+       179 -    prefix: "",
+       180 -    theme: {
+       181 -      container: {
+       182 -        center: true,
+       183 -        padding: "2rem",
+       184 -        screens: {
+       185 -          "2xl": "1400px",
+       186 -        },
+       187 -      },
+       188 -      extend: {
+       189 -        colors: {
+       190 -          border: "hsl(var(--border))",
+       191 -          input: "hsl(var(--input))",
+       192 -          ring: "hsl(var(--ring))",
+       193 -          background: "hsl(var(--background))",
+       194 -          foreground: "hsl(var(--foreground))",
+       195 -          primary: {
+       196 -            DEFAULT: "hsl(var(--primary))",
+       197 -            foreground: "hsl(var(--primary-foreground))",
+       198 -          },
+       199 -          secondary: {
+       200 -            DEFAULT: "hsl(var(--secondary))",
+       201 -            foreground: "hsl(var(--secondary-foreground))",
+       202 -          },
+       203 -          destructive: {
+       204 -            DEFAULT: "hsl(var(--destructive))",
+       205 -            foreground: 
+           - "hsl(var(--destructive-foreground))",
+       206 -          },
+       207 -          muted: {
+       208 -            DEFAULT: "hsl(var(--muted))",
+       209 -            foreground: "hsl(var(--muted-foreground))",
+       210 -          },
+       211 -          accent: {
+       212 -            DEFAULT: "hsl(var(--accent))",
+       213 -            foreground: "hsl(var(--accent-foreground))",
+       214 -          },
+       215 -          popover: {
+       216 -            DEFAULT: "hsl(var(--popover))",
+       217 -            foreground: "hsl(var(--popover-foreground))",
+       218 -          },
+       219 -          card: {
+       220 -            DEFAULT: "hsl(var(--card))",
+       221 -            foreground: "hsl(var(--card-foreground))",
+       222 -          },
+       223 -        },
+       224 -        borderRadius: {
+       225 -          lg: "var(--radius)",
+       226 -          md: "calc(var(--radius) - 2px)",
+       227 -          sm: "calc(var(--radius) - 4px)",
+       228 -        },
+       229 -      },
+       230 -    },
+       231 -    plugins: []
+       232 -  }
+       233 -  ```
+       234 -  
+       235 -  - [ ] **Step 7: 创建 postcss.config.js**
+       236 -  
+       237 -  ```javascript
+       238 -  export default {
+       239 -    plugins: {
+       240 -      tailwindcss: {},
+       241 -      autoprefixer: {},
+       242 -    },
+       243 -  }
+       244 -  ```
+       245 -  
+       246 -  - [ ] **Step 8: 创建 index.html**
+       247 -  
+       248 -  ```html
+       249 -  <!DOCTYPE html>
+       250 -  <html lang="zh-CN">
+       251 -    <head>
+       252 -      <meta charset="UTF-8" />
+       253 -      <link rel="icon" type="image/svg+xml" href="/vite.svg"
+           -  />
+       254 -      <meta name="viewport" content="width=device-width, 
+           - initial-scale=1.0" />
+       255 -      <title>VidSum - 音视频转写总结工具</title>
+       256 -    </head>
+       257 -    <body>
+       258 -      <div id="root"></div>
+       259 -      <script type="module" src="/src/main.tsx"></script>
+       260 -    </body>
+       261 -  </html>
+       262 -  ```
+       263 -  
+       264 -  - [ ] **Step 9: 创建 src/index.css**
+       265 -  
+       266 -  ```css
+       267 -  @tailwind base;
+       268 -  @tailwind components;
+       269 -  @tailwind utilities;
+       270 -  
+       271 -  @layer base {
+       272 -    :root {
+       273 -      --background: 0 0% 100%;
+       274 -      --foreground: 222.2 84% 4.9%;
+       275 -      --card: 0 0% 100%;
+       276 -      --card-foreground: 222.2 84% 4.9%;
+       277 -      --popover: 0 0% 100%;
+       278 -      --popover-foreground: 222.2 84% 4.9%;
+       279 -      --primary: 222.2 47.4% 11.2%;
+       280 -      --primary-foreground: 210 40% 98%;
+       281 -      --secondary: 210 40% 96%;
+       282 -      --secondary-foreground: 222.2 47.4% 11.2%;
+       283 -      --muted: 210 40% 96%;
+       284 -      --muted-foreground: 215.4 16.3% 46.9%;
+       285 -      --accent: 210 40% 96%;
+       286 -      --accent-foreground: 222.2 47.4% 11.2%;
+       287 -      --destructive: 0 84.2% 60.2%;
+       288 -      --destructive-foreground: 210 40% 98%;
+       289 -      --border: 214.3 31.8% 91.4%;
+       290 -      --input: 214.3 31.8% 91.4%;
+       291 -      --ring: 222.2 84% 4.9%;
+       292 -      --radius: 0.5rem;
+       293 -    }
+       294 -  
+       295 -    .dark {
+       296 -      --background: 222.2 84% 4.9%;
+       297 -      --foreground: 210 40% 98%;
+       298 -      --card: 222.2 84% 4.9%;
+       299 -      --card-foreground: 210 40% 98%;
+       300 -      --popover: 222.2 84% 4.9%;
+       301 -      --popover-foreground: 210 40% 98%;
+       302 -      --primary: 210 40% 98%;
+       303 -      --primary-foreground: 222.2 47.4% 11.2%;
+       304 -      --secondary: 217.2 32.6% 17.5%;
+       305 -      --secondary-foreground: 210 40% 98%;
+       306 -      --muted: 217.2 32.6% 17.5%;
+       307 -      --muted-foreground: 215 20.2% 65.1%;
+       308 -      --accent: 217.2 32.6% 17.5%;
+       309 -      --accent-foreground: 210 40% 98%;
+       310 -      --destructive: 0 62.8% 30.6%;
+       311 -      --destructive-foreground: 210 40% 98%;
+       312 -      --border: 217.2 32.6% 17.5%;
+       313 -      --input: 217.2 32.6% 17.5%;
+       314 -      --ring: 212.7 26.8% 83.9%;
+       315 -    }
+       316 -  }
+       317 -  
+       318 -  @layer base {
+       319 -    * {
+       320 -      @apply border-border;
+       321 -    }
+       322 -    body {
+       323 -      @apply bg-background text-foreground;
+       324 -    }
+       325 -  }
+       326 -  ```
+       327 -  
+       328 -  - [ ] **Step 10: 创建 src/main.tsx**
+       329 -  
+       330 -  ```typescript
+       331 -  import React from 'react'
+       332 -  import ReactDOM from 'react-dom/client'
+       333 -  import App from './App'
+       334 -  import './index.css'
+       335 -  
+       336 -  ReactDOM.createRoot(document.getElementById('root')!).rend
+           - er(
+       337 -    <React.StrictMode>
+       338 -      <App />
+       339 -    </React.StrictMode>,
+       340 -  )
+       341 -  ```
+       342 -  
+       343 -  - [ ] **Step 11: 运行前端开发服务器测试**
+       344 -  
+       345 -  ```bash
+       346 -  pnpm dev
+       347 -  ```
+       348 -  Expected: Vite 启动成功，访问 http://localhost:1420 
+           - 看到空白页面（因为 App 还未实现）
+       349 -  
+       350 -  - [ ] **Step 12: Commit**
+       351 -  
+       352 -  ```bash
+       353 -  git add .
+       354 -  git commit -m "feat: 初始化项目基础结构"
+       355 -  ```
+       356 -  
+        39    ---
+        40    
+        41 -  ### Task 2: 初始化 Tauri 后端
+        41 +  ### Task 2: UI 组件和输入模式选择
+        42    
+        43 -  **Files:**
+        44 -  - Create: `src-tauri/Cargo.toml`
+        45 -  - Create: `src-tauri/tauri.conf.json`
+        46 -  - Create: `src-tauri/src/main.rs`
+        47 -  - Create: `src-tauri/capabilities/default.json`
+        43 +  **创建文件**:
+        44 +  - `src/lib/utils.ts` - cn 工具函数
+        45 +  - `src/components/ui/button.tsx` - Button 组件 (variant: 
+           + default/secondary/outline/ghost)
+        46 +  - `src/components/ui/card.tsx` - Card 组件 (Card/CardHeade
+           + r/CardTitle/CardDescription/CardContent/CardFooter)
+        47 +  - `src/components/InputModeSelect.tsx` - 
+           + 两个按钮：音视频文件转写 / 已有字幕文件
+        48    
+        49 -  - [ ] **Step 1: 创建 src-tauri/Cargo.toml**
+        49 +  **修改文件**:
+        50 +  - `src/App.tsx` - 使用 InputModeSelect 组件
+        51    
+        52 -  ```toml
+        53 -  [package]
+        54 -  name = "vidsum"
+        55 -  version = "0.1.0"
+        56 -  description = "音视频转写总结工具"
+        57 -  authors = ["VidSum Team"]
+        58 -  edition = "2021"
+        52 +  **测试**: `pnpm tauri dev` 启动后看到居中的卡片和两个按钮
+        53    
+        54 -  [build-dependencies]
+        55 -  tauri-build = { version = "2", features = [] }
+        56 -  
+        57 -  [dependencies]
+        58 -  tauri = { version = "2", features = [] }
+        59 -  tauri-plugin-shell = "2"
+        60 -  serde = { version = "1", features = ["derive"] }
+        61 -  serde_json = "1"
+        62 -  tokio = { version = "1", features = ["full"] }
+        63 -  
+        64 -  [features]
+        65 -  default = ["custom-protocol"]
+        66 -  custom-protocol = ["tauri/custom-protocol"]
+        67 -  
+        68 -  [profile.dev]
+        69 -  incremental = true
+        70 -  
+        71 -  [profile.release]
+        72 -  codegen-units = 1
+        73 -  lto = true
+        74 -  opt-level = "s"
+        75 -  strip = true
+        76 -  ```
+        77 -  
+        78 -  - [ ] **Step 2: 创建 src-tauri/tauri.conf.json**
+        79 -  
+        80 -  ```json
+        81 -  {
+        82 -    "$schema": "https://schema.tauri.app/config/2",
+        83 -    "productName": "VidSum",
+        84 -    "version": "0.1.0",
+        85 -    "identifier": "com.vidsum.app",
+        86 -    "build": {
+        87 -      "frontendDist": "../dist",
+        88 -      "devUrl": "http://localhost:1420",
+        89 -      "beforeDevCommand": "pnpm dev",
+        90 -      "beforeBuildCommand": "pnpm build"
+        91 -    },
+        92 -    "app": {
+        93 -      "withGlobalTauri": true,
+        94 -      "windows": [
+        95 -        {
+        96 -          "title": "VidSum - 音视频转写总结工具",
+        97 -          "width": 1200,
+        98 -          "height": 800,
+        99 -          "resizable": true,
+       100 -          "fullscreen": false,
+       101 -          "center": true
+       102 -        }
+       103 -      ],
+       104 -      "security": {
+       105 -        "csp": null
+       106 -      }
+       107 -    },
+       108 -    "bundle": {
+       109 -      "active": true,
+       110 -      "targets": "all",
+       111 -      "icon": [
+       112 -        "icons/32x32.png",
+       113 -        "icons/128x128.png",
+       114 -        "icons/128x128@2x.png",
+       115 -        "icons/icon.icns",
+       116 -        "icons/icon.ico"
+       117 -      ]
+       118 -    }
+       119 -  }
+       120 -  ```
+       121 -  
+       122 -  - [ ] **Step 3: 创建 src-tauri/src/main.rs**
+       123 -  
+       124 -  ```rust
+       125 -  #![cfg_attr(not(debug_assertions), windows_subsystem = 
+           - "windows")]
+       126 -  
+       127 -  use tauri::Manager;
+       128 -  
+       129 -  mod commands;
+       130 -  
+       131 -  fn main() {
+       132 -      tauri::Builder::default()
+       133 -          .plugin(tauri_plugin_shell::init())
+       134 -          .invoke_handler(tauri::generate_handler![
+       135 -              commands::file::select_file,
+       136 -              commands::file::validate_file
+       137 -          ])
+       138 -          .run(tauri::generate_context!())
+       139 -          .expect("error while running tauri application");
+       140 -  }
+       141 -  ```
+       142 -  
+       143 -  - [ ] **Step 4: 创建 src-tauri/src/commands/mod.rs**
+       144 -  
+       145 -  ```rust
+       146 -  pub mod file;
+       147 -  ```
+       148 -  
+       149 -  - [ ] **Step 5: 创建 src-tauri/src/commands/file.rs**
+       150 -  
+       151 -  ```rust
+       152 -  use serde::{Deserialize, Serialize};
+       153 -  
+       154 -  /// 文件选择结果
+       155 -  #[derive(Debug, Clone, Serialize, Deserialize)]
+       156 -  pub struct FileResult {
+       157 -      pub path: String,
+       158 -      pub name: String,
+       159 -      pub extension: String,
+       160 -      pub size: u64,
+       161 -  }
+       162 -  
+       163 -  /// 文件验证结果
+       164 -  #[derive(Debug, Clone, Serialize, Deserialize)]
+       165 -  pub struct ValidateResult {
+       166 -      pub valid: bool,
+       167 -      pub file_type: String,
+       168 -      pub message: String,
+       169 -  }
+       170 -  
+       171 -  /// 支持的音视频文件扩展名
+       172 -  const AUDIO_VIDEO_EXTENSIONS: [&str; 12] = [
+       173 -      "mp4", "mkv", "mov", "avi", "webm", "flv",
+       174 -      "mp3", "wav", "m4a", "aac", "ogg", "flac"
+       175 -  ];
+       176 -  
+       177 -  /// 支持的字幕文件扩展名
+       178 -  const SUBTITLE_EXTENSIONS: [&str; 2] = ["srt", "vtt"];
+       179 -  
+       180 -  /// 选择文件
+       181 -  #[tauri::command]
+       182 -  pub async fn select_file(
+       183 -      app_handle: tauri::AppHandle,
+       184 -      file_types: Vec<String>,
+       185 -  ) -> Result<FileResult, String> {
+       186 -      // 使用 Tauri 对话框 API
+       187 -      let selected = tauri::dialog::FileDialogBuilder::new()
+       188 -          .add_filter("音视频文件", &AUDIO_VIDEO_EXTENSIONS)
+       189 -          .add_filter("字幕文件", &SUBTITLE_EXTENSIONS)
+       190 -          .pick_file_blocking();
+       191 -  
+       192 -      match selected {
+       193 -          Some(path) => {
+       194 -              let file_name = path
+       195 -                  .file_name()
+       196 -                  .map(|n| n.to_string_lossy().to_string())
+       197 -                  .unwrap_or_default();
+       198 -              let extension = path
+       199 -                  .extension()
+       200 -                  .map(|e| e.to_string_lossy().to_string())
+       201 -                  .unwrap_or_default();
+       202 -              let size = std::fs::metadata(&path)
+       203 -                  .map(|m| m.len())
+       204 -                  .unwrap_or(0);
+       205 -  
+       206 -              Ok(FileResult {
+       207 -                  path: path.to_string_lossy().to_string(),
+       208 -                  name: file_name,
+       209 -                  extension,
+       210 -                  size,
+       211 -              })
+       212 -          }
+       213 -          None => Err("用户取消了文件选择".to_string()),
+       214 -      }
+       215 -  }
+       216 -  
+       217 -  /// 验证文件类型
+       218 -  #[tauri::command]
+       219 -  pub fn validate_file(path: String, expected_type: String) 
+           - -> Result<ValidateResult, String> {
+       220 -      let path_buf = std::path::PathBuf::from(&path);
+       221 -  
+       222 -      if !path_buf.exists() {
+       223 -          return Ok(ValidateResult {
+       224 -              valid: false,
+       225 -              file_type: String::new(),
+       226 -              message: "文件不存在".to_string(),
+       227 -          });
+       228 -      }
+       229 -  
+       230 -      let extension = path_buf
+       231 -          .extension()
+       232 -          .map(|e| e.to_string_lossy().to_lowercase())
+       233 -          .unwrap_or_default();
+       234 -  
+       235 -      let is_valid = match expected_type.as_str() {
+       236 -          "audio_video" => 
+           - AUDIO_VIDEO_EXTENSIONS.iter().any(|&ext| ext == extension),
+       237 -          "subtitle" => 
+           - SUBTITLE_EXTENSIONS.iter().any(|&ext| ext == extension),
+       238 -          _ => false,
+       239 -      };
+       240 -  
+       241 -      let file_type = if is_valid {
+       242 -          match expected_type.as_str() {
+       243 -              "audio_video" => "音视频文件",
+       244 -              "subtitle" => "字幕文件",
+       245 -              _ => "未知类型",
+       246 -          }.to_string()
+       247 -      } else {
+       248 -          "不支持的文件类型".to_string()
+       249 -      };
+       250 -  
+       251 -      Ok(ValidateResult {
+       252 -          valid: is_valid,
+       253 -          file_type,
+       254 -          message: if is_valid { "文件验证通过".to_string() 
+           - } else { format!("不支持的文件类型: .{}", extension) },
+       255 -      })
+       256 -  }
+       257 -  ```
+       258 -  
+       259 -  - [ ] **Step 6: 创建 src-tauri/capabilities/default.json**
+       260 -  
+       261 -  ```json
+       262 -  {
+       263 -    "$schema": 
+           - "https://schema.tauri.app/config/2/capabilities",
+       264 -    "identifier": "default",
+       265 -    "description": "Default capability for VidSum",
+       266 -    "windows": ["main"],
+       267 -    "permissions": [
+       268 -      "core:default",
+       269 -      "shell:allow-open",
+       270 -      "dialog:allow-open"
+       271 -    ]
+       272 -  }
+       273 -  ```
+       274 -  
+       275 -  - [ ] **Step 7: 添加 dialog 插件依赖到 Cargo.toml**
+       276 -  
+       277 -  修改 Cargo.toml，在 `[dependencies]` 中添加：
+       278 -  ```toml
+       279 -  tauri-plugin-dialog = "2"
+       280 -  ```
+       281 -  
+       282 -  - [ ] **Step 8: 更新 main.rs 注册 dialog 插件**
+       283 -  
+       284 -  ```rust
+       285 -  #![cfg_attr(not(debug_assertions), windows_subsystem = 
+           - "windows")]
+       286 -  
+       287 -  use tauri::Manager;
+       288 -  
+       289 -  mod commands;
+       290 -  
+       291 -  fn main() {
+       292 -      tauri::Builder::default()
+       293 -          .plugin(tauri_plugin_shell::init())
+       294 -          .plugin(tauri_plugin_dialog::init())
+       295 -          .invoke_handler(tauri::generate_handler![
+       296 -              commands::file::select_file,
+       297 -              commands::file::validate_file
+       298 -          ])
+       299 -          .run(tauri::generate_context!())
+       300 -          .expect("error while running tauri application");
+       301 -  }
+       302 -  ```
+       303 -  
+       304 -  - [ ] **Step 9: 更新 tauri.conf.json 添加 dialog 权限**
+       305 -  
+       306 -  ```json
+       307 -  {
+       308 -    "$schema": "https://schema.tauri.app/config/2",
+       309 -    "productName": "VidSum",
+       310 -    "version": "0.1.0",
+       311 -    "identifier": "com.vidsum.app",
+       312 -    "build": {
+       313 -      "frontendDist": "../dist",
+       314 -      "devUrl": "http://localhost:1420",
+       315 -      "beforeDevCommand": "pnpm dev",
+       316 -      "beforeBuildCommand": "pnpm build"
+       317 -    },
+       318 -    "app": {
+       319 -      "withGlobalTauri": true,
+       320 -      "windows": [
+       321 -        {
+       322 -          "title": "VidSum - 音视频转写总结工具",
+       323 -          "width": 1200,
+       324 -          "height": 800,
+       325 -          "resizable": true,
+       326 -          "fullscreen": false,
+       327 -          "center": true
+       328 -        }
+       329 -      ],
+       330 -      "security": {
+       331 -        "csp": null
+       332 -      }
+       333 -    },
+       334 -    "bundle": {
+       335 -      "active": true,
+       336 -      "targets": "all",
+       337 -      "icon": [
+       338 -        "icons/32x32.png",
+       339 -        "icons/128x128.png",
+       340 -        "icons/128x128@2x.png",
+       341 -        "icons/icon.icns",
+       342 -        "icons/icon.ico"
+       343 -      ]
+       344 -    },
+       345 -    "plugins": {
+       346 -      "dialog": {}
+       347 -    }
+       348 -  }
+       349 -  ```
+       350 -  
+       351 -  - [ ] **Step 10: 更新 capabilities/default.json 权限**
+       352 -  
+       353 -  ```json
+       354 -  {
+       355 -    "$schema": 
+           - "https://schema.tauri.app/config/2/capabilities",
+       356 -    "identifier": "default",
+       357 -    "description": "Default capability for VidSum",
+       358 -    "windows": ["main"],
+       359 -    "permissions": [
+       360 -      "core:default",
+       361 -      "shell:allow-open",
+       362 -      "dialog:default"
+       363 -    ]
+       364 -  }
+       365 -  ```
+       366 -  
+       367 -  - [ ] **Step 11: Commit**
+       368 -  
+       369 -  ```bash
+       370 -  git add .
+       371 -  git commit -m "feat: 初始化 Tauri 后端基础结构"
+       372 -  ```
+       373 -  
+       374 -  - [ ] **Step 12: 运行 Tauri 开发服务器测试**
+       375 -  
+       376 -  ```bash
+       377 -  pnpm tauri dev
+       378 -  ```
+       379 -  Expected: Tauri 窗口启动成功，显示应用标题 "VidSum - 
+           - 音视频转写总结工具"
+       380 -  
+        54    ---
+        55    
+        56 -  ### Task 3: 创建 shadcn/ui 基础组件
+        56 +  ### Task 3: 文件选择功能
+        57    
+        58 -  **Files:**
+        59 -  - Create: `src/lib/utils.ts`
+        60 -  - Create: `src/components/ui/button.tsx`
+        61 -  - Create: `src/components/ui/card.tsx`
+        62 -  - Create: `src/components/ui/label.tsx`
+        63 -  - Create: `src/components/ui/radio-group.tsx`
+        58 +  **创建文件**:
+        59 +  - `src/components/FileSelector.tsx` - 文件选择 UI，调用 
+           + Rust 命令，显示文件信息
+        60    
+        61 -  - [ ] **Step 1: 创建 src/lib/utils.ts**
+        61 +  **修改文件**:
+        62 +  - `src-tauri/src/commands/file.rs` - 
+           + `select_file(file_type)` 命令，使用 tauri-plugin-dialog
+        63 +  - `src-tauri/src/commands/mod.rs` - 导出 commands
+        64 +  - `src-tauri/src/main.rs` - 注册 select_file 命令
+        65 +  - `src/App.tsx` - 集成 FileSelector 
+           + 组件，处理模式切换和返回
+        66    
+        67 -  ```typescript
+        68 -  import { clsx, type ClassValue } from "clsx"
+        69 -  import { twMerge } from "tailwind-merge"
+        70 -  
+        71 -  export function cn(...inputs: ClassValue[]) {
+        72 -    return twMerge(clsx(inputs))
+        73 -  }
+        74 -  ```
+        75 -  
+        76 -  - [ ] **Step 2: 创建 src/components/ui/button.tsx**
+        77 -  
+        78 -  ```typescript
+        79 -  import * as React from "react"
+        80 -  import { cn } from "@/lib/utils"
+        81 -  
+        82 -  export interface ButtonProps extends 
+           - React.ButtonHTMLAttributes<HTMLButtonElement> {
+        83 -    variant?: "default" | "secondary" | "outline" | "ghost"
+        84 -    size?: "default" | "sm" | "lg"
+        85 -  }
+        86 -  
+        87 -  const Button = React.forwardRef<HTMLButtonElement, 
+           - ButtonProps>(
+        88 -    ({ className, variant = "default", size = "default", 
+           - ...props }, ref) => {
+        89 -      return (
+        90 -        <button
+        91 -          className={cn(
+        92 -            "inline-flex items-center justify-center 
+           - whitespace-nowrap rounded-md text-sm font-medium 
+           - ring-offset-background transition-colors 
+           - focus-visible:outline-none focus-visible:ring-2 
+           - focus-visible:ring-ring focus-visible:ring-offset-2 
+           - disabled:pointer-events-none disabled:opacity-50",
+        93 -            {
+        94 -              "bg-primary text-primary-foreground 
+           - hover:bg-primary/90": variant === "default",
+        95 -              "bg-secondary text-secondary-foreground 
+           - hover:bg-secondary/80": variant === "secondary",
+        96 -              "border border-input bg-background 
+           - hover:bg-accent hover:text-accent-foreground": variant === 
+           - "outline",
+        97 -              "hover:bg-accent 
+           - hover:text-accent-foreground": variant === "ghost",
+        98 -              "h-10 px-4 py-2": size === "default",
+        99 -              "h-9 rounded-md px-3": size === "sm",
+       100 -              "h-11 rounded-md px-8": size === "lg",
+       101 -            },
+       102 -            className
+       103 -          )}
+       104 -          ref={ref}
+       105 -          {...props}
+       106 -        />
+       107 -      )
+       108 -    }
+       109 -  )
+       110 -  Button.displayName = "Button"
+       111 -  
+       112 -  export { Button }
+       113 -  ```
+       114 -  
+       115 -  - [ ] **Step 3: 创建 src/components/ui/card.tsx**
+       116 -  
+       117 -  ```typescript
+       118 -  import * as React from "react"
+       119 -  import { cn } from "@/lib/utils"
+       120 -  
+       121 -  const Card = React.forwardRef<HTMLDivElement, 
+           - React.HTMLAttributes<HTMLDivElement>>(
+       122 -    ({ className, ...props }, ref) => (
+       123 -      <div
+       124 -        ref={ref}
+       125 -        className={cn("rounded-lg border bg-card 
+           - text-card-foreground shadow-sm", className)}
+       126 -        {...props}
+       127 -      />
+       128 -    )
+       129 -  )
+       130 -  Card.displayName = "Card"
+       131 -  
+       132 -  const CardHeader = React.forwardRef<HTMLDivElement, 
+           - React.HTMLAttributes<HTMLDivElement>>(
+       133 -    ({ className, ...props }, ref) => (
+       134 -      <div ref={ref} className={cn("flex flex-col 
+           - space-y-1.5 p-6", className)} {...props} />
+       135 -    )
+       136 -  )
+       137 -  CardHeader.displayName = "CardHeader"
+       138 -  
+       139 -  const CardTitle = React.forwardRef<HTMLParagraphElement, 
+           - React.HTMLAttributes<HTMLHeadingElement>>(
+       140 -    ({ className, ...props }, ref) => (
+       141 -      <h3
+       142 -        ref={ref}
+       143 -        className={cn("text-2xl font-semibold leading-none 
+           - tracking-tight", className)}
+       144 -        {...props}
+       145 -      />
+       146 -    )
+       147 -  )
+       148 -  CardTitle.displayName = "CardTitle"
+       149 -  
+       150 -  const CardDescription = 
+           - React.forwardRef<HTMLParagraphElement, 
+           - React.HTMLAttributes<HTMLParagraphElement>>(
+       151 -    ({ className, ...props }, ref) => (
+       152 -      <p ref={ref} className={cn("text-sm 
+           - text-muted-foreground", className)} {...props} />
+       153 -    )
+       154 -  )
+       155 -  CardDescription.displayName = "CardDescription"
+       156 -  
+       157 -  const CardContent = React.forwardRef<HTMLDivElement, 
+           - React.HTMLAttributes<HTMLDivElement>>(
+       158 -    ({ className, ...props }, ref) => (
+       159 -      <div ref={ref} className={cn("p-6 pt-0", className)} 
+           - {...props} />
+       160 -    )
+       161 -  )
+       162 -  CardContent.displayName = "CardContent"
+       163 -  
+       164 -  const CardFooter = React.forwardRef<HTMLDivElement, 
+           - React.HTMLAttributes<HTMLDivElement>>(
+       165 -    ({ className, ...props }, ref) => (
+       166 -      <div ref={ref} className={cn("flex items-center p-6 
+           - pt-0", className)} {...props} />
+       167 -    )
+       168 -  )
+       169 -  CardFooter.displayName = "CardFooter"
+       170 -  
+       171 -  export { Card, CardHeader, CardFooter, CardTitle, 
+           - CardDescription, CardContent }
+       172 -  ```
+       173 -  
+       174 -  - [ ] **Step 4: 创建 src/components/ui/label.tsx**
+       175 -  
+       176 -  ```typescript
+       177 -  import * as React from "react"
+       178 -  import { cn } from "@/lib/utils"
+       179 -  
+       180 -  export interface LabelProps extends 
+           - React.LabelHTMLAttributes<HTMLLabelElement> {}
+       181 -  
+       182 -  const Label = React.forwardRef<HTMLLabelElement, 
+           - LabelProps>(
+       183 -    ({ className, ...props }, ref) => (
+       184 -      <label
+       185 -        ref={ref}
+       186 -        className={cn(
+       187 -          "text-sm font-medium leading-none 
+           - peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+       188 -          className
+       189 -        )}
+       190 -        {...props}
+       191 -      />
+       192 -    )
+       193 -  )
+       194 -  Label.displayName = "Label"
+       195 -  
+       196 -  export { Label }
+       197 -  ```
+       198 -  
+       199 -  - [ ] **Step 5: 创建 src/components/ui/radio-group.tsx**
+       200 -  
+       201 -  ```typescript
+       202 -  import * as React from "react"
+       203 -  import { cn } from "@/lib/utils"
+       204 -  
+       205 -  export interface RadioGroupProps extends 
+           - React.HTMLAttributes<HTMLDivElement> {}
+       206 -  
+       207 -  const RadioGroup = React.forwardRef<HTMLDivElement, 
+           - RadioGroupProps>(
+       208 -    ({ className, ...props }, ref) => {
+       209 -      return <div ref={ref} className={cn("grid gap-2", 
+           - className)} {...props} />
+       210 -    }
+       211 -  )
+       212 -  RadioGroup.displayName = "RadioGroup"
+       213 -  
+       214 -  export interface RadioGroupItemProps extends 
+           - React.InputHTMLAttributes<HTMLInputElement> {
+       215 -    label: string
+       216 -  }
+       217 -  
+       218 -  const RadioGroupItem = React.forwardRef<HTMLInputElement, 
+           - RadioGroupItemProps>(
+       219 -    ({ className, label, id, ...props }, ref) => {
+       220 -      return (
+       221 -        <div className="flex items-center space-x-2">
+       222 -          <input
+       223 -            type="radio"
+       224 -            id={id}
+       225 -            ref={ref}
+       226 -            className={cn(
+       227 -              "h-4 w-4 border-primary text-primary 
+           - focus:ring-primary",
+       228 -              className
+       229 -            )}
+       230 -            {...props}
+       231 -          />
+       232 -          <label
+       233 -            htmlFor={id}
+       234 -            className="text-sm font-medium leading-none 
+           - peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+       235 -          >
+       236 -            {label}
+       237 -          </label>
+       238 -        </div>
+       239 -      )
+       240 -    }
+       241 -  )
+       242 -  RadioGroupItem.displayName = "RadioGroupItem"
+       243 -  
+       244 -  export { RadioGroup, RadioGroupItem }
+       245 -  ```
+       246 -  
+       247 -  - [ ] **Step 6: Commit**
+       248 -  
+       249 -  ```bash
+       250 -  git add .
+       251 -  git commit -m "feat: 创建 shadcn/ui 基础组件"
+       252 -  ```
+       253 -  
+       254 -  - [ ] **Step 7: 运行开发服务器测试 UI 组件**
+       255 -  
+       256 -  ```bash
+       257 -  pnpm tauri dev
+       258 -  ```
+       259 -  Expected: Tauri 
+           - 窗口启动成功，可以后续验证按钮、卡片等组件样式正确
+       260 -  
+       261 -  ---
+       262 -  
+       263 -  ### Task 4: 实现输入模式选择组件
+       264 -  
+       265 -  **Files:**
+       266 -  - Create: `src/components/InputModeSelect.tsx`
+       267 -  - Modify: `src/App.tsx`
+       268 -  
+       269 -  - [ ] **Step 1: 创建 src/components/InputModeSelect.tsx**
+       270 -  
+       271 -  ```typescript
+       272 -  import React from 'react'
+       273 -  import { Card, CardHeader, CardTitle, CardDescription, 
+           - CardContent } from '@/components/ui/card'
+       274 -  import { Button } from '@/components/ui/button'
+       275 -  
+       276 -  export type InputMode = 'audio_video' | 'subtitle'
+       277 -  
+       278 -  interface InputModeSelectProps {
+       279 -    onSelectMode: (mode: InputMode) => void
+       280 -  }
+       281 -  
+       282 -  export function InputModeSelect({ onSelectMode }: 
+           - InputModeSelectProps) {
+       283 -    return (
+       284 -      <div className="min-h-screen bg-background flex 
+           - items-center justify-center p-4">
+       285 -        <Card className="w-full max-w-lg">
+       286 -          <CardHeader className="text-center">
+       287 -            <CardTitle 
+           - className="text-2xl">选择输入方式</CardTitle>
+       288 -            <CardDescription>
+       289 -              选择您想要使用的文件类型开始任务
+       290 -            </CardDescription>
+       291 -          </CardHeader>
+       292 -          <CardContent className="space-y-4">
+       293 -            <div className="grid gap-4">
+       294 -              <Button
+       295 -                variant="outline"
+       296 -                className="h-auto py-6 flex flex-col 
+           - items-center gap-2"
+       297 -                onClick={() => onSelectMode('audio_video')}
+       298 -              >
+       299 -                <span className="text-lg 
+           - font-medium">音视频文件转写</span>
+       300 -                <span className="text-sm 
+           - text-muted-foreground">
+       301 -                  选择 mp4, mkv, mov, mp3, wav, m4a 等文件
+       302 -                </span>
+       303 -              </Button>
+       304 -  
+       305 -              <Button
+       306 -                variant="outline"
+       307 -                className="h-auto py-6 flex flex-col 
+           - items-center gap-2"
+       308 -                onClick={() => onSelectMode('subtitle')}
+       309 -              >
+       310 -                <span className="text-lg 
+           - font-medium">已有字幕文件</span>
+       311 -                <span className="text-sm 
+           - text-muted-foreground">
+       312 -                  选择 .srt 或 .vtt 字幕文件
+       313 -                </span>
+       314 -              </Button>
+       315 -            </div>
+       316 -          </CardContent>
+       317 -        </Card>
+       318 -      </div>
+       319 -    )
+       320 -  }
+       321 -  ```
+       322 -  
+       323 -  - [ ] **Step 2: 更新 src/App.tsx**
+       324 -  
+       325 -  ```typescript
+       326 -  import { useState } from 'react'
+       327 -  import { InputModeSelect, type InputMode } from 
+           - './components/InputModeSelect'
+       328 -  import { FileSelector } from './components/FileSelector'
+       329 -  
+       330 -  function App() {
+       331 -    const [inputMode, setInputMode] = useState<InputMode | 
+           - null>(null)
+       332 -  
+       333 -    const handleSelectMode = (mode: InputMode) => {
+       334 -      setInputMode(mode)
+       335 -    }
+       336 -  
+       337 -    const handleBack = () => {
+       338 -      setInputMode(null)
+       339 -    }
+       340 -  
+       341 -    return (
+       342 -      <div className="min-h-screen bg-background">
+       343 -        {!inputMode ? (
+       344 -          <InputModeSelect onSelectMode={handleSelectMode} 
+           - />
+       345 -        ) : (
+       346 -          <FileSelector mode={inputMode} onBack={handleBack}
+           -  />
+       347 -        )}
+       348 -      </div>
+       349 -    )
+       350 -  }
+       351 -  
+       352 -  export default App
+       353 -  ```
+       354 -  
+       355 -  - [ ] **Step 3: Commit**
+       356 -  
+       357 -  ```bash
+       358 -  git add .
+       359 -  git commit -m "feat: 实现输入模式选择组件"
+       360 -  ```
+       361 -  
+       362 -  - [ ] **Step 4: 运行开发服务器手动测试**
+       363 -  
+       364 -  ```bash
+       365 -  pnpm tauri dev
+       366 -  ```
+       367 -  
+       368 -  **手动测试清单:**
+       369 -  - [ ] 应用启动后显示"选择输入方式"界面
+       370 -  - [ ] 看到两个按钮："音视频文件转写"和"已有字幕文件"
+       371 -  - [ ] 按钮样式正确，显示标题和描述文本
+       372 -  
+       373 -  ---
+       374 -  
+       375 -  ### Task 5: 实现文件选择器组件
+       376 -  
+       377 -  **Files:**
+       378 -  - Create: `src/components/FileSelector.tsx`
+       379 -  - Modify: `src-tauri/src/commands/file.rs`
+       380 -  
+       381 -  - [ ] **Step 1: 更新 Rust 命令添加 invoke 函数**
+       382 -  
+       383 -  修改 `src-tauri/src/commands/file.rs`，添加使用 Tauri 
+           - dialog API:
+       384 -  
+       385 -  ```rust
+       386 -  use serde::{Deserialize, Serialize};
+       387 -  
+       388 -  /// 文件选择结果
+       389 -  #[derive(Debug, Clone, Serialize, Deserialize)]
+       390 -  pub struct FileResult {
+       391 -      pub path: String,
+       392 -      pub name: String,
+       393 -      pub extension: String,
+       394 -      pub size: u64,
+       395 -  }
+       396 -  
+       397 -  /// 支持的音视频文件扩展名
+       398 -  const AUDIO_VIDEO_EXTENSIONS: [&str; 12] = [
+       399 -      "mp4", "mkv", "mov", "avi", "webm", "flv",
+       400 -      "mp3", "wav", "m4a", "aac", "ogg", "flac"
+       401 -  ];
+       402 -  
+       403 -  /// 支持的字幕文件扩展名
+       404 -  const SUBTITLE_EXTENSIONS: [&str; 2] = ["srt", "vtt"];
+       405 -  
+       406 -  /// 选择文件
+       407 -  #[tauri::command]
+       408 -  pub async fn select_file(file_type: String) -> 
+           - Result<FileResult, String> {
+       409 -      use tauri_plugin_dialog::DialogExt;
+       410 -  
+       411 -      // 根据文件类型设置过滤器
+       412 -      let dialog = tauri_plugin_dialog::Dialog::new();
+       413 -      let file = match file_type.as_str() {
+       414 -          "audio_video" => {
+       415 -              dialog.file().add_filter("音视频文件", 
+           - &AUDIO_VIDEO_EXTENSIONS).blocking_pick_file()
+       416 -          },
+       417 -          "subtitle" => {
+       418 -              dialog.file().add_filter("字幕文件", 
+           - &SUBTITLE_EXTENSIONS).blocking_pick_file()
+       419 -          },
+       420 -          _ => {
+       421 -              return Err("不支持的文件类型".to_string());
+       422 -          }
+       423 -      };
+       424 -  
+       425 -      match file {
+       426 -          Some(path) => {
+       427 -              let file_name = path
+       428 -                  .file_name()
+       429 -                  .map(|n| n.to_string_lossy().to_string())
+       430 -                  .unwrap_or_default();
+       431 -              let extension = path
+       432 -                  .extension()
+       433 -                  .map(|e| e.to_string_lossy().to_string())
+       434 -                  .unwrap_or_default();
+       435 -              let size = std::fs::metadata(&path)
+       436 -                  .map(|m| m.len())
+       437 -                  .unwrap_or(0);
+       438 -  
+       439 -              Ok(FileResult {
+       440 -                  path: path.to_string_lossy().to_string(),
+       441 -                  name: file_name,
+       442 -                  extension,
+       443 -                  size,
+       444 -              })
+       445 -          }
+       446 -          None => Err("用户取消了文件选择".to_string()),
+       447 -      }
+       448 -  }
+       449 -  ```
+       450 -  
+       451 -  - [ ] **Step 2: 创建 src/components/FileSelector.tsx**
+       452 -  
+       453 -  ```typescript
+       454 -  import { useState } from 'react'
+       455 -  import { invoke } from '@tauri-apps/api/core'
+       456 -  import { Card, CardHeader, CardTitle, CardDescription, 
+           - CardContent, CardFooter } from '@/components/ui/card'
+       457 -  import { Button } from '@/components/ui/button'
+       458 -  import { Label } from '@/components/ui/label'
+       459 -  
+       460 -  export type InputMode = 'audio_video' | 'subtitle'
+       461 -  
+       462 -  interface FileSelectorProps {
+       463 -    mode: InputMode
+       464 -    onBack: () => void
+       465 -    onComplete?: (file: FileResult) => void
+       466 -  }
+       467 -  
+       468 -  export interface FileResult {
+       469 -    path: string
+       470 -    name: string
+       471 -    extension: string
+       472 -    size: number
+       473 -  }
+       474 -  
+       475 -  const MODE_CONFIG = {
+       476 -    audio_video: {
+       477 -      title: '选择音视频文件',
+       478 -      description: '支持 mp4, mkv, mov, mp3, wav, m4a 
+           - 等格式',
+       479 -      acceptLabel: '音视频文件'
+       480 -    },
+       481 -    subtitle: {
+       482 -      title: '选择字幕文件',
+       483 -      description: '支持 .srt 或 .vtt 格式',
+       484 -      acceptLabel: '字幕文件'
+       485 -    }
+       486 -  }
+       487 -  
+       488 -  export function FileSelector({ mode, onBack, onComplete }:
+           -  FileSelectorProps) {
+       489 -    const [isLoading, setIsLoading] = useState(false)
+       490 -    const [error, setError] = useState<string | null>(null)
+       491 -    const [selectedFile, setSelectedFile] = 
+           - useState<FileResult | null>(null)
+       492 -  
+       493 -    const config = MODE_CONFIG[mode]
+       494 -  
+       495 -    const handleSelectFile = async () => {
+       496 -      setIsLoading(true)
+       497 -      setError(null)
+       498 -  
+       499 -      try {
+       500 -        const result = await 
+           - invoke<FileResult>('select_file', { fileType: mode })
+       501 -        setSelectedFile(result)
+       502 -        onComplete?.(result)
+       503 -      } catch (err) {
+       504 -        setError(err instanceof Error ? err.message : 
+           - '选择文件失败')
+       505 -      } finally {
+       506 -        setIsLoading(false)
+       507 -      }
+       508 -    }
+       509 -  
+       510 -    const handleRetry = () => {
+       511 -      setSelectedFile(null)
+       512 -      setError(null)
+       513 -    }
+       514 -  
+       515 -    return (
+       516 -      <div className="min-h-screen bg-background flex 
+           - items-center justify-center p-4">
+       517 -        <Card className="w-full max-w-lg">
+       518 -          <CardHeader>
+       519 -            <Button variant="ghost" size="sm" 
+           - onClick={onBack} className="w-fit -ml-2 mb-2">
+       520 -              ← 返回
+       521 -            </Button>
+       522 -            <CardTitle>{config.title}</CardTitle>
+       523 -            
+           - <CardDescription>{config.description}</CardDescription>
+       524 -          </CardHeader>
+       525 -          <CardContent className="space-y-4">
+       526 -            {error && (
+       527 -              <div className="p-3 text-sm text-destructive 
+           - bg-destructive/10 rounded-md">
+       528 -                {error}
+       529 -              </div>
+       530 -            )}
+       531 -  
+       532 -            {selectedFile ? (
+       533 -              <div className="p-4 bg-secondary rounded-lg 
+           - space-y-2">
+       534 -                <div className="flex items-center 
+           - justify-between">
+       535 -                  <Label className="text-sm 
+           - font-medium">已选择文件</Label>
+       536 -                  <Button variant="ghost" size="sm" 
+           - onClick={handleRetry}>
+       537 -                    重新选择
+       538 -                  </Button>
+       539 -                </div>
+       540 -                <div className="text-sm">
+       541 -                  <p 
+           - className="font-medium">{selectedFile.name}</p>
+       542 -                  <p className="text-muted-foreground">
+       543 -                    
+           - 类型：.{selectedFile.extension.toUpperCase()} |
+       544 -                    大小：{(selectedFile.size / 1024 / 
+           - 1024).toFixed(2)} MB
+       545 -                  </p>
+       546 -                  <p className="text-muted-foreground 
+           - text-xs mt-1">
+       547 -                    {selectedFile.path}
+       548 -                  </p>
+       549 -                </div>
+       550 -              </div>
+       551 -            ) : (
+       552 -              <div className="text-center py-8 
+           - text-muted-foreground">
+       553 -                <p>点击下方按钮选择文件</p>
+       554 -              </div>
+       555 -            )}
+       556 -          </CardContent>
+       557 -          <CardFooter>
+       558 -            <Button
+       559 -              className="w-full"
+       560 -              onClick={handleSelectFile}
+       561 -              disabled={isLoading}
+       562 -            >
+       563 -              {isLoading ? '选择中...' : selectedFile ? 
+           - '确认选择' : '选择文件'}
+       564 -            </Button>
+       565 -          </CardFooter>
+       566 -        </Card>
+       567 -      </div>
+       568 -    )
+       569 -  }
+       570 -  ```
+       571 -  
+       572 -  - [ ] **Step 3: Commit**
+       573 -  
+       574 -  ```bash
+       575 -  git add .
+       576 -  git commit -m "feat: 实现文件选择器组件"
+       577 -  ```
+       578 -  
+       579 -  - [ ] **Step 4: 运行开发服务器完整手动测试**
+       580 -  
+       581 -  ```bash
+       582 -  pnpm tauri dev
+       583 -  ```
+       584 -  
+       585 -  **手动测试清单:**
+       586 -  - [ ] 应用启动后显示"选择输入方式"界面
+       587 -  - [ ] 点击"音视频文件转写"进入文件选择界面
+       588 -  - [ ] 点击"已有字幕文件"进入文件选择界面
+       589 -  - [ ] 文件选择对话框正确过滤文件类型
+       590 -  - [ ] 选择文件后显示文件信息（名称、类型、大小、路径）
+        67 +  **测试清单** (`pnpm tauri dev`):
+        68 +  - [ ] 应用启动显示"选择输入方式"界面
+        69 +  - [ ] 
+           + 点击"音视频文件转写"进入文件选择，对话框过滤音视频格式
+        70 +  - [ ] 点击"已有字幕文件"进入文件选择，对话框过滤.srt/.vtt
+        71 +  - [ ] 选择文件后显示名称、类型、大小、路径
+        72    - [ ] 可以重新选择文件
+        73 -  - [ ] 返回按钮正常工作
+        73 +  - [ ] 返回按钮回到模式选择
+        74    
+        75    ---
+        76    
+        77 -  ## 测试计划
+        78 -  
+        79 -  - [ ] **手动测试清单:**
+        80 -    1. 应用启动后显示输入模式选择界面
+        81 -    2. 点击"音视频文件转写"进入文件选择界面
+        82 -    3. 点击"已有字幕文件"进入文件选择界面
+        83 -    4. 文件选择对话框正确过滤文件类型
+        84 -    5. 选择文件后显示文件信息（名称、类型、大小、路径）
+        85 -    6. 可以重新选择文件
+        86 -    7. 返回按钮正常工作
+        87 -  
+        88 -  ---
+        89 -  
+        77    ## 验收标准
+        78    
+        79 -  1. 用户可以看到两个输入选项：音视频文件转写 / 已有字幕文件
+        80 -  2. 点击选项后弹出对应的文件选择对话框
+        81 -  3. 文件对话框正确过滤显示支持的文件类型
+        82 -  4. 选择文件后显示文件详细信息
+        83 -  5. 支持重新选择文件
+        84 -  6. 支持返回上一级重新选择模式
+        79 +  1. 两个输入选项：音视频文件转写 / 已有字幕文件
+        80 +  2. 文件对话框正确过滤文件类型 (mp4/mkv/mov/mp3/wav/m4a vs 
+           + srt/vtt)
+        81 +  3. 选择文件后显示详细信息
+        82 +  4. 支持重新选择文件和返回上一级
+
+⏺ 已简化完成！现在计划文档只有 83 行，从原来的 1290 行大幅减少。
+
+  简化后的结构
+
+  - Task 1: 项目初始化 - 创建配置文件和 Tauri 骨架
+  - Task 2: UI 组件和输入模式选择 - shadcn 组件 + 选择界面
+  - Task 3: 文件选择功能 - Rust 命令 + FileSelector 组件
+
+  每个 Task 只列出需要创建/修改的文件清单和测试点，不再包含完整的代码内容。
+
+  ---
+  准备开始执行吗？有两个选项：
+
+  1. Subagent-Driven - 每个 Task 派分子 agent 执行，自动 review，快速迭代
+  2. Inline Execution - 在当前会话中执行，每个 Task 后停下来让你手动测试
+
+  你想用哪种方式？
+
+
+
