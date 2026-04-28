@@ -27,7 +27,7 @@
 **修改文件**:
 - `src-tauri/src/lib.rs` - 新增 `pub mod llm`
 
-**测试**: `cargo check` 编译通过
+**测试**: `cargo check` + `cargo test --lib llm` 通过 ✅ 已验证
 
 ---
 
@@ -36,11 +36,11 @@
 **创建文件**:
 - `src-tauri/src/llm/client.rs` - `LlmClient` 结构体，封装 reqwest 调用 OpenAI 兼容 `/chat/completions` 端点，支持 `ChatMessage` 消息列表输入，返回生成文本
 
-**测试**: `cargo check` 编译通过
+**测试**: `cargo check` + `cargo test --lib llm` 通过 ✅ 已验证
 
 ---
 
-### Task 3: 创建 Tauri LLM 命令 ✅
+### Task 3: 创建 Tauri LLM 命令
 
 **创建文件**:
 - `src-tauri/src/commands/llm.rs` - 三个命令：
@@ -56,7 +56,7 @@
 
 ---
 
-### Task 4: 创建前端 shadcn/ui 基础组件 ✅
+### Task 4: 创建前端 shadcn/ui 基础组件
 
 **创建文件**:
 - `src/components/ui/input.tsx` - Input 组件（基于 shadcn/ui 规范）
@@ -66,7 +66,7 @@
 
 ---
 
-### Task 5: 创建 LlmConfig 前端组件 ✅
+### Task 5: 创建 LlmConfig 前端组件
 
 **创建文件**:
 - `src/components/LlmConfig.tsx` - 配置表单组件，包含：
@@ -82,7 +82,7 @@
 
 ---
 
-### Task 6: 集成到 App.tsx 流程 ✅
+### Task 6: 集成到 App.tsx 流程
 
 **修改文件**:
 - `src/App.tsx`:
