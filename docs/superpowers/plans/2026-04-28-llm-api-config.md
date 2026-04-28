@@ -66,7 +66,7 @@
 
 ---
 
-### Task 5: 创建 LlmConfig 前端组件
+### Task 5: 创建 LlmConfig 前端组件 ✅
 
 **创建文件**:
 - `src/components/LlmConfig.tsx` - 配置表单组件，包含：
@@ -78,7 +78,7 @@
   - "返回"按钮
   - 组件加载时自动调用 `load_llm_config` 读取已保存配置
 
-**测试**: `pnpm build` 构建通过
+**测试**: `pnpm build` 构建通过 ✅ 已验证
 
 ---
 
