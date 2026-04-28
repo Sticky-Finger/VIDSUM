@@ -40,7 +40,7 @@
 
 ---
 
-### Task 3: 创建 Tauri LLM 命令
+### Task 3: 创建 Tauri LLM 命令 ✅
 
 **创建文件**:
 - `src-tauri/src/commands/llm.rs` - 三个命令：
@@ -52,7 +52,7 @@
 - `src-tauri/src/commands/mod.rs` - 新增 `pub mod llm`
 - `src-tauri/src/main.rs` - 注册三个新命令到 `invoke_handler`
 
-**测试**: `cargo check` 编译通过
+**测试**: `cargo check` 编译通过 ✅ 已验证
 
 ---
 
