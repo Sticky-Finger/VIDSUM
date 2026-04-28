@@ -19,14 +19,15 @@
 
 ## 进行中 🚧
 
+- [ ] **大模型总结**
+    - [x] 用户配置 OpenAI 兼容 API（Base URL、API Key、Model ID）
+    - [ ] 点击"生成总结"后，系统使用内置固定 Prompt 提交字幕全文
+    - [ ] 输出包含 `[HH:MM:SS]` 时间戳锚点的分层 Markdown
+
+
 ## 计划中 📋
 
 ### P0 功能（必须有）
-
-- [ ] **大模型总结**
-    - [ ] 用户配置 OpenAI 兼容 API（Base URL、API Key、Model ID）
-    - [ ] 点击"生成总结"后，系统使用内置固定 Prompt 提交字幕全文
-    - [ ] 输出包含 `[HH:MM:SS]` 时间戳锚点的分层 Markdown
 
 - [ ] **结果展示与导出**
     - [ ] Markdown 富文本预览（语法高亮、层级缩进）

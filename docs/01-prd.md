@@ -29,7 +29,7 @@ VidSum 是一款将本地音视频文件智能转写并总结为带时间戳 Mar
     - [x] 转写完成后展示字幕预览区域（左侧时间轴列表 + 右侧段落详情，支持编辑文字、导出 SRT/VTT）。
     - [x] 用户手动点击"确认并进入总结"，将当前字幕作为总结输入源（当前为 alert 占位，待接入大模型总结）。
 - **大模型总结**：
-    - [ ] 用户配置 OpenAI 兼容 API（Base URL、API Key、Model ID）。
+    - [x] 用户配置 OpenAI 兼容 API（Base URL、API Key、Model ID）。
     - [ ] 点击“生成总结”后，系统使用内置固定 Prompt 提交字幕全文。
     - [ ] 输出包含 `[HH:MM:SS]` 时间戳锚点的分层 Markdown。
 - **结果展示与导出**：
