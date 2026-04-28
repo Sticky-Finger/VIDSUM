@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { InputModeSelect } from './components/InputModeSelect';
 import { FileSelector, SelectedFile } from './components/FileSelector';
 import { ModelSelect } from './components/ModelSelect';
@@ -75,9 +75,9 @@ function App() {
   };
 
   /// 转写阶段出错
-  const handleTranscriptionError = (message: string) => {
+  const handleTranscriptionError = useCallback((message: string) => {
     handleError(message, 'transcribing');
-  };
+  }, []);
 
   /// 预览确认字幕，进入总结
   const handlePreviewConfirm = (entries: SubtitleEntry[]) => {

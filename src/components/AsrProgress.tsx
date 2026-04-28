@@ -68,6 +68,7 @@ export function AsrProgress({
   const [elapsed, setElapsed] = useState(0);
   const [showPreview, setShowPreview] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const effectGenRef = useRef(0); // generation 计数器，用于检测 effect 是否已重建
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // 转写结果映射为 SubtitleEntry[]
@@ -111,6 +112,8 @@ export function AsrProgress({
 
   // 注册事件监听并启动转写
   useEffect(() => {
+    // 每次 effect 执行都递增 generation，旧 async setup 通过检测 gen 是否匹配来判断自己被废弃
+    const currentGen = ++effectGenRef.current;
     const cleanup: UnlistenFn[] = [];
 
     const setup = async () => {
@@ -125,6 +128,7 @@ export function AsrProgress({
         setSegments((prev) => [...prev, payload]);
         setStatus(`正在转写... ${payload.segment_index + 1}/${payload.total_segments}`);
       });
+      if (effectGenRef.current !== currentGen) return; // effect 已重建，此 setup 已废弃
 
       // 监听完成事件
       const unlistenComplete = await listen<TranscriptionResultPayload>(
@@ -137,6 +141,7 @@ export function AsrProgress({
           setStatus('转写完成');
         }
       );
+      if (effectGenRef.current !== currentGen) return;
 
       // 监听错误事件
       const unlistenError = await listen<{ message: string }>('asr:error', (event) => {
@@ -145,6 +150,7 @@ export function AsrProgress({
         setStatus('转写出错');
         onError(event.payload.message);
       });
+      if (effectGenRef.current !== currentGen) return;
 
       cleanup.push(unlistenProgress, unlistenComplete, unlistenError);
 
@@ -153,8 +159,10 @@ export function AsrProgress({
 
       try {
         await invoke('start_transcription', { audioPath });
+        if (effectGenRef.current !== currentGen) { stopTimer(); return; }
         setStatus('正在转写...');
       } catch (err) {
+        if (effectGenRef.current !== currentGen) return;
         stopTimer();
         // Tauri invoke 失败时抛出的是字符串，需兼容处理
         const msg = typeof err === 'string'

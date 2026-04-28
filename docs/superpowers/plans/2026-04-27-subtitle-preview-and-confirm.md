@@ -83,3 +83,16 @@
   1. 改用 `editableEntries.find((e) => e.index === selectedIndex)` 按 `entry.index` 精确查找
   2. `handleSelect` 内联保存逻辑，依赖改为 `[editingIndex, editText]`，避免过期闭包
 - **状态**: ✅ 已修复
+
+### Bug 2: 转写完成后"总用时"仍在跳动 ✅ 已修复
+
+- **描述**: 转写完成并显示结果后，`elapsedText`（总用时）仍在继续递增
+- **原因**:
+  1. **React StrictMode 二次挂载**（`main.tsx` 中 `<React.StrictMode>` 包裹 App）导致 effect 执行两轮：挂载 → 卸载（cleanup）→ 再次挂载
+  2. `handleTranscriptionError` 未包 `useCallback`，每次渲染新引用，导致 `useEffect` deps 变化时 effect 反复重建
+  3. `setup()` 是异步函数（`await listen()`），StrictMode 的 cleanup 执行 `stopTimer()` 和注销监听时，旧的 async `setup()` 尚未完成
+  4. 旧 `setup()` 恢复执行时，react 已进入新 effect 实例，旧 setup 继续执行 `startTimer()` 创建一个**孤儿 interval**，此后没有任何代码能清除它
+- **修复**:
+  1. **`AsrProgress.tsx`**：用 `effectGenRef`（generation 计数器）替代 `isActiveRef`——每次 effect 执行递增版本号，`setup()` 捕获当前版本，每次 `await` 后检查 `effectGenRef.current !== currentGen`。旧 setup 发现版本号不匹配时立即返回，不再执行后续操作（包括 `startTimer()`）
+  2. **`App.tsx`**：`handleTranscriptionError` 包裹 `useCallback([])` 稳定引用，减少不必要的 effect 重建
+- **状态**: ✅ 已修复
