@@ -14,6 +14,10 @@ pub struct LlmConfigPayload {
     pub base_url: String,
     pub api_key: String,
     pub model: String,
+    /// 自定义系统提示（可选）
+    pub system_prompt: Option<String>,
+    /// 自定义用户提示模板（可选）
+    pub user_prompt_template: Option<String>,
 }
 
 impl From<LlmConfig> for LlmConfigPayload {
@@ -22,6 +26,8 @@ impl From<LlmConfig> for LlmConfigPayload {
             base_url: config.base_url,
             api_key: config.api_key,
             model: config.model,
+            system_prompt: config.system_prompt,
+            user_prompt_template: config.user_prompt_template,
         }
     }
 }
@@ -32,6 +38,8 @@ impl From<LlmConfigPayload> for LlmConfig {
             base_url: payload.base_url,
             api_key: payload.api_key,
             model: payload.model,
+            system_prompt: payload.system_prompt,
+            user_prompt_template: payload.user_prompt_template,
         }
     }
 }

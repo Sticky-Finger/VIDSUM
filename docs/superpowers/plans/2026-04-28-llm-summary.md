@@ -18,7 +18,7 @@
 
 ---
 
-### Task 1: 创建 Rust Prompt 模块并扩展 LlmConfig
+### Task 1: 创建 Rust Prompt 模块并扩展 LlmConfig ✅
 
 **创建文件**:
 - `src-tauri/src/llm/prompt.rs` - 定义默认 Prompt 模板，包含系统提示和用户提示模板
@@ -36,7 +36,7 @@
 - 用户提示模板（`DEFAULT_USER_PROMPT_TEMPLATE`）：包含 `{subtitles}` 占位符，用于插入字幕全文
 - 提供 `fn get_default_system_prompt() -> String` 和 `fn get_default_user_prompt_template() -> String` 供前端获取默认值
 
-**测试**: `cargo check` 通过
+**测试**: `cargo check` 通过 ✅
 
 ---
 

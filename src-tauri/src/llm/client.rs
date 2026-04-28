@@ -158,6 +158,8 @@ mod tests {
             base_url: "https://api.openai.com/v1".to_string(),
             api_key: "sk-test".to_string(),
             model: "gpt-4o".to_string(),
+            system_prompt: None,
+            user_prompt_template: None,
         };
         let client = LlmClient::new(config);
         assert_eq!(client.config().model, "gpt-4o");
@@ -169,6 +171,8 @@ mod tests {
             base_url: "https://api.openai.com/v1".to_string(),
             api_key: "sk-test".to_string(),
             model: "gpt-4o".to_string(),
+            system_prompt: None,
+            user_prompt_template: None,
         };
         let client = LlmClient::new(config);
         assert_eq!(

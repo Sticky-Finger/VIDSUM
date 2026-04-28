@@ -14,6 +14,10 @@ pub struct LlmConfig {
     pub api_key: String,
     /// 模型 ID（如 gpt-4o-mini）
     pub model: String,
+    /// 自定义系统提示（可选，为 None 时使用默认值）
+    pub system_prompt: Option<String>,
+    /// 自定义用户提示模板（可选，为 None 时使用默认值，包含 `{subtitles}` 占位符）
+    pub user_prompt_template: Option<String>,
 }
 
 impl Default for LlmConfig {
@@ -22,6 +26,8 @@ impl Default for LlmConfig {
             base_url: "https://api.openai.com/v1".to_string(),
             api_key: String::new(),
             model: "gpt-4o-mini".to_string(),
+            system_prompt: None,
+            user_prompt_template: None,
         }
     }
 }
@@ -118,6 +124,8 @@ mod tests {
             base_url: "https://api.openai.com/v1/".to_string(),
             api_key: "sk-test".to_string(),
             model: "gpt-4o".to_string(),
+            system_prompt: None,
+            user_prompt_template: None,
         };
         assert_eq!(
             config.chat_completions_url(),
@@ -131,6 +139,8 @@ mod tests {
             base_url: "https://api.openai.com/v1".to_string(),
             api_key: "sk-test".to_string(),
             model: "gpt-4o".to_string(),
+            system_prompt: None,
+            user_prompt_template: None,
         };
         assert_eq!(
             config.chat_completions_url(),
@@ -150,6 +160,8 @@ mod tests {
             base_url: "https://api.openai.com/v1".to_string(),
             api_key: "sk-test".to_string(),
             model: "gpt-4o".to_string(),
+            system_prompt: None,
+            user_prompt_template: None,
         };
         assert!(config.validate().is_ok());
     }
@@ -160,6 +172,8 @@ mod tests {
             base_url: "  ".to_string(),
             api_key: "sk-test".to_string(),
             model: "gpt-4o".to_string(),
+            system_prompt: None,
+            user_prompt_template: None,
         };
         assert!(config.validate().is_err());
     }
@@ -181,6 +195,8 @@ mod tests {
             base_url: "https://custom.api.com/v1".to_string(),
             api_key: "sk-custom-key".to_string(),
             model: "custom-model".to_string(),
+            system_prompt: Some("自定义系统提示".to_string()),
+            user_prompt_template: None,
         };
 
         save_config(&dir, &config).unwrap();
@@ -189,6 +205,8 @@ mod tests {
         assert_eq!(loaded.base_url, "https://custom.api.com/v1");
         assert_eq!(loaded.api_key, "sk-custom-key");
         assert_eq!(loaded.model, "custom-model");
+        assert_eq!(loaded.system_prompt, Some("自定义系统提示".to_string()));
+        assert_eq!(loaded.user_prompt_template, None);
 
         // 清理
         let _ = std::fs::remove_dir_all(&dir);
