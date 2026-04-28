@@ -82,7 +82,7 @@
 
 ---
 
-### Task 6: 集成到 App.tsx 流程
+### Task 6: 集成到 App.tsx 流程 ✅
 
 **修改文件**:
 - `src/App.tsx`:
@@ -93,7 +93,7 @@
   - `handleBack` 中处理 `llm_config` → `preview` 返回
   - 渲染 `LlmConfig` 组件
 
-**测试**: `pnpm tauri dev` 启动后完整流程验证
+**测试**: `pnpm tauri dev` 启动后完整流程验证 ✅ 已验证
 
 ---
 

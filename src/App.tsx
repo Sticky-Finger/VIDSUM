@@ -3,11 +3,12 @@ import { InputModeSelect } from './components/InputModeSelect';
 import { FileSelector, SelectedFile } from './components/FileSelector';
 import { ModelSelect } from './components/ModelSelect';
 import { AsrProgress } from './components/AsrProgress';
+import { LlmConfig } from './components/LlmConfig';
 import { Button } from '@/components/ui/button';
 import { type SubtitleEntry } from './lib/subtitle-export';
 
 /// 应用状态模式
-type AppMode = 'select' | 'file' | 'confirm' | 'model_select' | 'transcribing' | 'preview';
+type AppMode = 'select' | 'file' | 'confirm' | 'model_select' | 'transcribing' | 'preview' | 'llm_config';
 
 function App() {
   const [currentMode, setCurrentMode] = useState<AppMode>('select');
@@ -42,6 +43,8 @@ function App() {
       setSelectedFile(null);
     } else if (currentMode === 'model_select') {
       setCurrentMode('confirm');
+    } else if (currentMode === 'llm_config') {
+      setCurrentMode('preview');
     }
   };
 
@@ -79,11 +82,16 @@ function App() {
     handleError(message, 'transcribing');
   }, []);
 
-  /// 预览确认字幕，进入总结
+  /// 预览确认字幕，进入 LLM 配置
   const handlePreviewConfirm = (entries: SubtitleEntry[]) => {
     setConfirmedSubtitle(entries);
+    setCurrentMode('llm_config');
+  };
+
+  /// LLM 配置完成
+  const handleLlmConfigured = (config: { base_url: string; api_key: string; model: string }) => {
     setCurrentMode('preview');
-    alert('字幕已确认！后续将进入大模型总结功能。');
+    alert('API 配置已保存！大模型总结功能将在下一个任务中实现。');
   };
 
   /// 重新开始
@@ -221,6 +229,14 @@ function App() {
             ← 返回主页
           </Button>
         </div>
+      )}
+
+      {/* LLM 配置 */}
+      {currentMode === 'llm_config' && (
+        <LlmConfig
+          onConfigured={handleLlmConfigured}
+          onBack={handleBack}
+        />
       )}
     </div>
   );
