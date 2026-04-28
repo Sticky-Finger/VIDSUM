@@ -27,7 +27,7 @@
 **修改文件**:
 - `src-tauri/src/lib.rs` - 新增 `pub mod llm`
 
-**测试**: `cargo check` 编译通过
+**测试**: `cargo check` + `cargo test --lib llm` 通过 ✅ 已验证
 
 ---
 
@@ -36,7 +36,7 @@
 **创建文件**:
 - `src-tauri/src/llm/client.rs` - `LlmClient` 结构体，封装 reqwest 调用 OpenAI 兼容 `/chat/completions` 端点，支持 `ChatMessage` 消息列表输入，返回生成文本
 
-**测试**: `cargo check` 编译通过
+**测试**: `cargo check` + `cargo test --lib llm` 通过 ✅ 已验证
 
 ---
 
@@ -52,7 +52,7 @@
 - `src-tauri/src/commands/mod.rs` - 新增 `pub mod llm`
 - `src-tauri/src/main.rs` - 注册三个新命令到 `invoke_handler`
 
-**测试**: `cargo check` 编译通过
+**测试**: `cargo check` 编译通过 ✅ 已验证
 
 ---
 
@@ -62,7 +62,7 @@
 - `src/components/ui/input.tsx` - Input 组件（基于 shadcn/ui 规范）
 - `src/components/ui/label.tsx` - Label 组件（基于 shadcn/ui 规范）
 
-**测试**: `pnpm build` 构建通过
+**测试**: `pnpm build` 构建通过 ✅ 已验证
 
 ---
 
@@ -78,7 +78,7 @@
   - "返回"按钮
   - 组件加载时自动调用 `load_llm_config` 读取已保存配置
 
-**测试**: `pnpm build` 构建通过
+**测试**: `pnpm build` 构建通过 ✅ 已验证
 
 ---
 
@@ -93,7 +93,7 @@
   - `handleBack` 中处理 `llm_config` → `preview` 返回
   - 渲染 `LlmConfig` 组件
 
-**测试**: `pnpm tauri dev` 启动后完整流程验证
+**测试**: `pnpm tauri dev` 启动后完整流程验证 ✅ 已验证
 
 ---
 
