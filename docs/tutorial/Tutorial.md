@@ -208,5 +208,7 @@
 
 > 此次任务使用的模型：mimo-v2.5-pro
 
+对话过程记录: [2026-04-28-2006-caveat-the-messages-below-were-generated-by-the-u.txt](../../chat-logs/2026-04-28-2006-caveat-the-messages-below-were-generated-by-the-u.txt)
+
 **要点内容**
 - 整理更新进度到 TODO.md 和 01-prd.md 上的时候，才发现这次ai实现任务plan只是**TODO中一级任务的一个子任务**
