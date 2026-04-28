@@ -1,0 +1,6 @@
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1  # 可以在 Gitleaks 的 GitHub Release 页面查看最新版本
+    hooks:
+      - id: gitleaks
+        args: ['--staged']   # 只扫描本次暂存区的内容

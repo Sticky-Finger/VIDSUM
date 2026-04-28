@@ -11,3 +11,25 @@ Thumbs.db
 
 # node.js
 node_modules/
+
+# Git worktrees
+.worktrees/
+
+# Build output
+dist/
+
+# Rust
+src-tauri/target/
+src-tauri/gen/
+
+# AI 模型文件（由用户自行下载，不纳入版本管理）
+src-tauri/models/
+
+# 转写生成的字幕文件
+src-tauri/samples/*.srt
+
+# 原始对话导出（包含未脱敏信息，禁止直接提交）
+chat-logs/
+# 但不忽略 .gitkeep 文件（取反规则）
+!chat-logs/.gitkeep
+chat-logs/**/.git

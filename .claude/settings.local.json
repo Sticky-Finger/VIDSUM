@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:v2.tauri.app)",
+      "Bash(cargo check:*)",
+      "Bash(cargo clean:*)",
+      "Bash(cargo install:*)",
+      "Bash(pnpm install)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm tauri:dev)",
+      "Bash(git -C /Users/a1/Codes/VidSum status)",
+      "Bash(git -C /Users/a1/Codes/VidSum diff --stat)",
+      "Bash(git -C /Users/a1/Codes/VidSum log --oneline -5)",
+      "Bash(git -C /Users/a1/Codes/VidSum diff .claude/settings.local.json)",
+      "Bash(git -C /Users/a1/Codes/VidSum diff docs/superpowers/plans/2026-04-24-asr-audio-transcription.md)"
+    ],
+    "deny": [],
+    "ask": [
+      "Skill(superpowers:subagent-driven-development)"
+    ]
+  }
+}

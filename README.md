@@ -35,3 +35,45 @@
     - **提交格式**：`<type>(<scope>): <subject>`
         - 类型：feat/fix/docs/style/refactor/perf/test/chore
         - 示例：`feat(search): 添加多模态搜索功能`
+
+### 敏感信息检测
+
+#### 本地检测
+- 安装 [Gitleaks](https://github.com/gitleaks/gitleaks)：`brew install gitleaks`（macOS）
+- 全盘扫描：`gitleaks detect --source . -v`
+- 配合 pre-commit 自动拦截含敏感信息的提交：
+   ```bash
+   pip install pre-commit
+   # 在项目根目录创建 .pre-commit-config.yaml（示例见仓库）
+   pre-commit install
+   ```
+   此后每次 git commit 会自动扫描暂存区，发现敏感信息则提交失败
+
+#### 仓库层面
+- 通过 GitHub Actions 自动扫描 push 和 PR（配置文件：.github/workflows/gitleaks.yml）
+
+## 运行与构建
+
+### 前置要求
+- Node.js v18+
+- pnpm v8.0+（唯一推荐的 Node.js 包管理器）
+- Rust（通过 [rustup](https://rustup.rs/) 安装）
+- 系统依赖：参考 [Tauri v2 前置条件](https://v2.tauri.app/start/prerequisites/)
+
+### 安装依赖
+```bash
+pnpm install
+```
+
+### 开发模式
+```bash
+pnpm tauri dev
+```
+- 前端开发服务器运行在 http://localhost:1420
+- Rust 后端增量编译，修改代码后自动重载
+
+### 生产构建
+```bash
+pnpm tauri build
+```
+构建产物输出至 `src-tauri/target/release/bundle/`，包含各平台安装包（.app、.dmg、.msi、.deb 等）。
