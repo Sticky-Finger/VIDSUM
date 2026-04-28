@@ -1,14 +1,16 @@
 import { useState, useCallback } from 'react';
+import { invoke } from '@tauri-apps/api/core';
 import { InputModeSelect } from './components/InputModeSelect';
 import { FileSelector, SelectedFile } from './components/FileSelector';
 import { ModelSelect } from './components/ModelSelect';
 import { AsrProgress } from './components/AsrProgress';
 import { LlmConfig } from './components/LlmConfig';
+import { SummaryResult } from './components/SummaryResult';
 import { Button } from '@/components/ui/button';
-import { type SubtitleEntry } from './lib/subtitle-export';
+import { type SubtitleEntry, downloadFile } from './lib/subtitle-export';
 
 /// 应用状态模式
-type AppMode = 'select' | 'file' | 'confirm' | 'model_select' | 'transcribing' | 'preview' | 'llm_config';
+type AppMode = 'select' | 'file' | 'confirm' | 'model_select' | 'transcribing' | 'preview' | 'llm_config' | 'summarizing' | 'summary';
 
 function App() {
   const [currentMode, setCurrentMode] = useState<AppMode>('select');
@@ -17,6 +19,7 @@ function App() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [errorMode, setErrorMode] = useState<AppMode | null>(null);
   const [confirmedSubtitle, setConfirmedSubtitle] = useState<SubtitleEntry[] | null>(null);
+  const [summaryResult, setSummaryResult] = useState<string | null>(null);
 
   /// 选择输入模式
   const handleSelectInputMode = (mode: 'media' | 'subtitle') => {
@@ -45,6 +48,8 @@ function App() {
       setCurrentMode('confirm');
     } else if (currentMode === 'llm_config') {
       setCurrentMode('preview');
+    } else if (currentMode === 'summary') {
+      setCurrentMode('llm_config');
     }
   };
 
@@ -88,14 +93,43 @@ function App() {
     setCurrentMode('llm_config');
   };
 
-  /// LLM 配置完成
-  const handleLlmConfigured = (
-    _config: { base_url: string; api_key: string; model: string },
-    _systemPrompt: string,
-    _userPromptTemplate: string,
+  /// LLM 配置完成，生成总结
+  const handleLlmConfigured = async (
+    config: { base_url: string; api_key: string; model: string },
+    systemPrompt: string,
+    userPromptTemplate: string,
   ) => {
-    setCurrentMode('preview');
-    alert('API 配置已保存！大模型总结功能将在下一个任务中实现。');
+    setCurrentMode('summarizing');
+
+    try {
+      if (!confirmedSubtitle) throw new Error('字幕数据为空，请重新选择文件');
+
+      // 将字幕数据（毫秒）转换为 Rust 后端格式（秒）
+      const segments = confirmedSubtitle.map((entry) => ({
+        start: entry.startTime / 1000,
+        end: entry.endTime / 1000,
+        text: entry.text,
+      }));
+
+      const result = await invoke<string>('generate_summary', {
+        config,
+        segments,
+        systemPrompt,
+        userPromptTemplate,
+      });
+      setSummaryResult(result);
+      setCurrentMode('summary');
+    } catch (e) {
+      setErrorMessage(String(e));
+      setCurrentMode('llm_config');
+    }
+  };
+
+  /// 导出总结为 .md 文件
+  const handleExportSummary = () => {
+    if (summaryResult) {
+      downloadFile(summaryResult, 'video-summary.md', 'text/markdown');
+    }
   };
 
   /// 重新开始
@@ -104,6 +138,7 @@ function App() {
     setSelectedInputMode(null);
     setSelectedFile(null);
     setConfirmedSubtitle(null);
+    setSummaryResult(null);
     setErrorMessage(null);
     setErrorMode(null);
   };
@@ -240,6 +275,23 @@ function App() {
         <LlmConfig
           onConfigured={handleLlmConfigured}
           onBack={handleBack}
+        />
+      )}
+
+      {/* 生成总结中 */}
+      {currentMode === 'summarizing' && (
+        <div className="flex flex-col items-center gap-4 p-8">
+          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+          <p className="text-gray-500 text-sm">正在生成总结，请稍候...</p>
+        </div>
+      )}
+
+      {/* 总结结果展示 */}
+      {currentMode === 'summary' && summaryResult && (
+        <SummaryResult
+          summary={summaryResult}
+          onBack={handleBack}
+          onExport={handleExportSummary}
         />
       )}
     </div>

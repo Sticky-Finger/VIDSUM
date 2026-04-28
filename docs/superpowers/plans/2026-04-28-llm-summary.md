@@ -105,7 +105,7 @@
 
 ---
 
-### Task 5: 集成到 App.tsx 流程
+### Task 5: 集成到 App.tsx 流程 ✅
 
 **修改文件**:
 - `src/App.tsx`:
@@ -122,7 +122,7 @@
   - `handleBack` 中处理 `summary` → `llm_config` 返回
   - 渲染 `SummaryResult` 组件
 
-**测试**: `pnpm tauri dev` 启动后完整流程验证
+**测试**: `pnpm tauri dev` 启动后完整流程验证 ✅
 
 ---
 
