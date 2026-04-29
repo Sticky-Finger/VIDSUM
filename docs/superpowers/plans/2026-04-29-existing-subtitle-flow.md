@@ -19,7 +19,7 @@
 
 ---
 
-### Task 1: Rust 后端 - 新建 subtitle 模块及 SRT/VTT 解析器
+### Task 1: Rust 后端 - 新建 subtitle 模块及 SRT/VTT 解析器 ✅
 
 **Files:**
 - Create: `src-tauri/src/subtitle/mod.rs` — 模块导出
@@ -47,7 +47,7 @@
 
 ---
 
-### Task 2: React 前端 - 补全"已有字幕"流程状态机
+### Task 2: React 前端 - 补全"已有字幕"流程状态机 ✅
 
 **Files:**
 - Modify: `src/App.tsx`
