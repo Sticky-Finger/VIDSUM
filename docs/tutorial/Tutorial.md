@@ -247,3 +247,36 @@
 
 - 与上一个任务共用一个会话，**开始任务前使用`/compact`命令先压缩之前的上下文**
 - 完成当前计划 2026-04-28-llm-summary.md 后，发现下一个TODO里的任务也被完成了。至此mvp流程打通
+
+## 7 实现遗漏掉的01-prd.md这个mvp产品文档中的“已有字幕”流程
+
+> 此次任务使用的模型：deepseek-v4-flash
+
+对话过程记录: [2026-04-29-1240-caveat-the-messages-below-were-generated-by-the-u.txt](../../chat-logs-sanitized/2026-04-29-1240-caveat-the-messages-below-were-generated-by-the-u.txt)
+
+**要点内容**
+
+- 一开始，询问使用什么样的git分支去开发：
+```bash
+> 根据 @docs/01-prd.md 和 @docs/TODO.md 
+,我做完了mvp版本，但是只是实现了@docs/01-prd.md 其中“4. 
+核心流程图”中不包括“已有字幕”的流程。我现在要加上并实现这个流程。我是在1.0-
+mvp/task-start-entry 
+这个分支继续开发，还是基于master新开一个分支在做一个版本的prd和TODO去做？ 
+  ⎿  Read ../docs/01-prd.md (68 lines)
+  ⎿  Read ../docs/TODO.md (41 lines)
+```
+
+- 制作plan文档
+
+```bash
+> 使用 superpowers:writing-plan 对当前遗漏的"已有字幕"功能流程的实现写文档 
+```
+
+- 实现各个plan文档中的task
+- 每次写完代码，测试通过后，让ai告诉自己如何手动测试和验收：
+
+```bash
+> 我要先手动测试一下这个流程有没有通。告诉我命令和相关的步骤，然后再告诉我
+验收的标准。 
+```
