@@ -280,3 +280,11 @@ mvp/task-start-entry
 > 我要先手动测试一下这个流程有没有通。告诉我命令和相关的步骤，然后再告诉我
 验收的标准。 
 ```
+
+## 7 变更01-prd.md这个mvp产品文档中的“核心流程图”，并实现变更后的流程
+
+### 7.1 变更核心业务流程并更新prd和todo，使用writing-plan制作实现计划文档
+
+> 此次任务使用的模型：mimo-v2.5-pro
+
+对话过程记录: [2026-04-30-0232-caveat-the-messages-below-were-generated-by-the-u.txt](../../chat-logs-sanitized/2026-04-30-0232-caveat-the-messages-below-were-generated-by-the-u.txt)
