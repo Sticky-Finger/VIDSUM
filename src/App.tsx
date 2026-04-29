@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { type SubtitleEntry, downloadFile } from './lib/subtitle-export';
 
 /// 应用状态模式
-type AppMode = 'select' | 'file' | 'confirm' | 'model_select' | 'transcribing' | 'preview' | 'llm_config' | 'summarizing' | 'summary';
+type AppMode = 'select' | 'file' | 'confirm' | 'model_select' | 'transcribing' | 'parsing' | 'preview' | 'llm_config' | 'summarizing' | 'summary';
 
 function App() {
   const [currentMode, setCurrentMode] = useState<AppMode>('select');
@@ -44,6 +44,8 @@ function App() {
     } else if (currentMode === 'confirm') {
       setCurrentMode('file');
       setSelectedFile(null);
+    } else if (currentMode === 'parsing') {
+      setCurrentMode('confirm');
     } else if (currentMode === 'model_select') {
       setCurrentMode('confirm');
     } else if (currentMode === 'llm_config') {
@@ -53,18 +55,33 @@ function App() {
     }
   };
 
-  /// 确认文件，进入模型选择
+  /// 确认文件，进入模型选择或字幕解析
   const handleConfirm = () => {
     if (!selectedFile) return;
 
     if (selectedFile.type === 'media') {
       setCurrentMode('model_select');
     } else {
-      // 字幕文件暂未实现处理逻辑
-      setErrorMessage('字幕文件处理功能开发中，请先选择音视频文件');
-      setErrorMode('confirm');
+      // 字幕文件：进入解析流程
+      setCurrentMode('parsing');
+      handleParseSubtitle();
     }
   };
+
+  /// 解析字幕文件
+  const handleParseSubtitle = useCallback(async () => {
+    if (!selectedFile || selectedFile.type !== 'subtitle') return;
+
+    try {
+      const entries: SubtitleEntry[] = await invoke('parse_subtitle_file', {
+        filePath: selectedFile.path,
+      });
+      handlePreviewConfirm(entries);
+    } catch (e) {
+      setErrorMessage(String(e));
+      setCurrentMode('confirm');
+    }
+  }, [selectedFile]);
 
   /// 模型初始化完成，自动开始转写
   const handleModelInitialized = () => {
@@ -249,6 +266,21 @@ function App() {
           onRestart={handleRestart}
           onPreview={handlePreviewConfirm}
         />
+      )}
+
+      {/* 解析字幕中 */}
+      {currentMode === 'parsing' && (
+        <div className="flex flex-col items-center gap-4 p-8">
+          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+          <p className="text-gray-500 text-sm">正在解析字幕文件...</p>
+          <Button
+            variant="ghost"
+            className="mt-4 h-10 text-sm"
+            onClick={handleBack}
+          >
+            ← 返回
+          </Button>
+        </div>
       )}
 
       {/* 预览确认 - 字幕确认后占位 */}

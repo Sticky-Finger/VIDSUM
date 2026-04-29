@@ -18,6 +18,7 @@ fn main() {
             commands::asr::init_whisper_engine,
             commands::asr::start_transcription,
             commands::asr::transcribe_with_cloud,
+            commands::subtitle::parse_subtitle_file,
             commands::llm::load_llm_config,
             commands::llm::save_llm_config,
             commands::llm::test_llm_connection,

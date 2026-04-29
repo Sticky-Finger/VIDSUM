@@ -1,0 +1,1909 @@
+
+▗ ▗   ▖ ▖  Claude Code v2.0.36
+           deepseek-v4-flash · API Usage Billing
+  ▘▘ ▝▝    /Users/a1/Codes/VidSum/src-tauri
+
+> /clear 
+  ⎿  (no content)
+
+> 根据 @docs/01-prd.md 和 @docs/TODO.md 
+,我做完了mvp版本，但是只是实现了@docs/01-prd.md 其中“4. 
+核心流程图”中不包括“已有字幕”的流程。我现在要加上并实现这个流程。我是在1.0-
+mvp/task-start-entry 
+这个分支继续开发，还是基于master新开一个分支在做一个版本的prd和TODO去做？ 
+  ⎿  Read ../docs/01-prd.md (68 lines)
+  ⎿  Read ../docs/TODO.md (41 lines)
+
+⏺ 我来分析一下项目现状和分支情况，然后给你建议。
+
+⏺ Explore(Explore branch and project state)
+  ⎿  Done (24 tool uses · 35.6k tokens · 3m 34s)                          
+
+⏺ 好的，我的分析结果如下：
+
+  现状总结
+
+  1.0-mvp/task-start-entry 分支的实际情况：
+  - 与 master 代码完全一致（diff 为空）
+  - 落后 master 2 个提交
+  - 分支上仅有 5 个教程素材的 chore/feat 提交，不含任何实际代码变更
+  - 它本质上是一个教程记录分支，不是真正的开发分支
+
+  建议策略
+
+  根据 CLAUDE.md 的开发规范（不使用 worktree，从目标分支建 feature 分支 →
+  实现 → git merge --ff-only 合回 → 删除 feature 分支）：
+
+  建议：从 master 新建 feature 分支，不要在 1.0-mvp/task-start-entry 
+  上继续开发。
+
+  理由：
+  1. 这是 MVP 内部补全一个已有的 P0 功能，不是新版本迭代
+  2. 1.0-mvp/task-start-entry 分支已落后 master
+  且不含代码变更，在上面开发需要先 rebase/merge master，增加不必要的复杂度
+  3. PRD 和 TODO.md
+  中的进度已经将此功能标记为完成，所以它属于"补全"而非"新增版本"
+  4. 建议分支名：feature/existing-subtitle-flow（遵循 feature功能名
+  命名规范）
+
+  具体路径：
+  - 从 master 创建 feature/existing-subtitle-flow
+  - 实现 "已有字幕" 的完整流程（.srt/.vtt 解析 + 跳过 ASR 直接进入字幕预览
+  → LLM 总结）
+  - 完成后 git merge --ff-only 回 master
+  - 删除 feature 分支
+                                                                          
+⏺ User approved Claude's plan:
+  ⎿  分支策略
+
+     从 master 新建 feature/existing-subtitle-flow 分支开发，不继续在 
+     1.0-mvp/task-start-entry 上开发。
+
+     原因：
+     - 1.0-mvp/task-start-entry 是教程记录分支，与 master 代码一致但落后 
+     master，不含代码变更
+     - 这是补全 MVP 已有 P0 功能，不是新版本迭代
+     - 从 master 新建分支更简洁，符合 CLAUDE.md "feature功能名" 的命名规范
+
+     实现计划
+
+     Task 1: Rust 后端 - 新增字幕文件解析命令
+
+     - 在 src-tauri/src/commands/ 中新增 subtitle.rs
+     - 实现解析 .srt / .vtt 
+     文件的函数，输出统一的字幕段列表（含时间戳和文本）
+     - 在 Tauri 中注册新命令
+
+     Task 2: React 前端 - 补全"已有字幕"流程的状态机
+
+     - 修改 App.tsx 状态机，在 file 步骤区分"音视频"和"字幕"两种文件类型
+     - 针对字幕文件：跳过 ASR 阶段（model_select → 
+     transcribing），直接进入字幕预览阶段
+     - 最终统一进入 llm_config → summarizing → summary 流程
+
+     Task 3: 更新进度文档
+
+     - 确认 TODO.md 和 PRD.md 中该功能进度无误
+
+⏺ 好的，开始实现。先创建 todo 列表并切到 feature 分支。
+
+⏺ Bash(git checkout master && git pull origin master 2>/dev/null; git checkout
+      -b feature/existing-subtitle-flow)
+  ⎿  您的分支与上游分支 'origin/master' 一致。        
+     已经是最新的。
+     已经位于 'master'
+     切换到一个新分支 'feature/existing-subtitle-flow'
+
+⏺ 先阅读相关源码，理解现有架构。
+
+⏺ Read(src/commands/mod.rs)
+  ⎿  Read 6 lines
+
+⏺ Read(src/commands/file.rs)
+  ⎿  Read 59 lines
+
+⏺ Read(src/lib.rs)
+  ⎿  Read 6 lines
+
+⏺ Read(~/Codes/VidSum/src/App.tsx)
+  ⎿  Read 302 lines
+
+⏺ Read(~/Codes/VidSum/src/components/InputModeSelect.tsx)
+  ⎿  Read 42 lines
+
+⏺ Read(~/Codes/VidSum/src/components/FileSelector.tsx)
+  ⎿  Read 112 lines
+
+⏺ Read(~/Codes/VidSum/src/components/SubtitlePreview.tsx)
+  ⎿  Read 263 lines
+
+⏺ Read(~/Codes/VidSum/src/components/AsrProgress.tsx)
+  ⎿  Read 382 lines
+  ⎿  Interrupted · What should Claude do instead?
+
+> 那你帮我改一下@docs/01-prd.md 和 @docs/TODO.md 
+,把移动的功能点添加到任务列表中，改之前先让我审核一下你改的东西 
+  ⎿  Read ../docs/TODO.md (41 lines)
+  ⎿  Interrupted · What should Claude do instead?
+
+> 那你帮我改一下@docs/01-prd.md 和 @docs/TODO.md 
+,把遗漏的功能点添加到任务列表中，改之前先让我审核一下你改的东西 
+  ⎿  Read ../docs/TODO.md (41 lines)
+
+⏺ 明白，我来先展示我打算改的内容，你审核通过后再执行。
+
+  ---
+  从代码分析可知，"已有字幕"流程在 UI 层面已有入口（InputModeSelect 和
+  FileSelector），但实际处理逻辑（解析 .srt/.vtt 文件并跳转
+  ASR）从未实现。两个文档中该功能被错误地标记为完成。
+
+  拟修改内容
+
+  1. docs/01-prd.md
+
+  L22-P0 功能清单：
+
+  -    - [x] 直接选择本地字幕文件（.srt / .vtt）作为起点。
+  +    - [ ] 直接选择本地字幕文件（.srt / .vtt）作为起点。
+
+  2. docs/TODO.md
+
+  原"已完成"部分：
+
+   ## 已完成 ✅
+
+   - [x] **输入与任务创建**
+       - [x] 选择本地音视频文件（支持 mp4, mkv, mov, mp3, wav, m4a 等）
+  -    - [x] 选择本地字幕文件（.srt / .vtt）作为起点
+  +    - [ ] 选择本地字幕文件（.srt / .vtt）作为起点
+
+  并在下方新增"进行中"区域：
+
+  ## 进行中 🔄
+
+  - [ ] **已有字幕文件处理流程**
+      - [ ] 实现 SRT/VTT 文件解析（Rust 后端）
+      - [ ] 字幕入口跳过 ASR 直接进入预览（React 前端）
+
+  这样 PRD 真实反映功能状态，TODO 拆出可执行的子任务。
+
+  ---
+  你看这样改是否可以？你确认后我执行修改。
+
+> 好 
+
+⏺ Update(~/Codes/VidSum/docs/01-prd.md)
+  ⎿  Updated ../docs/01-prd.md with 1 addition and 1 removal            
+       19    
+       20    - **输入与任务创建**：
+       21        - [x] 选择本地音视频文件（支持 mp4, mkv, mov, mp3, wav,
+             m4a 等主流格式）。
+       22 -      - [x] 直接选择本地字幕文件（.srt / .vtt）作为起点。
+       22 +      - [ ] 直接选择本地字幕文件（.srt / .vtt）作为起点。
+       23    - **音频转文字 (ASR)**：
+       24        - [x] 本地 Whisper 引擎（Tiny/Base/Small/Medium/Large 
+            五种模型，支持 zh/en/ja/auto 语言选择，支持 MP3/MP4/WAV 
+            输入自动重采样到 16kHz）。
+       25        - [x] 云端 ASR 预留 OpenAI 兼容接口（可配置 API URL + 
+            Key + Model）。
+
+⏺ Update(~/Codes/VidSum/docs/TODO.md)
+  ⎿  Updated ../docs/TODO.md with 8 additions and 2 removals            
+        2    
+        3    ## 已完成 ✅
+        4    
+        5 -  - [x] **输入与任务创建**
+        5 +  - [ ] **输入与任务创建**
+        6        - [x] 选择本地音视频文件（支持 mp4, mkv, mov, mp3, wav,
+             m4a 等）
+        7 -      - [x] 选择本地字幕文件（.srt / .vtt）作为起点
+        7 +      - [ ] 选择本地字幕文件（.srt / .vtt）作为起点
+        8    
+        9 +  ## 进行中 🔄
+       10 +  
+       11 +  - [ ] **已有字幕文件处理流程**
+       12 +      - [ ] 实现 SRT/VTT 文件解析（Rust 后端）
+       13 +      - [ ] 字幕入口跳过 ASR 直接进入预览（React 前端）
+       14 +  
+       15    - [x] **音频转文字 (ASR)**
+       16        - [x] 本地 Whisper 引擎（Tiny/Base/Small/Medium/Large 
+            五种模型，支持 zh/en/ja/auto 语言选择）
+       17        - [x] 云端 ASR 预留 OpenAI 兼容接口（可配置 API URL + 
+            Key + Model）
+
+⏺ 修改完成。已做的改动：
+
+  1. docs/01-prd.md L22：[x] → [ ]
+  2. docs/TODO.md L5-L7：[x] → [ ]，并在"进行中 🔄"下新增两个子任务
+
+  接下来是否继续实现这个功能？之前已经创建了 feature/existing-subtitle-flow
+   分支，代码都在。
+
+> 我要对文档更改进行手动提交,帮我想一个合适的git commit 信息 
+
+⏺ Bash(git status && echo "---" && git diff --stat)
+  ⎿  位于分支 feature/existing-subtitle-flow               
+     要提交的变更：
+       （使用 "git restore --staged <文件>..." 以取消暂存）
+     … +4 lines (ctrl+o to expand)
+
+⏺ 建议的 commit message：
+
+  docs: 更正"已有字幕入口"功能状态（从已完成改为待实现）
+
+  将 PRD 和 TODO
+  中错误标记为完成的"直接选择本地字幕文件"功能改为待实现状态，
+  并在 TODO 中新增"进行中"区域，拆分出 Rust
+  后端解析和前端流程跳转两个子任务。
+
+  格式遵循 <type>(<scope>): <subject> 规范，docs
+  类型表示文档变更。你可以在此基础上调整后手动提交。
+
+> 使用 superpowers:writing-plan 对当前遗漏的"已有字幕"功能流程的实现写文档 
+
+> The "writing-plans" skill is loading 
+
+⏺ Explore(Explore Rust backend details)
+  ⎿  Done (13 tool uses · 36.6k tokens · 47.7s)                           
+
+⏺ 我已掌握所有代码细节，现在写实现计划。
+
+⏺ Write(~/Codes/VidSum/docs/superpowers/plans/2026-04-29-existing-subtitle-flow
+       .md)
+  ⎿ User rejected update../docs/superpowers/plans/2026-04-29-existing-subtitle
+    to                  -flow.md
+        2    
+        3    > **For agentic workers:** REQUIRED SUB-SKILL: Use 
+            superpowers:executing-plans to implement this plan 
+            task-by-task. Steps use checkbox (`- [ ]`) syntax for 
+            tracking.
+        4    
+        5 -  **Goal:** 
+          - 补全"选择已有字幕文件（.srt/.vtt）作为起点"的完整流程，跳过
+          -  ASR 转写和字幕预览步骤，解析后直接进入 LLM 总结配置。
+        5 +  **Goal:** 
+          + 补全"选择已有字幕文件（.srt/.vtt）作为起点"的完整流程，跳过
+          +  ASR 转写步骤，直接进入字幕预览 → LLM 总结。
+        6    
+        7 -  **流程（对应 PRD 流程图）：**
+        7 +  **Architecture:** SRT/VTT 解析在 Rust 
+          + 后端实现（纯手动解析，无需第三方库），通过 Tauri command 
+          + 返回统一结构。前端在 App.tsx 状态机中新增 `parsing` 
+          + 状态，字幕文件确认后调用解析命令，成功后直接展示 
+          + SubtitlePreview 组件（复用现有组件），最终汇入 LLM 
+          + 总结流程。
+        8 +  
+        9 +  **Tech Stack:** Rust (Tauri command + serde), React 19 + 
+          + TypeScript, shadcn/ui
+       10 +  
+       11 +  ---
+       12 +  
+       13 +  ### Task 1: Rust 后端 - 新建 subtitle 模块及 SRT/VTT 
+          + 解析器
+       14 +  
+       15 +  **Files:**
+       16 +  - Create: `src-tauri/src/subtitle/mod.rs`
+       17 +  - Create: `src-tauri/src/subtitle/parser.rs`
+       18 +  - Modify: `src-tauri/src/lib.rs`
+       19 +  - Modify: `src-tauri/src/commands/mod.rs`
+       20 +  - Create: `src-tauri/src/commands/subtitle.rs`
+       21 +  
+       22 +  **Subtask 1.1: 创建 subtitle 模块目录和 mod.rs**
+       23 +  
+       24 +  - [ ] **创建 `src-tauri/src/subtitle/mod.rs`**
+       25 +  
+       26 +  ```rust
+       27 +  pub mod parser;
+       28 +  pub use parser::{parse_subtitle_file, SubtitleEntry, 
+          + SubtitleFormat};
+       29    ```
+       30 -  选择字幕文件 → 后台解析 → 自动确认字幕 → 进入 LLM 总结配置
+       30 +  
+       31 +  **Subtask 1.2: 实现 SRT/VTT 解析器**
+       32 +  
+       33 +  - [ ] **创建 `src-tauri/src/subtitle/parser.rs`**
+       34 +  
+       35 +  ```rust
+       36 +  use serde::{Deserialize, Serialize};
+       37 +  use std::path::Path;
+       38 +  
+       39 +  /// 字幕条目（时间单位为毫秒，与前端 SubtitleEntry 一致）
+       40 +  #[derive(Debug, Clone, Serialize, Deserialize)]
+       41 +  #[serde(rename_all = "snake_case")]
+       42 +  pub struct SubtitleEntry {
+       43 +      pub index: i32,
+       44 +      pub text: String,
+       45 +      pub start_time: i64,
+       46 +      pub end_time: i64,
+       47 +      pub timestamp: String,
+       48 +  }
+       49 +  
+       50 +  /// 字幕格式
+       51 +  #[derive(Debug, Clone, PartialEq)]
+       52 +  pub enum SubtitleFormat {
+       53 +      Srt,
+       54 +      Vtt,
+       55 +  }
+       56 +  
+       57 +  /// 根据文件扩展名判断格式
+       58 +  fn detect_format(path: &Path) -> Result<SubtitleFormat, 
+          + String> {
+       59 +      match path.extension().and_then(|ext| ext.to_str()) {
+       60 +          Some("srt") => Ok(SubtitleFormat::Srt),
+       61 +          Some("vtt") => Ok(SubtitleFormat::Vtt),
+       62 +          Some(ext) => Err(format!("不支持的字幕格式: 
+          + .{}（仅支持 .srt / .vtt）", ext)),
+       63 +          None => Err("无法识别文件扩展名".to_string()),
+       64 +      }
+       65 +  }
+       66 +  
+       67 +  /// 解析 SRT 时间行 "HH:MM:SS,mmm --> HH:MM:SS,mmm"
+       68 +  /// 返回 (start_ms, end_ms)
+       69 +  fn parse_srt_time(line: &str) -> Option<(i64, i64)> {
+       70 +      let line = line.trim();
+       71 +      let arrow = line.find("-->")?;
+       72 +      let start_str = line[..arrow].trim();
+       73 +      let end_str = line[arrow + 3..].trim();
+       74 +  
+       75 +      let parse_time = |s: &str| -> Option<i64> {
+       76 +          // SRT: HH:MM:SS,mmm  (逗号分隔毫秒)
+       77 +          let s = s.replace(',', ".");
+       78 +          parse_vtt_time(&s)
+       79 +      };
+       80 +  
+       81 +      Some((parse_time(start_str)?, parse_time(end_str)?))
+       82 +  }
+       83 +  
+       84 +  /// 解析 VTT 时间字符串 "HH:MM:SS.mmm"
+       85 +  /// 返回毫秒数
+       86 +  fn parse_vtt_time(s: &str) -> Option<i64> {
+       87 +      let parts: Vec<&str> = s.split(':').collect();
+       88 +      if parts.len() != 3 {
+       89 +          return None;
+       90 +      }
+       91 +      let hours: i64 = parts[0].parse().ok()?;
+       92 +      let minutes: i64 = parts[1].parse().ok()?;
+       93 +      let sec_parts: Vec<&str> = 
+          + parts[2].split('.').collect();
+       94 +      let seconds: i64 = sec_parts[0].parse().ok()?;
+       95 +      let millis: i64 = if sec_parts.len() > 1 {
+       96 +          let ms_str = sec_parts[1];
+       97 +          // 补齐或截断到3位
+       98 +          let padded = format!("{:0<3}", ms_str);
+       99 +          padded[..3].parse().unwrap_or(0)
+      100 +      } else {
+      101 +          0
+      102 +      };
+      103 +      Some(hours * 3_600_000 + minutes * 60_000 + seconds * 
+          + 1_000 + millis)
+      104 +  }
+      105 +  
+      106 +  /// 格式化毫秒为 HH:MM:SS（用于 frontend 
+          + SubtitleEntry.timestamp）
+      107 +  fn format_timestamp(ms: i64) -> String {
+      108 +      let total_seconds = ms / 1000;
+      109 +      let hours = total_seconds / 3600;
+      110 +      let minutes = (total_seconds % 3600) / 60;
+      111 +      let seconds = total_seconds % 60;
+      112 +      format!("{:02}:{:02}:{:02}", hours, minutes, seconds)
+      113 +  }
+      114 +  
+      115 +  /// 解析 SRT 内容，返回 Vec<SubtitleEntry>
+      116 +  fn parse_srt(content: &str) -> Result<Vec<SubtitleEntry>, 
+          + String> {
+      117 +      let mut entries = Vec::new();
+      118 +      // SRT 格式：序号\n时间\n文本\n空行
+      119 +      let blocks: Vec<&str> = 
+          + content.split("\n\n").collect();
+      120 +  
+      121 +      for block in blocks {
+      122 +          let block = block.trim();
+      123 +          if block.is_empty() {
+      124 +              continue;
+      125 +          }
+      126 +  
+      127 +          let lines: Vec<&str> = block.lines().collect();
+      128 +          if lines.len() < 3 {
+      129 +              continue; // 无效块跳过
+      130 +          }
+      131 +  
+      132 +          // 第1行：序号
+      133 +          let index: i32 = match lines[0].trim().parse() {
+      134 +              Ok(n) => n,
+      135 +              Err(_) => continue,
+      136 +          };
+      137 +  
+      138 +          // 第2行：时间
+      139 +          let (start_time, end_time) = match 
+          + parse_srt_time(lines[1]) {
+      140 +              Some(t) => t,
+      141 +              None => continue,
+      142 +          };
+      143 +  
+      144 +          // 剩余行：文本（可能有多行）
+      145 +          let text = 
+          + lines[2..].join("\n").trim().to_string();
+      146 +          if text.is_empty() {
+      147 +              continue;
+      148 +          }
+      149 +  
+      150 +          entries.push(SubtitleEntry {
+      151 +              index,
+      152 +              text,
+      153 +              start_time,
+      154 +              end_time,
+      155 +              timestamp: format_timestamp(start_time),
+      156 +          });
+      157 +      }
+      158 +  
+      159 +      if entries.is_empty() {
+      160 +          return Err("未解析到任何有效字幕条目，请检查文件格
+          + 式".to_string());
+      161 +      }
+      162 +  
+      163 +      Ok(entries)
+      164 +  }
+      165 +  
+      166 +  /// 解析 VTT 内容，返回 Vec<SubtitleEntry>
+      167 +  fn parse_vtt(content: &str) -> Result<Vec<SubtitleEntry>, 
+          + String> {
+      168 +      let mut entries = Vec::new();
+      169 +      let mut index_counter = 0;
+      170 +  
+      171 +      // VTT 文件通常以 "WEBVTT" 头部开始，也可能有元数据行
+      172 +      // 去掉头部和元数据，找到第一个空行后的内容
+      173 +      let body = if let Some(pos) = content.find("\n\n") {
+      174 +          &content[pos + 2..]
+      175 +      } else {
+      176 +          content
+      177 +      };
+      178 +  
+      179 +      // VTT 格式：时间\n文本\n空行（或可选的序号行）
+      180 +      let blocks: Vec<&str> = body.split("\n\n").collect();
+      181 +  
+      182 +      for block in blocks {
+      183 +          let block = block.trim();
+      184 +          if block.is_empty() {
+      185 +              continue;
+      186 +          }
+      187 +  
+      188 +          let lines: Vec<&str> = block.lines().collect();
+      189 +          if lines.is_empty() {
+      190 +              continue;
+      191 +          }
+      192 +  
+      193 +          // VTT 的样式块（以 STYLE 开头）跳过
+      194 +          if lines[0].trim().eq_ignore_ascii_case("STYLE") {
+      195 +              continue;
+      196 +          }
+      197 +  
+      198 +          // VTT 的注释块跳过
+      199 +          if lines[0].trim().starts_with("NOTE") {
+      200 +              continue;
+      201 +          }
+      202 +  
+      203 +          // 查找时间行：包含 "-->"
+      204 +          let time_line_idx = lines.iter().position(|l| 
+          + l.contains("-->"));
+      205 +          let time_line_idx = match time_line_idx {
+      206 +              Some(idx) => idx,
+      207 +              None => continue,
+      208 +          };
+      209 +  
+      210 +          let (start_time, end_time) = match 
+          + parse_vtt_time_line(lines[time_line_idx]) {
+      211 +              Some(t) => t,
+      212 +              None => continue,
+      213 +          };
+      214 +  
+      215 +          // 时间行之后的都是文本
+      216 +          let text_lines = &lines[time_line_idx + 1..];
+      217 +          if text_lines.is_empty() {
+      218 +              continue;
+      219 +          }
+      220 +          let text = 
+          + text_lines.join("\n").trim().to_string();
+      221 +          if text.is_empty() {
+      222 +              continue;
+      223 +          }
+      224 +  
+      225 +          index_counter += 1;
+      226 +  
+      227 +          entries.push(SubtitleEntry {
+      228 +              index: index_counter,
+      229 +              text,
+      230 +              start_time,
+      231 +              end_time,
+      232 +              timestamp: format_timestamp(start_time),
+      233 +          });
+      234 +      }
+      235 +  
+      236 +      if entries.is_empty() {
+      237 +          return Err("未解析到任何有效字幕条目，请检查文件格
+          + 式".to_string());
+      238 +      }
+      239 +  
+      240 +      Ok(entries)
+      241 +  }
+      242 +  
+      243 +  /// 解析 VTT 时间行 "HH:MM:SS.mmm --> HH:MM:SS.mmm"
+      244 +  /// 可能包含尾部设置如 "A:start"
+      245 +  fn parse_vtt_time_line(line: &str) -> Option<(i64, i64)> {
+      246 +      let line = line.trim();
+      247 +      let arrow = line.find("-->")?;
+      248 +      let start_str = line[..arrow].trim();
+      249 +      let end_part = line[arrow + 3..].trim();
+      250 +      // 去掉尾部设置（空格后的部分）
+      251 +      let end_str = 
+          + end_part.split_whitespace().next().unwrap_or(end_part);
+      252 +  
+      253 +      Some((parse_vtt_time(start_str)?, 
+          + parse_vtt_time(end_str)?))
+      254 +  }
+      255 +  
+      256 +  /// 解析字幕文件入口函数
+      257 +  ///
+      258 +  /// # Arguments
+      259 +  /// * `file_path` - 字幕文件的完整路径
+      260 +  ///
+      261 +  /// # Returns
+      262 +  /// 返回解析后的字幕条目列表
+      263 +  pub fn parse_subtitle_file(file_path: &str) -> 
+          + Result<Vec<SubtitleEntry>, String> {
+      264 +      let path = Path::new(file_path);
+      265 +      let format = detect_format(path)?;
+      266 +  
+      267 +      let content = std::fs::read_to_string(path)
+      268 +          .map_err(|e| format!("读取文件失败: {}", e))?;
+      269 +  
+      270 +      match format {
+      271 +          SubtitleFormat::Srt => parse_srt(&content),
+      272 +          SubtitleFormat::Vtt => parse_vtt(&content),
+      273 +      }
+      274 +  }
+      275 +  
+      276 +  #[cfg(test)]
+      277 +  mod tests {
+      278 +      use super::*;
+      279 +  
+      280 +      #[test]
+      281 +      fn test_parse_srt_simple() {
+      282 +          let srt = "1\n00:00:01,000 --> 00:00:04,000\nHello
+          +  world\n\n2\n00:00:05,000 --> 00:00:08,500\nThis is a 
+          + test\n";
+      283 +          let entries = parse_srt(srt).unwrap();
+      284 +          assert_eq!(entries.len(), 2);
+      285 +          assert_eq!(entries[0].index, 1);
+      286 +          assert_eq!(entries[0].text, "Hello world");
+      287 +          assert_eq!(entries[0].start_time, 1000);
+      288 +          assert_eq!(entries[0].end_time, 4000);
+      289 +          assert_eq!(entries[0].timestamp, "00:00:01");
+      290 +          assert_eq!(entries[1].text, "This is a test");
+      291 +          assert_eq!(entries[1].start_time, 5000);
+      292 +          assert_eq!(entries[1].end_time, 8500);
+      293 +      }
+      294 +  
+      295 +      #[test]
+      296 +      fn test_parse_srt_multiline_text() {
+      297 +          let srt = "1\n00:00:01,000 --> 00:00:04,000\nLine 
+          + one\nLine two\n\n";
+      298 +          let entries = parse_srt(srt).unwrap();
+      299 +          assert_eq!(entries.len(), 1);
+      300 +          assert_eq!(entries[0].text, "Line one\nLine two");
+      301 +      }
+      302 +  
+      303 +      #[test]
+      304 +      fn test_parse_vtt_simple() {
+      305 +          let vtt = "WEBVTT\n\n00:00:01.000 --> 
+          + 00:00:04.000\nHello world\n\n00:00:05.000 --> 
+          + 00:00:08.500\nThis is a test\n";
+      306 +          let entries = parse_vtt(vtt).unwrap();
+      307 +          assert_eq!(entries.len(), 2);
+      308 +          assert_eq!(entries[0].text, "Hello world");
+      309 +          assert_eq!(entries[0].start_time, 1000);
+      310 +          assert_eq!(entries[1].start_time, 5000);
+      311 +      }
+      312 +  
+      313 +      #[test]
+      314 +      fn test_parse_vtt_with_options() {
+      315 +          let vtt = "WEBVTT\n\n00:00:01.000 --> 00:00:04.000
+          +  A:start\nHello world\n";
+      316 +          let entries = parse_vtt(vtt).unwrap();
+      317 +          assert_eq!(entries.len(), 1);
+      318 +          assert_eq!(entries[0].text, "Hello world");
+      319 +          assert_eq!(entries[0].start_time, 1000);
+      320 +          assert_eq!(entries[0].end_time, 4000);
+      321 +      }
+      322 +  
+      323 +      #[test]
+      324 +      fn test_parse_srt_chinese() {
+      325 +          let srt = "1\n00:00:01,500 --> 
+          + 00:00:05,000\n你好世界\n\n2\n00:00:06,000 --> 
+          + 00:00:10,000\n这是测试文本\n";
+      326 +          let entries = parse_srt(srt).unwrap();
+      327 +          assert_eq!(entries.len(), 2);
+      328 +          assert_eq!(entries[0].text, "你好世界");
+      329 +          assert_eq!(entries[1].text, "这是测试文本");
+      330 +      }
+      331 +  
+      332 +      #[test]
+      333 +      fn test_detect_format() {
+      334 +          
+          + assert_eq!(detect_format(Path::new("test.srt")).unwrap(), 
+          + SubtitleFormat::Srt);
+      335 +          
+          + assert_eq!(detect_format(Path::new("test.vtt")).unwrap(), 
+          + SubtitleFormat::Vtt);
+      336 +          
+          + assert!(detect_format(Path::new("test.txt")).is_err());
+      337 +      }
+      338 +  
+      339 +      #[test]
+      340 +      fn test_parse_vtt_time() {
+      341 +          assert_eq!(parse_vtt_time("00:00:01.000"), 
+          + Some(1000));
+      342 +          assert_eq!(parse_vtt_time("00:01:30.500"), 
+          + Some(90_500));
+      343 +          assert_eq!(parse_vtt_time("01:00:00.000"), 
+          + Some(3_600_000));
+      344 +          // 毫秒数不足3位
+      345 +          assert_eq!(parse_vtt_time("00:00:01.5"), 
+          + Some(1500));
+      346 +          assert_eq!(parse_vtt_time("00:00:01.50"), 
+          + Some(1500));
+      347 +      }
+      348 +  
+      349 +      #[test]
+      350 +      fn test_format_timestamp() {
+      351 +          assert_eq!(format_timestamp(0), "00:00:00");
+      352 +          assert_eq!(format_timestamp(1000), "00:00:01");
+      353 +          assert_eq!(format_timestamp(60_000), "00:01:00");
+      354 +          assert_eq!(format_timestamp(3_661_000), 
+          + "01:01:01");
+      355 +      }
+      356 +  
+      357 +      #[test]
+      358 +      fn test_parse_srt_invalid_file() {
+      359 +          let result = parse_srt("this is not srt content");
+      360 +          assert!(result.is_err());
+      361 +      }
+      362 +  
+      363 +      #[test]
+      364 +      fn test_parse_vtt_invalid_file() {
+      365 +          let vtt = "WEBVTT\n\ninvalid content without 
+          + arrow\n";
+      366 +          let result = parse_vtt(vtt);
+      367 +          assert!(result.is_err());
+      368 +      }
+      369 +  }
+      370    ```
+      371    
+      372 -  **Architecture:**
+      372 +  - [ ] **验证编译通过并运行测试**
+      373    
+      374 -  - **解析层**：Rust 后端新增 `subtitle/` 模块，纯手动解析 
+          - SRT/VTT（不引入第三方库），通过 Tauri command 
+          - 返回字幕条目列表
+      375 -  - **状态层**：前端 App.tsx 状态机新增 `parsing` 
+          - 状态，字幕文件确认后调用 Rust 解析命令，成功后自动设置 
+          - `confirmedSubtitle` 并进入 `llm_config`
+      376 -  - **复用层**：进入 `llm_config` 后完全复用现有 LLM 
+          - 总结流程，不引入新组件
+      374 +  Run: `cd src-tauri && cargo test --lib 
+          + subtitle::parser::tests 2>&1`
+      375 +  Expected: 所有测试 PASS
+      376    
+      377 -  **Tech Stack:** Rust (Tauri command + serde), React 19 + 
+          - TypeScript, shadcn/ui
+      377 +  **Subtask 1.3: 导出 subtitle 模块**
+      378    
+      379 -  ---
+      379 +  - [ ] **修改 `src-tauri/src/lib.rs`**
+      380    
+      381 -  ### Task 1: Rust 后端 - 新建 subtitle 模块及 SRT/VTT 
+          - 解析器 ✅
+      381 +  在 `pub mod asr;` 后添加一行：
+      382    
+      383 -  **Files:**
+      384 -  - Create: `src-tauri/src/subtitle/mod.rs` — 模块导出
+      385 -  - Create: `src-tauri/src/subtitle/parser.rs` — SRT/VTT 
+          - 解析逻辑 + 单元测试
+      386 -  - Modify: `src-tauri/src/lib.rs` — 添加 `pub mod subtitle`
+      387 -  - Modify: `src-tauri/src/commands/mod.rs` — 添加 `pub mod 
+          - subtitle`
+      388 -  - Create: `src-tauri/src/commands/subtitle.rs` — 
+          - `parse_subtitle_file` 命令
+      389 -  - Modify: `src-tauri/src/main.rs` — 注册新命令到 
+          - `generate_handler!`
+      383 +  ```rust
+      384 +  pub mod subtitle;
+      385 +  ```
+      386    
+      387 -  **实现要点：**
+      388 -  - 解析器输出结构：`SubtitleEntry { index, text, 
+          - start_time, end_time, timestamp }`，时间单位毫秒
+      389 -  - 支持格式：SRT（序号+`HH:MM:SS,mmm -->`）、VTT（`WEBVTT` 
+          - 头部+`HH:MM:SS.mmm -->`，含选项中继跳过）
+      390 -  - 错误处理：格式不支持、文件无法读取、未解析到有效条目时返
+          - 回可读错误信息
+      391 -  - 单元测试覆盖：标准 
+          - SRT/VTT、多行文本、中文、时间格式边界、非法内容
+      387 +  **Subtask 1.4: 注册命令模块**
+      388    
+      389 -  **Sub-steps:**
+      389 +  - [ ] **修改 `src-tauri/src/commands/mod.rs`**
+      390    
+      391 -  - [ ] 创建 `src-tauri/src/subtitle/mod.rs` 导出 parser 
+          - 模块
+      392 -  - [ ] 创建 `src-tauri/src/subtitle/parser.rs` 
+          - 实现完整解析逻辑 + 单元测试
+      393 -  - [ ] 运行 `cargo test` 确认测试通过
+      394 -  - [ ] 修改 `src-tauri/src/lib.rs` 添加 `pub mod subtitle`
+      395 -  - [ ] 修改 `src-tauri/src/commands/mod.rs` 添加 `pub mod 
+          - subtitle`
+      396 -  - [ ] 创建 `src-tauri/src/commands/subtitle.rs` 添加 
+          - `parse_subtitle_file` 命令
+      397 -  - [ ] 修改 `src-tauri/src/main.rs` 注册 
+          - `commands::subtitle::parse_subtitle_file`
+      391 +  ```diff
+      392 +   pub mod file;
+      393 +   pub mod asr;
+      394 +   pub mod llm;
+      395 +  +pub mod subtitle;
+      396 +  ```
+      397    
+      398 +  **Subtask 1.5: 创建 parse_subtitle_file 命令**
+      399 +  
+      400 +  - [ ] **创建 `src-tauri/src/commands/subtitle.rs`**
+      401 +  
+      402 +  ```rust
+      403 +  //! 字幕处理相关命令
+      404 +  
+      405 +  use crate::subtitle;
+      406 +  
+      407 +  #[tauri::command]
+      408 +  pub fn parse_subtitle_file(file_path: String) -> 
+          + Result<Vec<subtitle::SubtitleEntry>, String> {
+      409 +      subtitle::parse_subtitle_file(&file_path)
+      410 +  }
+      411 +  ```
+      412 +  
+      413 +  **Subtask 1.6: 在 main.rs 中注册命令**
+      414 +  
+      415 +  - [ ] **修改 `src-tauri/src/main.rs`**
+      416 +  
+      417 +  在 `generate_handler!` 宏中添加 
+          + `commands::subtitle::parse_subtitle_file`：
+      418 +  
+      419 +  ```diff
+      420 +   .invoke_handler(tauri::generate_handler![
+      421 +       commands::file::select_file,
+      422 +       commands::asr::init_whisper_engine,
+      423 +       commands::asr::start_transcription,
+      424 +       commands::asr::transcribe_with_cloud,
+      425 +  +    commands::subtitle::parse_subtitle_file,
+      426 +       commands::llm::load_llm_config,
+      427 +       commands::llm::save_llm_config,
+      428 +       commands::llm::test_llm_connection,
+      429 +       commands::llm::get_default_prompt,
+      430 +       commands::llm::generate_summary,
+      431 +   ])
+      432 +  ```
+      433 +  
+      434 +  - [ ] **编译验证**
+      435 +  
+      436 +  Run: `cd src-tauri && cargo check 2>&1`
+      437 +  Expected: 编译成功，无错误
+      438 +  
+      439    ---
+      440    
+      441 -  ### Task 2: React 前端 - 补全"已有字幕"流程状态机 ✅
+      441 +  ### Task 2: React 前端 - 补全"已有字幕"流程状态机
+      442    
+      443    **Files:**
+      444    - Modify: `src/App.tsx`
+      445    
+      446 -  **改动要点：**
+      446 +  **改动说明：**
+      447 +  1. 新增 `parsing` 状态：调用 Rust 解析命令时的加载状态
+      448 +  2. 修改 `handleConfirm`：字幕文件不再报错，而是进入 
+          + `parsing` 解析流程
+      449 +  3. `parsing` 完成后直接渲染 SubtitlePreview 
+          + 组件（传参解析结果）
+      450 +  4. 复用现有 `preview` → `llm_config` → `summarizing` → 
+          + `summary` 流程
+      451    
+      452 -  1. `AppMode` 联合类型新增 `'parsing'` 状态
+      453 -  2. `handleConfirm`：字幕文件类型不再报错，改为 
+          - `setCurrentMode('parsing')` 并调用解析
+      454 -  3. 新增 `handleParseSubtitle`：调用 
+          - `invoke('parse_subtitle_file')`，成功后直接调用 
+          - `handlePreviewConfirm(entries)` 进入 `llm_config`
+      455 -  4. `parsing` 渲染：加载动画 + "正在解析字幕文件..." 文案 +
+          -  返回按钮
+      456 -  5. `handleBack` 增加 `parsing → confirm` 分支
+      457 -  6. 错误处理：解析失败时回到 `confirm` 并展示错误信息
+      452 +  - [ ] **修改 `src/App.tsx`**
+      453    
+      454 -  **状态机流转对比：**
+      454 +  ```diff
+      455 +   import { SummaryResult } from 
+          + './components/SummaryResult';
+      456 +   import { Button } from '@/components/ui/button';
+      457 +   import { type SubtitleEntry, downloadFile } from 
+          + './lib/subtitle-export';
+      458    
+      459 -  | 步骤 | 音视频模式 | 字幕模式 |
+      460 -  |------|-----------|---------|
+      461 -  | 1 | select | select |
+      462 -  | 2 | file | file |
+      463 -  | 3 | confirm | confirm |
+      464 -  | 4 | model_select | **parsing**（新） |
+      465 -  | 5 | transcribing | **llm_config**（解析成功后自动进入） 
+          - |
+      466 -  | 6 | preview（SubtitlePreview） | summarizing |
+      467 -  | 7 | llm_config | summary |
+      468 -  | 8 | summarizing | — |
+      469 -  | 9 | summary | — |
+      459 +   /// 应用状态模式
+      460 +  -type AppMode = 'select' | 'file' | 'confirm' | 
+          + 'model_select' | 'transcribing' | 'preview' | 'llm_config' 
+          + | 'summarizing' | 'summary';
+      461 +  +type AppMode = 'select' | 'file' | 'confirm' | 
+          + 'model_select' | 'transcribing' | 'parsing' | 'preview' | 
+          + 'llm_config' | 'summarizing' | 'summary';
+      462 +  ```
+      463    
+      464 -  **Sub-steps:**
+      464 +  添加 `parsedSubtitle` 状态：
+      465    
+      466 -  - [ ] 修改 `AppMode` 新增 `'parsing'` 状态
+      467 -  - [ ] 修改 `handleConfirm` 将字幕文件分支改为进入解析
+      468 -  - [ ] 新增 `handleParseSubtitle`：调用 Rust 
+          - 解析命令，成功则自动确认字幕并进入 LLM 配置
+      469 -  - [ ] 修改 `handleBack` 支持 `parsing → confirm`
+      470 -  - [ ] 新增 `parsing` 状态的渲染（加载动画 + 返回按钮）
+      466 +  ```diff
+      467 +   function App() {
+      468 +     const [currentMode, setCurrentMode] = 
+          + useState<AppMode>('select');
+      469 +     const [selectedInputMode, setSelectedInputMode] = 
+          + useState<'media' | 'subtitle' | null>(null);
+      470 +     const [selectedFile, setSelectedFile] = 
+          + useState<SelectedFile | null>(null);
+      471 +     const [errorMessage, setErrorMessage] = useState<string
+          +  | null>(null);
+      472 +     const [errorMode, setErrorMode] = useState<AppMode | 
+          + null>(null);
+      473 +     const [confirmedSubtitle, setConfirmedSubtitle] = 
+          + useState<SubtitleEntry[] | null>(null);
+      474 +  +  const [parsedSubtitle, setParsedSubtitle] = 
+          + useState<SubtitleEntry[] | null>(null);
+      475 +     const [summaryResult, setSummaryResult] = 
+          + useState<string | null>(null);
+      476 +  ```
+      477    
+      478 +  修改 `handleBack` 支持返回 `parsing`：
+      479 +  
+      480 +  ```diff
+      481 +     const handleBack = () => {
+      482 +       setErrorMessage(null);
+      483 +       setErrorMode(null);
+      484 +  
+      485 +       if (currentMode === 'file') {
+      486 +         setCurrentMode('select');
+      487 +         setSelectedInputMode(null);
+      488 +       } else if (currentMode === 'confirm') {
+      489 +         setCurrentMode('file');
+      490 +         setSelectedFile(null);
+      491 +  +    } else if (currentMode === 'parsing') {
+      492 +  +      setCurrentMode('confirm');
+      493 +  +      setParsedSubtitle(null);
+      494 +       } else if (currentMode === 'model_select') {
+      495 +         setCurrentMode('confirm');
+      496 +       } else if (currentMode === 'llm_config') {
+      497 +  ```
+      498 +  
+      499 +  修改 
+          + `handleConfirm`，移除字幕文件的错误提示，改为进入解析流程：
+      500 +  
+      501 +  ```diff
+      502 +     /// 确认文件，进入模型选择
+      503 +     const handleConfirm = () => {
+      504 +       if (!selectedFile) return;
+      505 +  
+      506 +       if (selectedFile.type === 'media') {
+      507 +         setCurrentMode('model_select');
+      508 +       } else {
+      509 +  -      // 字幕文件暂未实现处理逻辑
+      510 +  -      setErrorMessage('字幕文件处理功能开发中，请先选择音
+          + 视频文件');
+      511 +  -      setErrorMode('confirm');
+      512 +  +      // 字幕文件：调用 Rust 后端解析
+      513 +  +      setCurrentMode('parsing');
+      514 +       }
+      515 +     };
+      516 +  ```
+      517 +  
+      518 +  添加字幕解析函数 `handleParseSubtitle`：
+      519 +  
+      520 +  ```diff
+      521 +  +  /// 解析字幕文件
+      522 +  +  const handleParseSubtitle = useCallback(async () => {
+      523 +  +    if (!selectedFile) return;
+      524 +  +    try {
+      525 +  +      const entries: SubtitleEntry[] = await 
+          + invoke('parse_subtitle_file', {
+      526 +  +        filePath: selectedFile.path,
+      527 +  +      });
+      528 +  +      setParsedSubtitle(entries);
+      529 +  +      setCurrentMode('preview');
+      530 +  +    } catch (e) {
+      531 +  +      setErrorMessage(String(e));
+      532 +  +      setCurrentMode('confirm');
+      533 +  +    }
+      534 +  +  }, [selectedFile]);
+      535 +  ```
+      536 +  
+      537 +  修改 `handleRestart` 重置新状态：
+      538 +  
+      539 +  ```diff
+      540 +     const handleRestart = () => {
+      541 +       setCurrentMode('select');
+      542 +       setSelectedInputMode(null);
+      543 +       setSelectedFile(null);
+      544 +       setConfirmedSubtitle(null);
+      545 +  +    setParsedSubtitle(null);
+      546 +       setSummaryResult(null);
+      547 +       setErrorMessage(null);
+      548 +       setErrorMode(null);
+      549 +     };
+      550 +  ```
+      551 +  
+      552 +  修改 `preview` 状态渲染，支持展示 
+          + SubtitlePreview（字幕文件路径）或原确认信息（LLM 返回）：
+      553 +  
+      554 +  ```diff
+      555 +  -      {/* 预览确认 - 字幕确认后占位 */}
+      556 +  -      {currentMode === 'preview' && confirmedSubtitle && 
+          + (
+      557 +  -        <div className="w-[400px]">
+      558 +  -          <div className="mb-4 p-4 border rounded-lg">
+      559 +  -            <h3 className="text-lg font-semibold 
+          + mb-2">字幕已确认</h3>
+      560 +  -            <p className="text-sm text-gray-500">
+      561 +  -              共 {confirmedSubtitle.length} 
+          + 段字幕已确认，即将进入大模型总结。
+      562 +  -            </p>
+      563 +  -          </div>
+      564 +  -          <Button
+      565 +  -            variant="outline"
+      566 +  -            className="w-full h-10 text-sm"
+      567 +  -            onClick={handleRestart}
+      568 +  -          >
+      569 +  -            ← 返回主页
+      570 +  -          </Button>
+      571 +  -        </div>
+      572 +  +      {/* 解析字幕中 */}
+      573 +  +      {currentMode === 'parsing' && (
+      574 +  +        <div className="flex flex-col items-center gap-4 
+          + p-8">
+      575 +  +          <div className="w-10 h-10 border-4 
+          + border-blue-500 border-t-transparent rounded-full 
+          + animate-spin" />
+      576 +  +          <p className="text-gray-500 
+          + text-sm">正在解析字幕文件...</p>
+      577 +  +          <Button
+      578 +  +            variant="ghost"
+      579 +  +            className="mt-4 h-10 text-sm"
+      580 +  +            onClick={handleBack}
+      581 +  +          >
+      582 +  +            ← 返回
+      583 +  +          </Button>
+      584 +  +        </div>
+      585 +  +      )}
+      586 +  +
+      587 +  +      {/* 字幕预览（来自已选字幕文件） */}
+      588 +  +      {currentMode === 'preview' && parsedSubtitle && 
+          + selectedFile && (
+      589 +  +        <SubtitlePreview
+      590 +  +          entries={parsedSubtitle}
+      591 +  +          audioName={selectedFile.name}
+      592 +  +          onConfirm={(entries) => {
+      593 +  +            setConfirmedSubtitle(entries);
+      594 +  +            setCurrentMode('llm_config');
+      595 +  +          }}
+      596 +  +          onBack={() => {
+      597 +  +            setParsedSubtitle(null);
+      598 +  +            setCurrentMode('confirm');
+      599 +  +          }}
+      600 +  +        />
+      601 +  +      )}
+      602 +  +
+      603 +  +      {/* 预览确认 - 字幕确认后占位（从 LLM 
+          + 配置返回时显示） */}
+      604 +  +      {currentMode === 'preview' && confirmedSubtitle && 
+          + !parsedSubtitle && (
+      605 +  +        <div className="w-[400px]">
+      606 +  +          <div className="mb-4 p-4 border rounded-lg">
+      607 +  +            <h3 className="text-lg font-semibold 
+          + mb-2">字幕已确认</h3>
+      608 +  +            <p className="text-sm text-gray-500">
+      609 +  +              共 {confirmedSubtitle.length} 
+          + 段字幕已确认，即将进入大模型总结。
+      610 +  +            </p>
+      611 +  +          </div>
+      612 +  +          <Button
+      613 +  +            variant="outline"
+      614 +  +            className="w-full h-10 text-sm"
+      615 +  +            onClick={handleRestart}
+      616 +  +          >
+      617 +  +            ← 返回主页
+      618 +  +          </Button>
+      619 +  +        </div>
+      620 +         )}
+      621 +  ```
+      622 +  
+      623 +  添加缺失的 `SubtitlePreview` import 和 `useCallback` 
+          + import：
+      624 +  
+      625 +  ```diff
+      626 +   import { useState, useCallback } from 'react';
+      627 +   ...
+      628 +  +import { SubtitlePreview } from 
+          + './components/SubtitlePreview';
+      629 +  ```
+      630 +  
+      631 +  （SubtitlePreview 已在 AsrProgress 中 import，但 App.tsx 
+          + 中还需要直接 import，检查当前 App.tsx 顶部 import 列表）
+      632 +  
+      633    ---
+      634    
+      635    ### Task 3: 更新进度文档
+    ...
+       90    **Files:**
+       91    - Modify: `docs/TODO.md`
+       92    
+       93 -  - [ ] 将"已有字幕文件处理流程"下的子任务标记为完成
+       93 +  **Subtask 3.1: 更新 TODO.md**
+       94 +  
+       95 +  将"进行中"子任务标记为完成状态（假设全部实现）：
+       96 +  - 如未全部完成，则按实际进度标记部分子任务
+       97 +  
+       98 +  **Expected final state of TODO.md:**
+       99 +  ```markdown
+      100 +  ## 进行中 🔄
+      101 +  
+      102 +  - [x] **已有字幕文件处理流程**
+      103 +      - [x] 实现 SRT/VTT 文件解析（Rust 后端）
+      104 +      - [x] 字幕入口跳过 ASR 直接进入预览（React 前端）
+      105 +  ```
+
+> 精简一下这个plan，里面不要包含代码的实现 
+
+⏺ 已移除所有代码实现，只保留文件路径和任务骨架。
+
+⏺ Write(~/Codes/VidSum/docs/superpowers/plans/2026-04-29-existing-subtitle-flow
+       .md)
+  ⎿  Wrote 95 lines to                                                    
+     ../docs/superpowers/plans/2026-04-29-existing-subtitle-flow.md
+     # 已有字幕文件流程实现计划
+     > **For agentic workers:** REQUIRED SUB-SKILL: Use
+     superpowers:executing-plans to implement this plan task-by-task. Steps
+      use checkbox (`- [ ]`) syntax for tracking.
+     **Goal:** 补全"选择已有字幕文件（.srt/.vtt）作为起点"的完整流程，跳过
+     ASR 转写步骤，直接进入字幕预览 → LLM 总结。
+     **Architecture:**
+     - **解析层**：Rust 后端新增 `subtitle/` 模块，纯手动解析
+     SRT/VTT（不引入第三方库），通过 Tauri command 返回统一结构
+     - **状态层**：前端 App.tsx 状态机新增 `parsing`
+     状态，字幕文件确认后调用 Rust 解析命令
+     … +85 lines (ctrl+o to expand)
+
+⏺ 计划已保存到
+  docs/superpowers/plans/2026-04-29-existing-subtitle-flow.md。
+
+  执行方式有两种，你选哪种？
+
+  1. Subagent-Driven（推荐） — 每次为一个 Task 派发独立子 agent，实现后
+  review，迭代快
+  2. Inline Execution — 在当前会话中直接按计划逐步实现
+
+> @docs/01-prd.md 
+核心流程图中，我现在要把“已有字幕”流程的逻辑弄成：‘选择本地字幕文件 
+.srt/.vtt’ 直接进入“字幕预览与编辑”标题的页面【src/components/SubtitlePrevi
+ew.tsx】，后面的流程直接复用现有的。你看下，这样是否需要修改prd的流程图？ 
+  ⎿  Read ../docs/01-prd.md (68 lines)
+
+⏺ 分析一下当前流程和你的需求：
+
+  当前流程图（PRD）
+
+  graph TD
+      D[选择本地字幕文件] --> I[进入总结配置]
+      ...
+      G[字幕预览界面] --> H{确认} --> I
+
+  D → I 意味着字幕文件直接跳到 LLM 配置，跳过了字幕预览步骤。
+
+  你的需求
+
+  字幕文件选择后先进入 SubtitlePreview（字幕预览与编辑），确认后再走 LLM
+  流程：
+
+  D → G(字幕预览界面) → H{确认} → I(进入总结配置)
+
+  结论：需要修改
+
+  当前 D --> I 不符合你的真实意图。建议改为 D --> 
+  G，这样两条路径在"字幕预览"处汇合：
+
+  -    D --> I;
+  +    D --> G;
+
+  修改后完整流程看起来会是这样：
+
+  graph TD
+      A[启动应用] --> B{选择入口};
+      B -->|转写字幕| C[选择本地音视频文件];
+      B -->|已有字幕| D[选择本地字幕文件 .srt/.vtt];
+      C --> E[配置 ASR 引擎并开始转写];
+      E --> F[实时显示转写进度];
+      F --> G[字幕预览界面];
+      D --> G;
+      G --> H{用户确认字幕可用};
+      H -- 确认 --> I[进入总结配置];
+      H -- 重新转写 --> E;
+      I --> J[配置 LLM API 并生成总结];
+      J --> K[展示 Markdown 总结结果];
+      K --> L[点击时间戳跳转 / 导出 .md 文件];
+
+  要改的话我可以直接改 docs/01-prd.md。
+
+> 先改一下，改完之后，我自己手动查看一下。 
+
+⏺ Read(~/Codes/VidSum/docs/01-prd.md)
+  ⎿  Read 19 lines
+
+⏺ Update(~/Codes/VidSum/docs/01-prd.md)
+  ⎿  Updated ../docs/01-prd.md with 1 addition and 1 removal
+       60        G --> H{用户确认字幕可用};
+       61        H -- 确认 --> I[进入总结配置];
+       62        H -- 重新转写 --> E;
+       63 -      D --> I;
+       63 +      D --> G;
+       64        I --> J[配置 LLM API 并生成总结];
+       65        J --> K[展示 Markdown 总结结果];
+       66        K --> L[点击时间戳跳转 / 导出 .md 文件];
+
+⏺ 已改好。改动在 docs/01-prd.md L63：
+
+  -    D --> I;
+  +    D --> G;
+
+  现在字幕文件流程变成：选择字幕文件 → 字幕预览界面 → 确认 → 进入总结配置，
+  与音视频转写流程在"字幕预览界面"处汇合。你可以手动查看确认。
+
+> ”已有字幕“这个流程后面的“用户确认字幕可以用”的“重新转写”分支为不可用，你
+继续修改下prd 
+
+⏺ 当前 H -- 重新转写 --> E
+  是共享的决策节点，但字幕路径不需要"重新转写"（它不是 ASR
+  转写来的）。改法是将两条路径的确认节点拆开：
+
+  graph TD
+      A[启动应用] --> B{选择入口};
+      B -->|转写字幕| C[选择本地音视频文件];
+      B -->|已有字幕| D[选择本地字幕文件 .srt/.vtt];
+      C --> E[配置 ASR 引擎并开始转写];
+      E --> F[实时显示转写进度];
+      F --> G[字幕预览界面];
+      D --> G;
+      G --> H1{用户确认字幕可用};
+      H1 -- 确认 --> I[进入总结配置];
+      H1 -- 重新转写 --> E;
+      G -.-> H2(字幕文件确认后直接进入总结);
+      H2 --> I;
+      I --> J[配置 LLM API 并生成总结];
+      J --> K[展示 Markdown 总结结果];
+      K --> L[点击时间戳跳转 / 导出 .md 文件];
+
+  等等，这样用虚线表示也有些绕。更干净的方式是让两条路径在 G
+  之后分别走不同分支：
+
+⏺ Read(~/Codes/VidSum/docs/01-prd.md)
+  ⎿  Read 16 lines
+
+⏺ 应该这样改：将确认节点拆开，音视频路径保留"重新转写"回溯，字幕路径确认后
+  直接进入总结。
+
+⏺ Update(~/Codes/VidSum/docs/01-prd.md)
+  ⎿  Updated ../docs/01-prd.md with 2 additions and 1 removal
+       57        C --> E[配置 ASR 引擎并开始转写];
+       58        E --> F[实时显示转写进度];
+       59        F --> G[字幕预览界面];
+       60 +      D --> G;
+       61        G --> H{用户确认字幕可用};
+       62        H -- 确认 --> I[进入总结配置];
+       63        H -- 重新转写 --> E;
+       64 -      D --> G;
+       64 +      G --> I;
+       65        I --> J[配置 LLM API 并生成总结];
+       66        J --> K[展示 Markdown 总结结果];
+       67        K --> L[点击时间戳跳转 / 导出 .md 文件];
+
+⏺ 已改好。改动说明：
+
+  - 音视频路径：G → H{确认} → I（保留"重新转写 → E"的回溯分支）
+  - 字幕路径：D → G → I（预览后直达总结配置，"重新转写"不可达）
+
+  两条路径在 G（字幕预览界面）汇合，在
+  I（总结配置）再次汇合。你可以手动查看确认。
+
+> 我修改了下prd上的流程，现在的流程是我要的，你查看下。然后根据这个流程再次
+修订下 @docs/superpowers/plans/2026-04-29-existing-subtitle-flow.md 
+里的内容 
+  ⎿ Read ../docs/superpowers/plans/2026-04-29-existing-subtitle-flow.md (95 
+    lines)
+
+⏺ Read(~/Codes/VidSum/docs/01-prd.md)
+  ⎿  Read 19 lines
+
+⏺ 看到了，你最终保留的流程是 D --> I（选择字幕文件 →
+  直接进入总结配置），跳过字幕预览步骤。我据此修订计划。
+
+⏺ Read(~/Codes/VidSum/docs/superpowers/plans/2026-04-29-existing-subtitle-flow.
+      md)
+  ⎿  Read 95 lines
+
+⏺ Write(~/Codes/VidSum/docs/superpowers/plans/2026-04-29-existing-subtitle-flow
+       .md)
+  ⎿  Updated ../docs/superpowers/plans/2026-04-29-existing-subtitle-flow.m
+      with 22 additions and 23 removals
+
+        2    
+        3    > **For agentic workers:** REQUIRED SUB-SKILL: Use 
+            superpowers:executing-plans to implement this plan 
+            task-by-task. Steps use checkbox (`- [ ]`) syntax for 
+            tracking.
+        4    
+        5 -  **Goal:** 
+          -  补全"选择已有字幕文件（.srt/.vtt）作为起点"的完整流程，跳过
+          -   ASR 转写步骤，直接进入字幕预览 → LLM 总结。
+        5 +  **Goal:** 
+          +  补全"选择已有字幕文件（.srt/.vtt）作为起点"的完整流程，跳过
+          +   ASR 转写和字幕预览步骤，解析后直接进入 LLM 总结配置。
+        6    
+        7 +  **流程（对应 PRD 流程图）：**
+        8 +  ```
+        9 +  选择字幕文件 → 后台解析 → 自动确认字幕 → 进入 LLM 总结配置
+       10 +  ```
+       11 +  
+       12    **Architecture:**
+       13    
+       14 -  - **解析层**：Rust 后端新增 `subtitle/` 模块，纯手动解析 
+          -  SRT/VTT（不引入第三方库），通过 Tauri command 返回统一结构
+       15 -  - **状态层**：前端 App.tsx 状态机新增 `parsing` 
+          -  状态，字幕文件确认后调用 Rust 解析命令
+       16 -  - **复用层**：解析成功后直接复用现有 SubtitlePreview 组件 →
+          -  LLM 流程
+       14 +  - **解析层**：Rust 后端新增 `subtitle/` 模块，纯手动解析 
+          +  SRT/VTT（不引入第三方库），通过 Tauri command 
+     返回字幕条目列表
+       15 +  - **状态层**：前端 App.tsx 状态机新增 `parsing` 
+          +  状态，字幕文件确认后调用 Rust 解析命令
+          +  ，成功后自动设置 `confirmedSubtitle` 并进入 `llm_config`
+       16 +  - **复用层**：进入 `llm_config` 后完全复用现有 LLM 
+          + 总结流程，不引入新组件
+       17    
+       18    **Tech Stack:** Rust (Tauri command + serde), React 19 + 
+            TypeScript, shadcn/ui
+       19    
+     ...
+       26    
+       27    **实现要点：**
+       28    - 解析器输出结构：`SubtitleEntry { index, text, start_time,
+             end_time, timestamp }`，时间单位毫秒
+       29 -  - 支持格式：SRT (序号+`HH:MM:SS,mmm -->`)、VTT (
+          -  `WEBVTT` 头部+`HH:MM:SS.mmm -->`，含选项中继跳过)
+       29 +  - 支持格式：SRT（序号+`HH:MM:SS,mmm -->`）、VTT（
+          +  `WEBVTT` 头部+`HH:MM:SS.mmm -->`，含选项中继跳过）
+       30    - 错误处理：格式不支持、文件无法读取、未解析到有效条目时返
+            回可读错误信息
+       31    - 单元测试覆盖：标准 
+            SRT/VTT、多行文本、中文、时间格式边界、非法内容
+       32    
+     ...
+       50    **改动要点：**
+       51    
+       52    1. `AppMode` 联合类型新增 `'parsing'` 状态
+       53 -  2. 新增 `parsedSubtitle` 状态变量 (`SubtitleEntry[] | 
+          - null`)
+       54 -  3. `handleConfirm`：字幕文件类型不再报错，改为 
+          - `setCurrentMode('parsing')`
+       55 -  4. 新增 `handleParseSubtitle`：调用 
+          - `invoke('parse_subtitle_file')`，成功后 `setParsedSubtitle` 
+          - + 切换到 `preview`
+       56 -  5. `preview` 模式区分两种场景：
+       57 -     - `parsedSubtitle` 存在 → 渲染 `SubtitlePreview` 组件
+       58 -     - 仅 `confirmedSubtitle` 存在 → 
+          - 渲染原有的"字幕已确认"卡片（从 LLM 配置返回时）
+       59 -  6. `handleBack` 增加 `parsing → confirm` 分支，重置 
+          - `parsedSubtitle`
+       60 -  7. `handleRestart` 重置 `parsedSubtitle`
+       61 -  8. 引入 `SubtitlePreview` 组件（已在 AsrProgress 中 
+          - import，App.tsx 需要单独 import）
+       53 +  2. `handleConfirm`：字幕文件类型不再报错，改为 
+          + `setCurrentMode('parsing')` 并调用解析
+       54 +  3. 新增 `handleParseSubtitle`：调用 
+          + `invoke('parse_subtitle_file')`，成功后直接调用 
+          + `handlePreviewConfirm(entries)` 进入 `llm_config`
+       55 +  4. `parsing` 渲染：加载动画 + "正在解析字幕文件..." 文案 + 
+          + 返回按钮
+       56 +  5. `handleBack` 增加 `parsing → confirm` 分支
+       57 +  6. 错误处理：解析失败时回到 `confirm` 并展示错误信息
+       58    
+       59    **状态机流转对比：**
+       60    
+     ...
+       68    | 2 | file | file |
+       69    | 3 | confirm | confirm |
+       70    | 4 | model_select | **parsing**（新） |
+       71 -  | 5 | transcribing | preview（SubtitlePreview） |
+       72 -  | 6 | preview（SubtitlePreview） | llm_config |
+       73 -  | 7 | llm_config | summarizing |
+       74 -  | 8 | summarizing | summary |
+       71 +  | 5 | transcribing | **llm_config**（解析成功后自动进入） |
+       72 +  | 6 | preview（SubtitlePreview） | summarizing |
+       73 +  | 7 | llm_config | summary |
+       74 +  | 8 | summarizing | — |
+       75    | 9 | summary | — |
+       76    
+       77    **Sub-steps:**
+       78    
+       79    - [ ] 修改 `AppMode` 新增 `'parsing'` 状态
+       80 -  - [ ] 新增 `parsedSubtitle` 状态变量
+       80    - [ ] 修改 `handleConfirm` 将字幕文件分支改为进入解析
+       81 -  - [ ] 新增 `handleParseSubtitle` 解析逻辑
+       82 -  - [ ] 修改 `handleBack` / `handleRestart` 支持新状态
+       83 -  - [ ] 在 `preview` 渲染分支新增 `parsedSubtitle` 
+          - 的渲染逻辑（复用 `SubtitlePreview`）
+       84 -  - [ ] 引入 `SubtitlePreview` 组件 import
+       81 +  - [ ] 新增 `handleParseSubtitle`：调用 Rust 解析
+          +  命令，成功则自动确认字幕并进入 LLM 配置
+       82 +  - [ ] 修改 `handleBack` 支持 `parsing → confirm`
+       83 +  - [ ] 新增 `parsing` 状态的渲染（加载动画 + 返回按钮）
+       84    
+       85    ---
+       86    
+
+⏺ 计划已修订完毕。与旧版的核心差异：
+
+  | 方面        | 旧版（含 SubtitlePreview）           | 新版（按 PRD
+  流程图）                             |
+  |-----------|---------------------------------|--------------------------
+  -----------------|
+  | 字幕解析后     | 进入 preview 状态渲染 SubtitlePreview | 自动调用
+  handlePreviewConfirm 直接进入 llm_config |
+  | 用户操作      | 需手动点击"确认字幕并进入总结"                |
+  无需确认，解析成功即自动进入 LLM 配置                     |
+  | 新增 import | 需引入 SubtitlePreview 组件          |
+  不需要，复用现有状态流转                              |
+  | 状态机行数     | 音视频 9 步，字幕 5 步（含 preview）       | 音视频 9
+  步，字幕 4 步（跳过 preview）                |
+
+  你可以查看 docs/superpowers/plans/2026-04-29-existing-subtitle-flow.md
+  确认。
+
+> 我要对文档更改进行手动提交,帮我想一个合适的git commit 信息 
+
+⏺ Bash(git status && echo "---" && git diff --stat)
+  ⎿  位于分支 feature/existing-subtitle-flow               
+     要提交的变更：
+       （使用 "git restore --staged <文件>..." 以取消暂存）
+     … +3 lines (ctrl+o to expand)
+
+⏺ 建议的 commit message：
+
+  docs: 添加"已有字幕文件流程"实现计划
+
+  创建 2026-04-29-existing-subtitle-flow.md 计划文件，
+  规划 Rust SRT/VTT 解析器、前端 parsing 状态机、字幕自动确认流程。
+
+> git 提交完成。现在开始用 executing-plan 
+实现2026-04-29-existing-subtitle-flow.md的task1 
+
+> The "executing-plans" skill is loading 
+
+⏺ Read(~/Codes/VidSum/docs/superpowers/plans/2026-04-29-existing-subtitle-flow.
+      md)
+  ⎿  Read 94 lines
+  ⎿  Interrupted · What should Claude do instead?
+
+> 继续 
+
+⏺ 开始实现 Task 1。先创建字幕解析模块。
+
+⏺ Write(src/subtitle/mod.rs)
+  ⎿  Wrote 6 lines to src/subtitle/mod.rs                                 
+     //! 字幕解析模块
+     //! 支持解析 SRT 和 VTT 格式字幕文件
+     pub mod parser;
+     pub use parser::{parse_subtitle_file, SubtitleEntry, SubtitleFormat};
+
+⏺ Write(src/subtitle/parser.rs)
+  ⎿  Wrote 434 lines to src/subtitle/parser.rs                            
+     //! SRT/VTT 字幕文件解析器
+     //!
+     //! 纯手动解析，不依赖第三方库。
+     //! SRT 格式：序号 + 时间行 `HH:MM:SS,mmm --> HH:MM:SS,mmm` + 
+     文本（空行分隔）
+     //! VTT 格式：`WEBVTT` 头部 + 时间行 `HH:MM:SS.mmm --> HH:MM:SS.mmm` +
+      文本（空行分隔）
+     use serde::{Deserialize, Serialize};
+     use std::path::Path;
+     /// 字幕条目（时间单位为毫秒，与前端 SubtitleEntry 兼容）
+     … +424 lines (ctrl+o to expand)
+
+⏺ 现在注册模块和命令。先读取需要修改的文件，然后批量修改。
+
+⏺ Read(src/lib.rs)
+  ⎿  Read 6 lines
+
+⏺ Read(src/commands/mod.rs)
+  ⎿  Read 6 lines
+
+⏺ Read(src/main.rs)
+  ⎿  Read 30 lines
+
+⏺ Update(src/lib.rs)
+  ⎿  Updated src/lib.rs with 1 addition
+       3    
+       4    pub mod asr;
+       5    pub mod llm;
+       6 +  pub mod subtitle;
+
+⏺ Update(src/commands/mod.rs)
+  ⎿  Updated src/commands/mod.rs with 1 addition
+       3    pub mod file;
+       4    pub mod asr;
+       5    pub mod llm;
+       6 +  pub mod subtitle;
+
+⏺ Write(src/commands/subtitle.rs)
+  ⎿  Wrote 9 lines to src/commands/subtitle.rs        
+     //! 字幕处理相关命令
+     use crate::subtitle;
+     #[tauri::command]
+     pub fn parse_subtitle_file(file_path: String) ->
+     Result<Vec<subtitle::SubtitleEntry>, String> {
+         subtitle::parse_subtitle_file(&file_path)
+     }
+
+⏺ Update(src/main.rs)
+  ⎿  Updated src/main.rs with 1 addition                         
+       18                commands::asr::init_whisper_engine,
+       19                commands::asr::start_transcription,
+       20                commands::asr::transcribe_with_cloud,
+       21 +              commands::subtitle::parse_subtitle_file,
+       22                commands::llm::load_llm_config,
+       23                commands::llm::save_llm_config,
+       24                commands::llm::test_llm_connection,
+
+⏺ 注册完成。现在运行测试验证。
+
+⏺ Bash(cd /Users/a1/Codes/VidSum/src-tauri && cargo test
+      subtitle::parser::tests 2>&1)
+  ⎿  Error: Exit code 101
+        Compiling vidsum v0.1.0 (/Users/a1/Codes/VidSum/src-tauri)
+     error[E0432]: unresolved import `crate::subtitle`
+      --> src/commands/subtitle.rs:3:5
+       |
+     3 | use crate::subtitle;
+       |     ^^^^^^^^^^^^^^^ no `subtitle` in the root
+       |
+     help: consider importing one of these modules instead
+       |
+     … +8 lines (ctrl+o to see all)
+
+⏺ 需要在 commands/subtitle.rs 中通过 lib crate 名引用。让我检查 crate 名。
+
+⏺ Bash(cd /Users/a1/Codes/VidSum/src-tauri && grep -E '^\[(package|lib)\]' -A2
+      Cargo.toml)
+  ⎿  [package]                    
+     name = "vidsum"
+     version = "0.1.0"
+     … +4 lines (ctrl+o to expand)
+
+⏺ Read(src/commands/asr.rs)
+  ⎿  Read 30 lines
+
+⏺ lib crate 名为 vidsum_lib，需要用 vidsum_lib::subtitle 引用。
+
+⏺ Update(src/commands/subtitle.rs)
+  ⎿  Updated src/commands/subtitle.rs with 1 addition and 1 removal
+       1    //! 字幕处理相关命令
+       2    
+       3 -  use crate::subtitle;
+       3 +  use vidsum_lib::subtitle;
+       4    
+       5    #[tauri::command]
+       6    pub fn parse_subtitle_file(file_path: String) -> 
+           Result<Vec<subtitle::SubtitleEntry>, String> {
+
+⏺ Bash(cargo test subtitle::parser::tests 2>&1) timeout: 3m 0s
+  ⎿    Compiling vidsum v0.1.0 (/Users/a1/Codes/VidSum/src-tauri)         
+        Finished `test` profile [unoptimized + debuginfo] target(s) in 5.2
+    0s
+    … +34 lines (ctrl+o to expand)
+
+
+⏺ 18 个测试全部通过。让我确认二进制也编译无误。
+
+⏺ Bash(cargo check 2>&1)
+  ⎿    Compiling vidsum v0.1.0 (/Users/a1/Codes/VidSum/src-tauri)         
+        Finished `dev` profile [unoptimized + debuginfo] target(s) in 6.19
+    s
+
+
+⏺ Task 1 完成。现在进入 Task 2：前端 App.tsx。
+
+⏺ Read(~/Codes/VidSum/src/App.tsx)
+  ⎿  Read 302 lines
+
+⏺ 以下是对 App.tsx 的逐步修改：
+
+  1. AppMode 新增 'parsing'
+
+⏺ Update(~/Codes/VidSum/src/App.tsx)
+  ⎿  Updated ../src/App.tsx with 1 addition and 1 removal        
+       10    import { type SubtitleEntry, downloadFile } from 
+            './lib/subtitle-export';
+       11    
+       12    /// 应用状态模式
+       13 -  type AppMode = 'select' | 'file' | 'confirm' | 
+          -  'model_select' | 'transcribing' | '
+          -  preview' | 'llm_config' | 'summarizing' | 'summary';
+       13 +  type AppMode = 'select' | 'file' | 'confirm' | 
+          +  'model_select' | 'transcribing' | 'parsing' | '
+          +  preview' | 'llm_config' | 'summarizing' | 'summary';
+       14    
+       15    function App() {
+       16      const [currentMode, setCurrentMode] = 
+            useState<AppMode>('select');
+
+⏺ 2. handleBack 添加 parsing → confirm 分支
+
+⏺ Update(~/Codes/VidSum/src/App.tsx)
+  ⎿  Updated ../src/App.tsx with 2 additions                 
+       44        } else if (currentMode === 'confirm') {
+       45          setCurrentMode('file');
+       46          setSelectedFile(null);
+       47 +      } else if (currentMode === 'parsing') {
+       48 +        setCurrentMode('confirm');
+       49        } else if (currentMode === 'model_select') {
+       50          setCurrentMode('confirm');
+       51        } else if (currentMode === 'llm_config') {
+
+⏺ 3. handleConfirm 改为走解析流程
+
+⏺ Update(~/Codes/VidSum/src/App.tsx)
+  ⎿  Updated ../src/App.tsx with 19 additions and 4 removals            
+       55        }
+       56      };
+       57    
+       58 -    /// 确认文件，进入模型选择
+       58 +    /// 确认文件，进入模型选择或字幕解析
+       59      const handleConfirm = () => {
+       60        if (!selectedFile) return;
+       61    
+       62        if (selectedFile.type === 'media') {
+       63          setCurrentMode('model_select');
+       64        } else {
+       65 -        // 字幕文件暂未实现处理逻辑
+       66 -        setErrorMessage('字幕文件处理功能开发中，请先选择音视
+          - 频文件');
+       67 -        setErrorMode('confirm');
+       65 +        // 字幕文件：进入解析流程
+       66 +        setCurrentMode('parsing');
+       67 +        handleParseSubtitle();
+       68        }
+       69      };
+       70    
+       71 +    /// 解析字幕文件
+       72 +    const handleParseSubtitle = useCallback(async () => {
+       73 +      if (!selectedFile || selectedFile.type !== 'subtitle') 
+          + return;
+       74 +  
+       75 +      try {
+       76 +        const entries: SubtitleEntry[] = await 
+          + invoke('parse_subtitle_file', {
+       77 +          filePath: selectedFile.path,
+       78 +        });
+       79 +        handlePreviewConfirm(entries);
+       80 +      } catch (e) {
+       81 +        setErrorMessage(String(e));
+       82 +        setCurrentMode('confirm');
+       83 +      }
+       84 +    }, [selectedFile]);
+       85 +  
+       86      /// 模型初始化完成，自动开始转写
+       87      const handleModelInitialized = () => {
+       88        setCurrentMode('transcribing');
+
+⏺ 4. 添加 parsing 状态的 JSX 渲染
+
+⏺ Update(~/Codes/VidSum/src/App.tsx)
+  ⎿  Updated ../src/App.tsx with 15 additions                           
+       268            />
+       269          )}
+       270    
+       271 +        {/* 解析字幕中 */}
+       272 +        {currentMode === 'parsing' && (
+       273 +          <div className="flex flex-col items-center gap-4 
+           + p-8">
+       274 +            <div className="w-10 h-10 border-4 
+           + border-blue-500 border-t-transparent rounded-full 
+           + animate-spin" />
+       275 +            <p className="text-gray-500 
+           + text-sm">正在解析字幕文件...</p>
+       276 +            <Button
+       277 +              variant="ghost"
+       278 +              className="mt-4 h-10 text-sm"
+       279 +              onClick={handleBack}
+       280 +            >
+       281 +              ← 返回
+       282 +            </Button>
+       283 +          </div>
+       284 +        )}
+       285 +  
+       286          {/* 预览确认 - 字幕确认后占位 */}
+       287          {currentMode === 'preview' && confirmedSubtitle && (
+       288            <div className="w-[400px]">
+
+⏺ 前端改完了，验证编译。
+
+⏺ Bash(cd /Users/a1/Codes/VidSum && npx tsc --noEmit 2>&1)
+  ⎿  (No content)
+
+⏺ TypeScript 编译通过，无错误。Task 2 完成。
+
+⏺ Read(~/Codes/VidSum/docs/TODO.md)
+  ⎿  Read 47 lines
+
+⏺ Update(~/Codes/VidSum/docs/TODO.md)
+  ⎿  Updated ../docs/TODO.md with 5 additions and 7 removals            
+        2    
+        3    ## 已完成 ✅
+        4    
+        5 -  - [ ] **输入与任务创建**
+        5 +  - [x] **输入与任务创建**
+        6        - [x] 选择本地音视频文件（支持 mp4, mkv, mov, mp3, wav,
+             m4a 等）
+        7 -      - [ ] 选择本地字幕文件（.srt / .vtt）作为起点
+        7 +      - [x] 选择本地字幕文件（.srt / .vtt）作为起点
+        8    
+        9 -  ## 进行中 🔄
+        9 +  - [x] **已有字幕文件处理流程**
+       10 +      - [x] 实现 SRT/VTT 文件解析（Rust 后端）
+       11 +      - [x] 字幕入口跳过 ASR 直接进入总结配置（React 前端）
+       12    
+       13 -  - [ ] **已有字幕文件处理流程**
+       14 -      - [ ] 实现 SRT/VTT 文件解析（Rust 后端）
+       15 -      - [ ] 字幕入口跳过 ASR 直接进入预览（React 前端）
+       16 -  
+       13    - [x] **音频转文字 (ASR)**
+       14        - [x] 本地 Whisper 引擎（Tiny/Base/Small/Medium/Large 
+            五种模型，支持 zh/en/ja/auto 语言选择）
+       15        - [x] 云端 ASR 预留 OpenAI 兼容接口（可配置 API URL + 
+            Key + Model）
+
+⏺ 同时更新 PRD 中的状态。
+
+⏺ Update(~/Codes/VidSum/docs/01-prd.md)
+  ⎿  Updated ../docs/01-prd.md with 1 addition and 1 removal            
+       19    
+       20    - **输入与任务创建**：
+       21        - [x] 选择本地音视频文件（支持 mp4, mkv, mov, mp3, wav,
+             m4a 等主流格式）。
+       22 -      - [ ] 直接选择本地字幕文件（.srt / .vtt）作为起点。
+       22 +      - [x] 直接选择本地字幕文件（.srt / .vtt）作为起点。
+       23    - **音频转文字 (ASR)**：
+       24        - [x] 本地 Whisper 引擎（Tiny/Base/Small/Medium/Large 
+            五种模型，支持 zh/en/ja/auto 语言选择，支持 MP3/MP4/WAV 
+            输入自动重采样到 16kHz）。
+       25        - [x] 云端 ASR 预留 OpenAI 兼容接口（可配置 API URL + 
+            Key + Model）。
+
+⏺ 同步更新计划文件的状态。
+
+⏺ Read(~/Codes/VidSum/docs/superpowers/plans/2026-04-29-existing-subtitle-flow.
+      md)
+  ⎿  Read 94 lines
+
+⏺ Update(~/Codes/VidSum/docs/superpowers/plans/2026-04-29-existing-subtitle-flo
+        w.md)
+  ⎿  Error editing file
+
+⏺ Update(~/Codes/VidSum/docs/superpowers/plans/2026-04-29-existing-subtitle-flo
+        w.md)
+  ⎿  Updated ../docs/superpowers/plans/2026-04-29-existing-subtitle-flow.m
+      with 1 addition and 1 removal
+
+       19    
+       20    ---
+       21    
+       22 -  ### Task 1: Rust 后端 - 新建 subtitle 模块及 SRT/VTT 解析器
+       22 +  ### Task 1: Rust 后端 - 新建 subtitle 模块及 SRT/VTT 解析器 
+     ✅
+       23    
+       24    **Files:**
+       25    - Create: `src-tauri/src/subtitle/mod.rs` — 模块导出
+
+⏺ Update(~/Codes/VidSum/docs/superpowers/plans/2026-04-29-existing-subtitle-flo
+        w.md)
+  ⎿  Updated ../docs/superpowers/plans/2026-04-29-existing-subtitle-flow.m
+      with 1 addition and 1 removal
+
+       47    
+       48    ---
+       49    
+       50 -  ### Task 2: React 前端 - 补全"已有字幕"流程状态机
+       50 +  ### Task 2: React 前端 - 补全"已有字幕"流程状态机 ✅
+       51    
+       52    **Files:**
+       53    - Modify: `src/App.tsx`
+
+⏺ Update(~/Codes/VidSum/docs/superpowers/plans/2026-04-29-existing-subtitle-flo
+        w.md)
+  ⎿ User rejected update../docs/superpowers/plans/2026-04-29-existing-subtitle
+    to                  -flow.md
+      85    
+      86    ---
+      87    
+      88 -  ### Task 3: 更新进度文档
+      88 +  ### Task 3: 更新进度文档 ✅
+      89    
+      90    **Files:**
+      91    - Modify: `docs/TODO.md`
+
+> 我要先手动测试一下这个流程有没有通。告诉我命令和相关的步骤，然后再告诉我
+验收的标准。 
+
+⏺ 测试步骤
+
+  1. 启动应用
+
+  cd /Users/a1/Codes/VidSum
+  pnpm tauri dev
+
+  2. 准备测试素材
+
+  准备一个简单的 .srt 文件（比如 test.srt），内容如：
+
+  1
+  00:00:01,000 --> 00:00:04,000
+  Hello world
+
+  2
+  00:00:05,000 --> 00:00:08,500
+  This is a test
+
+  3. 操作流程
+
+  | 步骤  | 操作                      | 预期界面
+               |
+  |-----|-------------------------|----------------------------------------
+  -----|
+  | 1   | 启动后看到"选择输入方式"           |
+  两个按钮："音视频文件转写"和"已有字幕文件"                     |
+  | 2   | 点击"已有字幕文件"              | 进入文件选择器，提示"支持 SRT,
+  VTT, ASS, SSA 格式"        |
+  | 3   | 点击"打开文件选择器"，选择 test.srt |
+  进入确认页面，显示文件名、类型（字幕）、路径                      |
+  | 4   | 点击"📄 开始处理"             |
+  短暂显示加载动画"正在解析字幕文件..."，然后自动跳到 LLM 配置页面       |
+  | 5   | 进入 LLM 配置页面             | 显示 Base URL、API Key、Model
+  输入框，以及 Prompt 编辑区 |
+
+  验收标准
+
+  | #   | 检查项                  | 预期结果                          |
+  |-----|----------------------|-------------------------------|
+  | 1   | 选择字幕文件后能解析成功         | 不报错，自动进入 LLM 配置页
+             |
+  | 2   | 解析的字幕数据已传递到总结流程      | 点击"生成总结"后，LLM
+  能收到完整的字幕文本      |
+  | 3   | 点击"← 返回"（解析动画中）      | 回到确认文件页面
+         |
+  | 4   | 选择不支持的格式（如 .txt）     | 弹出错误提示"不支持的字幕格式"
+               |
+  | 5   | 前端 TypeScript 无编译错误  | 控制台无红色报错
+     |
+  | 6   | Rust cargo test 全部通过 | cargo test --lib 输出 18 passed |
+
+  如果需要更完整的测试，可以用包含中文和多行文本的真实字幕文件试一试。
+
+> 出bug了。我进入“大模型API配置”界面，点击“保存配置并继续”按钮，弹出错误提
+示“出错了
+invalid args `segments` for command `generate_summary`: invalid type: null,
+ expected f64” 
+
+⏺ 找到bug了。问题出在 Rust 后端和前端之间的字段名不一致：
+
+  - Rust SubtitleEntry 使用 #[serde(rename_all = "snake_case")] → JSON 键为
+   start_time
+  - 前端 SubtitleEntry interface 使用 camelCase → 期望 startTime
+
+  所以前端拿到的对象是 { start_time: 1000 }，但代码访问 entry.startTime
+  得到 undefined，undefined / 1000 = NaN → JSON 序列化为 null → Rust 报错。
+
+  修复：Rust 端改为 camelCase。
+
+⏺ Read(src/subtitle/parser.rs)
+  ⎿  Read 20 lines
+
+⏺ Update(src/subtitle/parser.rs)
+  ⎿  Updated src/subtitle/parser.rs with 2 additions and 1 removal    
+        9    
+       10    /// 字幕条目（时间单位为毫秒，与前端 SubtitleEntry 兼容）
+       11    #[derive(Debug, Clone, Serialize, Deserialize)]
+       12 -  #[serde(rename_all = "snake_case")]
+       12 +  /// 注意：使用 camelCase 以与前端的 SubtitleEntry 
+          + 接口字段名一致
+       13 +  #[serde(rename_all = "camelCase")]
+       14    pub struct SubtitleEntry {
+       15        pub index: i32,
+       16        pub text: String,
+
+⏺ 验证修复后编译和测试都通过。
+
+⏺ Bash(cd /Users/a1/Codes/VidSum/src-tauri && cargo test
+      subtitle::parser::tests 2>&1 && cargo check 2>&1)
+  ⎿    Compiling vidsum v0.1.0 (/Users/a1/Codes/VidSum/src-tauri)         
+        Finished `test` profile [unoptimized + debuginfo] target(s) in 3.8
+    1s
+    … +38 lines (ctrl+o to expand)
+
+
+⏺ 18 个测试全部通过，编译正常。bug 已修复，你可以重新运行测试了。
+
+  bug 根因： src-tauri/src/subtitle/parser.rs:12 中 SubtitleEntry 的
+  #[serde(rename_all = "snake_case")] 导致 JSON 序列化后字段名为 start_time
+   / end_time，但前端 SubtitleEntry interface 期望的是 startTime /
+  endTime。改为 "camelCase" 后两者对齐。
+
+> 好的，手动测试通过了。 
+
+⏺ 测试通过。按照工作流，我来用 finishing-a-development-branch
+  完成开发分支的收尾。
+
+> The "finishing-a-development-branch" skill is loading 
+
+⏺ Step 1: 验证测试
+
+⏺ Bash(cd /Users/a1/Codes/VidSum && cargo test --lib 2>&1 && echo   timeout: 
+      "=== TS CHECK ===" && npx tsc --noEmit 2>&1)                  3m 0s
+  ⎿  Interrupted · What should Claude do instead?
+
+> 当前的更改还没有提交git呢!给我一个合适的commit信息，我要手动提交。 
+
+⏺ Bash(git status && echo "---" && git diff --stat)
+  ⎿  位于分支 feature/existing-subtitle-flow               
+     要提交的变更：
+       （使用 "git restore --staged <文件>..." 以取消暂存）
+     … +13 lines (ctrl+o to expand)
+
+⏺ 建议的 commit message：
+
+  feat(subtitle): 实现 SRT/VTT 字幕文件解析与入口流程
+
+  Rust 后端新增 subtitle 模块，支持手动解析 SRT/VTT 字幕文件，
+  通过 parse_subtitle_file 命令返回统一的字幕条目列表（18
+  项单元测试覆盖）。
+  React 前端 App.tsx 状态机新增 parsing 状态，选择字幕文件后自动解析并跳转
+  LLM 总结配置。
+  同步更新 PRD、TODO 和实现计划文档。
+
+
+

@@ -6,6 +6,10 @@
     - [x] 选择本地音视频文件（支持 mp4, mkv, mov, mp3, wav, m4a 等）
     - [x] 选择本地字幕文件（.srt / .vtt）作为起点
 
+- [x] **已有字幕文件处理流程**
+    - [x] 实现 SRT/VTT 文件解析（Rust 后端）
+    - [x] 字幕入口跳过 ASR 直接进入总结配置（React 前端）
+
 - [x] **音频转文字 (ASR)**
     - [x] 本地 Whisper 引擎（Tiny/Base/Small/Medium/Large 五种模型，支持 zh/en/ja/auto 语言选择）
     - [x] 云端 ASR 预留 OpenAI 兼容接口（可配置 API URL + Key + Model）
