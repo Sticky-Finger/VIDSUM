@@ -15,55 +15,55 @@
 
 ## Tasks
 
-### Task 1: 修改 App.tsx - 字幕解析完成后进入预览界面
+### Task 1: 修改 App.tsx - 字幕解析完成后进入预览界面 ✅
 
 **修改文件**:
 - `src/App.tsx:72-84` - handleParseSubtitle 函数
 - `src/App.tsx:286-303` - preview 模式渲染
 - `src/App.tsx:37-56` - handleBack 函数
 
-- [ ] 修改 handleParseSubtitle：解析完成后进入 preview 模式（调用 setCurrentMode('preview')），而非直接调用 handlePreviewConfirm
-- [ ] 修改 preview 模式渲染：渲染 SubtitlePreview 组件，传递 canRetranscribe={selectedInputMode === 'media'}
-- [ ] 更新 handleBack：添加 preview 模式的返回逻辑（返回到 confirm 模式）
+- [x] 修改 handleParseSubtitle：解析完成后进入 preview 模式（调用 setCurrentMode('preview')），而非直接调用 handlePreviewConfirm
+- [x] 修改 preview 模式渲染：渲染 SubtitlePreview 组件，传递 canRetranscribe={selectedInputMode === 'media'}
+- [x] 更新 handleBack：添加 preview 模式的返回逻辑（返回到 confirm 模式）
 
 **测试**:
-- [ ] `pnpm tauri dev` 编译通过
+- [x] `pnpm tauri dev` 编译通过
 
 ---
 
-### Task 2: 修改 SubtitlePreview 组件 - 添加 canRetranscribe prop
+### Task 2: 修改 SubtitlePreview 组件 - 添加 canRetranscribe prop ✅
 
 **修改文件**:
 - `src/components/SubtitlePreview.tsx:18-23` - SubtitlePreviewProps 接口
 - `src/components/SubtitlePreview.tsx:251-257` - 底部"返回"按钮
 
-- [ ] SubtitlePreviewProps 接口添加 canRetranscribe: boolean
-- [ ] 组件解构 canRetranscribe prop
-- [ ] 底部"返回"按钮根据 canRetranscribe 显示不同文案：true 显示"← 重新转写"，false 显示"← 返回"
+- [x] SubtitlePreviewProps 接口添加 canRetranscribe: boolean
+- [x] 组件解构 canRetranscribe prop
+- [x] 底部"返回"按钮根据 canRetranscribe 显示不同文案：true 显示"← 重新转写"，false 显示"← 返回"
 
 **测试**:
-- [ ] `pnpm tauri dev` 编译通过
+- [x] `pnpm tauri dev` 编译通过
 
 ---
 
-### Task 3: 更新 AsrProgress 组件 - 传递 canRetranscribe prop
+### Task 3: 更新 AsrProgress 组件 - 传递 canRetranscribe prop ✅
 
 **修改文件**:
 - `src/components/AsrProgress.tsx:232-242` - SubtitlePreview 使用位置
 
-- [ ] 找到 SubtitlePreview 组件的渲染代码，添加 canRetranscribe={true}
+- [x] 找到 SubtitlePreview 组件的渲染代码，添加 canRetranscribe={true}
 
 **测试**:
-- [ ] `pnpm tauri dev` 编译通过
+- [x] `pnpm tauri dev` 编译通过
 
 ---
 
 ## 测试清单
 
-- [ ] 选择"已有字幕文件"入口 → 选择 .srt 文件 → 点击"开始处理" → 解析完成后显示字幕预览界面
-- [ ] 字幕预览界面底部"返回"按钮显示"← 返回"（非"重新转写"）
-- [ ] 点击"← 返回"可回到文件确认页
-- [ ] 选择"转写字幕"入口 → 完成转写后进入字幕预览 → 底部"返回"按钮显示"← 重新转写"
+- [x] 选择"已有字幕文件"入口 → 选择 .srt 文件 → 点击"开始处理" → 解析完成后显示字幕预览界面
+- [x] 字幕预览界面底部"返回"按钮显示"← 返回"（非"重新转写"）
+- [x] 点击"← 返回"可回到文件确认页
+- [x] 选择"转写字幕"入口 → 完成转写后进入字幕预览 → 底部"返回"按钮显示"← 重新转写"
 
 ---
 

@@ -4,6 +4,7 @@ import { InputModeSelect } from './components/InputModeSelect';
 import { FileSelector, SelectedFile } from './components/FileSelector';
 import { ModelSelect } from './components/ModelSelect';
 import { AsrProgress } from './components/AsrProgress';
+import { SubtitlePreview } from './components/SubtitlePreview';
 import { LlmConfig } from './components/LlmConfig';
 import { SummaryResult } from './components/SummaryResult';
 import { Button } from '@/components/ui/button';
@@ -19,6 +20,7 @@ function App() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [errorMode, setErrorMode] = useState<AppMode | null>(null);
   const [confirmedSubtitle, setConfirmedSubtitle] = useState<SubtitleEntry[] | null>(null);
+  const [previewEntries, setPreviewEntries] = useState<SubtitleEntry[] | null>(null);
   const [summaryResult, setSummaryResult] = useState<string | null>(null);
 
   /// 选择输入模式
@@ -48,6 +50,9 @@ function App() {
       setCurrentMode('confirm');
     } else if (currentMode === 'model_select') {
       setCurrentMode('confirm');
+    } else if (currentMode === 'preview') {
+      setCurrentMode('confirm');
+      setPreviewEntries(null);
     } else if (currentMode === 'llm_config') {
       setCurrentMode('preview');
     } else if (currentMode === 'summary') {
@@ -76,7 +81,8 @@ function App() {
       const entries: SubtitleEntry[] = await invoke('parse_subtitle_file', {
         filePath: selectedFile.path,
       });
-      handlePreviewConfirm(entries);
+      setPreviewEntries(entries);
+      setCurrentMode('preview');
     } catch (e) {
       setErrorMessage(String(e));
       setCurrentMode('confirm');
@@ -155,6 +161,7 @@ function App() {
     setSelectedInputMode(null);
     setSelectedFile(null);
     setConfirmedSubtitle(null);
+    setPreviewEntries(null);
     setSummaryResult(null);
     setErrorMessage(null);
     setErrorMode(null);
@@ -283,23 +290,18 @@ function App() {
         </div>
       )}
 
-      {/* 预览确认 - 字幕确认后占位 */}
-      {currentMode === 'preview' && confirmedSubtitle && (
-        <div className="w-[400px]">
-          <div className="mb-4 p-4 border rounded-lg">
-            <h3 className="text-lg font-semibold mb-2">字幕已确认</h3>
-            <p className="text-sm text-gray-500">
-              共 {confirmedSubtitle.length} 段字幕已确认，即将进入大模型总结。
-            </p>
-          </div>
-          <Button
-            variant="outline"
-            className="w-full h-10 text-sm"
-            onClick={handleRestart}
-          >
-            ← 返回主页
-          </Button>
-        </div>
+      {/* 预览确认 - 字幕预览 */}
+      {currentMode === 'preview' && previewEntries && (
+        <SubtitlePreview
+          entries={previewEntries}
+          audioName={selectedFile?.name ?? ''}
+          canRetranscribe={selectedInputMode === 'media'}
+          onConfirm={(entries) => {
+            setConfirmedSubtitle(entries);
+            setCurrentMode('llm_config');
+          }}
+          onBack={handleBack}
+        />
       )}
 
       {/* LLM 配置 */}

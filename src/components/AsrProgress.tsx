@@ -235,6 +235,7 @@ export function AsrProgress({
       <SubtitlePreview
         entries={subtitleEntries}
         audioName={audioName}
+        canRetranscribe={true}
         onConfirm={handleConfirmPreview}
         onBack={() => setShowPreview(false)}
       />

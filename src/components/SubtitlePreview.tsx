@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils';
 export interface SubtitlePreviewProps {
   entries: SubtitleEntry[];
   audioName: string;
+  canRetranscribe: boolean;
   onConfirm: (entries: SubtitleEntry[]) => void;
   onBack: () => void;
 }
@@ -34,6 +35,7 @@ function formatTimeShort(ms: number): string {
 export function SubtitlePreview({
   entries,
   audioName,
+  canRetranscribe,
   onConfirm,
   onBack,
 }: SubtitlePreviewProps) {
@@ -253,7 +255,7 @@ export function SubtitlePreview({
             className="h-10 text-sm"
             onClick={onBack}
           >
-            ← 返回
+            {canRetranscribe ? '← 重新转写' : '← 返回'}
           </Button>
         </div>
       </CardContent>
