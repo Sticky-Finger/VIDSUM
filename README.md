@@ -39,7 +39,7 @@
 ### 敏感信息检测
 
 #### 本地检测
-- 安装 [Gitleaks](https://github.com/gitleaks/gitleaks)：`brew install gitleaks`（macOS）
+- 安装 [Gitleaks](https://github.com/gitleaks/gitleaks)：`brew install gitleaks`（macOS）,`winget install gitleaks`（Windows 11）
 - 全盘扫描：`gitleaks detect --source . -v`
 - 配合 pre-commit 自动拦截含敏感信息的提交：
    ```bash
