@@ -16,6 +16,8 @@ jobs:
             rust_target: x86_64-pc-windows-msvc
           - platform: macos-latest
             rust_target: aarch64-apple-darwin
+          - platform: macos-13
+            rust_target: x86_64-apple-darwin
           - platform: ubuntu-22.04
             rust_target: x86_64-unknown-linux-gnu
 
@@ -84,6 +86,7 @@ jobs:
 
       - name: 下载 Whisper 模型
         if: steps.cache-model.outputs.cache-hit != 'true'
+        shell: bash
         run: |
           mkdir -p src-tauri/models
           curl -L --retry 3 --retry-delay 5 \
@@ -96,6 +99,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          MACOSX_DEPLOYMENT_TARGET: 10.15
         with:
           tauriScript: "pnpm tauri"
 

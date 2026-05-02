@@ -4,7 +4,7 @@
 
 **目标**: 在 GitHub Actions 上实现 VidSum Tauri 2 应用的三端（Windows/macOS/Linux）手动触发构建，产出各平台安装包
 
-**架构**: 创建一个 workflow 文件，使用矩阵策略在三个 runner 上并行构建。通过 `tauri-apps/tauri-action@v0` 调用 `pnpm tauri build`，各平台安装独立的系统依赖，Whisper 模型从 HuggingFace 下载并缓存
+**架构**: 创建一个 workflow 文件，使用矩阵策略在四个 runner 上并行构建（含 Intel 和 Apple Silicon 双 macOS 架构）。通过 `tauri-apps/tauri-action@v0` 调用 `pnpm tauri build`，各平台安装独立的系统依赖，Whisper 模型从 HuggingFace 下载并缓存
 
 **核心文件**:
 - 新建: `.github/workflows/build.yml`
@@ -24,11 +24,12 @@
 
 **新建文件**: `.github/workflows/build.yml`
 
-**触发条件**：`workflow_dispatch`（仅手动触发），`timeout-minutes: 45`
+**触发条件**：`push`（任意分支推送自动触发），`timeout-minutes: 45`
 
-**平台矩阵**：
+**平台矩阵**（4 项）：
 - `windows-latest` → `x86_64-pc-windows-msvc`
-- `macos-latest` → `aarch64-apple-darwin`
+- `macos-latest` → `aarch64-apple-darwin`（Apple Silicon）
+- `macos-13` → `x86_64-apple-darwin`（Intel）
 - `ubuntu-22.04` → `x86_64-unknown-linux-gnu`
 
 **步骤**：
@@ -46,11 +47,11 @@
 
 - [ ] 提交 workflow 文件并推送到 GitHub
 - [ ] 在 Actions 页面手动触发 "构建发布" workflow
-- [ ] 确认三个平台 job 都成功完成
+- [ ] 确认四个平台 job 都成功完成
 - [ ] 从 artifact 下载各平台安装包并验证能正常安装运行
 
 ## 验收标准
 
-1. 点击 "Run workflow" 后三个平台构建任务并行启动
+1. 任意推送后四个平台构建任务并行启动
 2. Windows 产出 `.msi` / `.exe`，macOS 产出 `.dmg`，Linux 产出 `.AppImage` / `.deb`
 3. Whisper 模型文件被正确打包到各平台安装包内
