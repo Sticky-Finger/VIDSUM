@@ -1,0 +1,114 @@
+name: 构建发布
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: windows-latest
+            rust_target: x86_64-pc-windows-msvc
+          - platform: macos-latest
+            rust_target: aarch64-apple-darwin
+          - platform: ubuntu-22.04
+            rust_target: x86_64-unknown-linux-gnu
+
+    runs-on: ${{ matrix.platform }}
+    timeout-minutes: 45
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装系统依赖 (Ubuntu)
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            cmake \
+            build-essential \
+            libgtk-3-dev \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf
+
+      - name: 安装系统依赖 (macOS)
+        if: startsWith(matrix.platform, 'macos')
+        run: brew install cmake
+
+      - name: 安装系统依赖 (Windows)
+        if: startsWith(matrix.platform, 'windows')
+        run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+
+      - name: 配置 MSVC 开发环境 (Windows)
+        if: startsWith(matrix.platform, 'windows')
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: 安装 pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: 安装前端依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 安装 Rust 工具链
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust_target }}
+
+      - name: 缓存 Rust 依赖
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: 缓存 Whisper 模型
+        id: cache-model
+        uses: actions/cache@v4
+        with:
+          path: src-tauri/models
+          key: whisper-tiny-v1
+
+      - name: 下载 Whisper 模型
+        if: steps.cache-model.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p src-tauri/models
+          curl -L --retry 3 --retry-delay 5 \
+            -o src-tauri/models/ggml-tiny.bin \
+            "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.bin"
+
+      - name: 构建 Tauri 应用
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tauriScript: "pnpm tauri"
+
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: vidsum-${{ matrix.rust_target }}
+          path: |
+            src-tauri/target/release/bundle/**/*.msi
+            src-tauri/target/release/bundle/**/*.exe
+            src-tauri/target/release/bundle/**/*.dmg
+            src-tauri/target/release/bundle/**/*.app
+            src-tauri/target/release/bundle/**/*.AppImage
+            src-tauri/target/release/bundle/**/*.deb
+            src-tauri/target/release/bundle/**/*.rpm
+          if-no-files-found: error

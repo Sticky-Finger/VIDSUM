@@ -20,7 +20,7 @@
 
 ## Tasks
 
-### Task 1: 创建 GitHub Actions 构建 workflow
+### Task 1: 创建 GitHub Actions 构建 workflow ✅
 
 **新建文件**: `.github/workflows/build.yml`
 
