@@ -1,7 +1,7 @@
 name: 构建发布
 
 on:
-  workflow_dispatch:
+  push:
 
 permissions:
   contents: write
