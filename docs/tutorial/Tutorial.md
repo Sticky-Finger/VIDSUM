@@ -298,3 +298,13 @@ mvp/task-start-entry
 **要点内容**
 
 - 一开始使用了`/compact`压缩了上一任务的上下文，然后才开始的这次任务
+
+# 8 添加github actions的“构建发布”流程，用来在github线上构建该项目
+
+> 此次任务使用的模型：mimo-v2.5-pro【很卡，后面干脆卡到用不了】、deepseek-v4-flash[1m]
+
+对话过程记录: [2026-05-02-194839-local-command-caveatcaveat-the-messages-below-w.txt](../../chat-logs-sanitized/2026-05-02-194839-local-command-caveatcaveat-the-messages-below-w.txt)
+
+**要点内容**
+
+- 将github actions构建所需的配置文件build.yml配置文件上传github触发构建过程报错后，将报错内容复制贴给网页端ds去debug【因为报错日志内容特别长，且很可能要改多轮贴多次这种长日志，需要长上下文的LLM去分析问题】
