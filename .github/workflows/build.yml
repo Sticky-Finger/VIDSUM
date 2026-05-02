@@ -1,7 +1,10 @@
 name: 构建发布
 
 on:
+  workflow_dispatch:
   push:
+    tags:
+      - 'v*'
 
 permissions:
   contents: write

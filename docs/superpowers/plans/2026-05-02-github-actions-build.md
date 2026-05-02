@@ -24,34 +24,34 @@
 
 **新建文件**: `.github/workflows/build.yml`
 
-**触发条件**：`push`（任意分支推送自动触发），`timeout-minutes: 45`
+**触发条件**：`workflow_dispatch`（手动触发）+ `push: tags: ['v*']`（打 v 标签自动触发），`timeout-minutes: 45`
 
 **平台矩阵**（4 项）：
 - `windows-latest` → `x86_64-pc-windows-msvc`
 - `macos-latest` → `aarch64-apple-darwin`（Apple Silicon）
-- `macos-13` → `x86_64-apple-darwin`（Intel）
+- `macos-latest` → `x86_64-apple-darwin`（Intel，交叉编译）
 - `ubuntu-22.04` → `x86_64-unknown-linux-gnu`
 
 **步骤**：
-- [ ] 配置 workflow 基本结构和 3 平台矩阵（fail-fast: false）
-- [ ] 安装系统依赖：Ubuntu 装 cmake + GTK3 + WebKit2GTK + librsvg2 + patchelf；macOS 装 cmake（brew）；Windows 装 cmake（choco）+ 配置 MSVC 环境（ilammy/msvc-dev-cmd@v1）
-- [ ] 安装 pnpm 9（pnpm/action-setup@v4）→ Node.js 20（actions/setup-node@v4，cache: pnpm）→ `pnpm install --frozen-lockfile`
-- [ ] 安装 Rust stable + 矩阵 target（dtolnay/rust-toolchain@stable），缓存 Rust 依赖（Swatinem/rust-cache@v2，workspaces: src-tauri）
-- [ ] 缓存 Whisper 模型（actions/cache@v4），未命中时从 HuggingFace 下载 `ggml-tiny.bin` 到 `src-tauri/models/`
-- [ ] 构建 Tauri 应用（tauri-apps/tauri-action@v0，tauriScript: "pnpm tauri"）
-- [ ] 上传各平台构建产物（actions/upload-artifact@v4），覆盖 msi/exe/dmg/app/AppImage/deb/rpm
+- [x] 配置 workflow 基本结构和 4 平台矩阵（fail-fast: false）
+- [x] 安装系统依赖：Ubuntu 装 cmake + GTK3 + WebKit2GTK + librsvg2 + patchelf；macOS 装 cmake（brew）；Windows 装 cmake（choco）+ 配置 MSVC 环境（ilammy/msvc-dev-cmd@v1）
+- [x] 安装 pnpm 9（pnpm/action-setup@v4）→ Node.js 20（actions/setup-node@v4，cache: pnpm）→ `pnpm install --frozen-lockfile`
+- [x] 安装 Rust stable + 矩阵 target（dtolnay/rust-toolchain@stable），缓存 Rust 依赖（Swatinem/rust-cache@v2，workspaces: src-tauri）
+- [x] 缓存 Whisper 模型（actions/cache@v4），未命中时从 HuggingFace 下载 `ggml-tiny.bin` 到 `src-tauri/models/`
+- [x] 构建 Tauri 应用（tauri-apps/tauri-action@v0，tauriScript: "pnpm tauri"）
+- [x] 上传各平台构建产物（actions/upload-artifact@v4），覆盖 msi/exe/dmg/app/AppImage/deb/rpm
 
 ---
 
 ## 测试清单
 
-- [ ] 提交 workflow 文件并推送到 GitHub
-- [ ] 在 Actions 页面手动触发 "构建发布" workflow
-- [ ] 确认四个平台 job 都成功完成
-- [ ] 从 artifact 下载各平台安装包并验证能正常安装运行
+- [x] 提交 workflow 文件并推送到 GitHub
+- [x] 在 Actions 页面手动触发 "构建发布" workflow
+- [x] 确认四个平台 job 都成功完成
+- [x] 从 artifact 下载各平台安装包并验证能正常安装运行
 
 ## 验收标准
 
-1. 任意推送后四个平台构建任务并行启动
-2. Windows 产出 `.msi` / `.exe`，macOS 产出 `.dmg`，Linux 产出 `.AppImage` / `.deb`
-3. Whisper 模型文件被正确打包到各平台安装包内
+1. 手动触发或打 v 标签后四个平台构建任务并行启动 ✅
+2. Windows 产出 `.msi` / `.exe`，macOS 产出 `.dmg`，Linux 产出 `.AppImage` / `.deb` ✅
+3. Whisper 模型文件被正确打包到各平台安装包内 ✅
