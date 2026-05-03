@@ -54,19 +54,30 @@
 
 ## 运行与构建
 
-### 前置要求
+### 前置条件
+
+#### macOS 15 (x86_64)
 - Node.js v18+
 - pnpm v8.0+（唯一推荐的 Node.js 包管理器）
 - Rust（通过 [rustup](https://rustup.rs/) 安装）
 - 系统依赖：参考 [Tauri v2 前置条件](https://v2.tauri.app/start/prerequisites/)
 
+#### Windows 11
+- Node.js v18+
+- pnpm v8.0+（唯一推荐的 Node.js 包管理器）
+- Rust（通过 [rustup](https://rustup.rs/) 安装）
+- 系统依赖：参考 [Tauri v2 前置条件](https://v2.tauri.app/start/prerequisites/)
+- 额外依赖与常见问题：[Windows 11 开发环境搭建指南](docs/win11-dev-setup.md)
+
 ### 安装依赖
+项目根目录下运行
 ```bash
 pnpm install
 ```
 
 ### 开发模式
 ```bash
+cd src-tauri
 pnpm tauri dev
 ```
 - 前端开发服务器运行在 http://localhost:1420
@@ -74,6 +85,7 @@ pnpm tauri dev
 
 ### 生产构建
 ```bash
+cd src-tauri
 pnpm tauri build
 ```
 构建产物输出至 `src-tauri/target/release/bundle/`，包含各平台安装包（.app、.dmg、.msi、.deb 等）。
